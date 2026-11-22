@@ -43,19 +43,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
 {
 
     /// <summary>
-    /// A node that dials a CSMS and is dialled itself, by the charging stations
+    /// A node that connects to a CSMS and is connected to itself, by the charging stations
     /// - and the local controllers - below it: a local controller, and a
-    /// gateway. What it dials is WWCPNode's, over OCPP (OCPPDialling); the server those below it
+    /// gateway. What it connects to is WWCPNode's, over OCPP (OCPPConnecting); the server those below it
     /// connect to - its section "webSocketServer", the charging stations that may
     /// sign in and their login groups, the chains a station's certificate may
-    /// lead to, the keys and certificates it presents, OCPP over SSH and a CSMS
-    /// that dials it on the same port - is here, the same for both.
+    /// lead to, the keys and certificates it presents, OCPP-over-SSH and a CSMS
+    /// that connects to it on the same port - is here, the same for both.
     /// </summary>
     /// <remarks>
     /// <para>
     /// A class of its own between WWCPNode and the kinds, and not a part of
-    /// OCPPDialling: a charging station dials and has an OCPP
-    /// server of its own for a CSMS that cannot be dialled, with members of the
+    /// OCPPConnecting: a charging station connects and has an OCPP
+    /// server of its own for a CSMS that cannot be connected to, with members of the
     /// same names that mean something else, and it has no stations below it.
     /// </para>
     /// <para>
@@ -63,8 +63,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// the OCPP node exists (<see cref="BuildOCPPServer"/>, with the section
     /// it read), starts it once the node listens and stops it when the node
     /// stops (<see cref="StartOCPPServer"/>, <see cref="StopOCPPServer"/>), and
-    /// says the few things that are its own here: whether a CSMS may dial it
-    /// (<see cref="LetsBackEndsDialIn"/>), what it does with a station it has
+    /// says the few things that are its own here: whether a CSMS may connect to it
+    /// (<see cref="LetsBackEndsConnect"/>), what it does with a station it has
     /// seen (FollowStationsSeen) and with a switch of its server key
     /// (<see cref="ServerKeySwitched"/>).
     /// </para>
@@ -97,22 +97,22 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// What OCPP says of the connections of this node.
         /// </summary>
-        public OCPPDialling  OCPPDialling
-            => (OCPPDialling) Dialling;
+        public OCPPConnecting  OCPPConnecting
+            => (OCPPConnecting) Connecting;
 
         /// <summary>
         /// The OCPP nodes this one has: the one for OCPP 2.1, and before it
         /// the one for OCPP 1.6 where it speaks that.
         /// </summary>
         protected IEnumerable<NetworkingNode.AOCPPNetworkingNode> Nodes
-            => OCPPDialling.Nodes;
+            => OCPPConnecting.Nodes;
 
         /// <summary>
         /// What OCPP says of the connections of this node - asked for once,
         /// before anything of them is. A kind of node that says more of them
         /// than every serving node gives itself one of its own.
         /// </summary>
-        protected virtual OCPPDialling NewOCPPDialling()
+        protected virtual OCPPConnecting NewOCPPConnecting()
 
             => new (this, () => Node16, () => Node21);
 
@@ -121,13 +121,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region Constructor(s)
 
         /// <summary>
-        /// A node that dials a CSMS and serves the nodes below it; everything
+        /// A node that connects to a CSMS and serves the nodes below it; everything
         /// it is given is the node's.
         /// </summary>
         protected OCPPServingNode(NodeKind?                                  Kind                             = null,
                                   String?                                    Version                          = null,
                                   IPPort?                                    HTTPPort                         = null,
-                                  IIPAddress?                                HTTPHostname                     = null,
+                                  IPAddress?                                HTTPHostname                     = null,
                                   HTTPServer?                                HTTPServer                       = null,
                                   ServerCertificateSelectorDelegate?         ServerCertificateSelector        = null,
                                   ServerCertificateChainSelectorDelegate?    ServerCertificateChainSelector   = null,
@@ -196,9 +196,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         {
 
-            // Its connections speak OCPP, dialled by the OCPP nodes it has
+            // Its connections speak OCPP, made by the OCPP nodes it has
             // at the time - asked for whenever they are needed.
-            Dialling = NewOCPPDialling();
+            Connecting = NewOCPPConnecting();
 
             http3Restarts = new RestartsOneAtATime(
                                 RestartHTTP3ToShowAgainAsync,
@@ -248,15 +248,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (protected virtual) LetsBackEndsDialIn
+        #region (protected virtual) LetsBackEndsConnect
 
         /// <summary>
-        /// Whether a CSMS may dial this node over the port of its charging
+        /// Whether a CSMS may connect to this node over the port of its charging
         /// stations, as a connection the other end makes. Yes, unless the kind
         /// says otherwise - a local controller only while it reports to a CSMS
         /// at all.
         /// </summary>
-        protected virtual Boolean LetsBackEndsDialIn
+        protected virtual Boolean LetsBackEndsConnect
             => true;
 
         #endregion

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// What the CSMS is told of the time servers and the name servers without
     /// asking: the security events of the Secure Time Synchronization white
     /// paper (section 3.2.6), of the Secure DNS white paper (section 3.1.4)
-    /// and, for name servers over SSH, of the white paper "DNS over SSH"
+    /// and, for name servers over SSH, of the white paper "DNS-over-SSH"
     /// (section 7.4), and the events of the monitors it set (NTS concept B.12,
     /// SecureDNS concept B.11).
     /// </summary>
@@ -44,9 +44,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// <para>
     /// Told through the queue of each OCPP node handed last whose version a
     /// connection is configured for, so that an event outlives an outage and,
-    /// where the queue is kept on disk, a restart. A node that dials no CSMS of
+    /// where the queue is kept on disk, a restart. A node that connects to no CSMS of
     /// a version queues nothing for it. That matters most for the name
-    /// servers, since a CSMS dialled by its name is out of reach precisely
+    /// servers, since a CSMS connected to by its name is out of reach precisely
     /// while the names do not resolve.
     /// </para>
     /// <para>
@@ -309,8 +309,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                               String  Service   = CertificateUsages.NTS)
         {
 
-            var tells2_1 = dialsOCPP2_1();
-            var tells1_6 = dialsOCPP1_6();
+            var tells2_1 = connectsOCPP2_1();
+            var tells1_6 = connectsOCPP1_6();
 
             if (!tells2_1 && !tells1_6)
                 return;

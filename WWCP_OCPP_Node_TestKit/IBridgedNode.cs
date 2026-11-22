@@ -59,12 +59,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         /// <summary>
         /// Configure a connection to a CSMS of the given version, and never
-        /// dial it: what the bridge keeps resolving and whom it tells.
+        /// connect to it: what the bridge keeps resolving and whom it tells.
         /// </summary>
         /// <param name="URL">Where the CSMS is, e.g. "ws://csms.example.invalid/cs".</param>
         /// <param name="OCPPVersion">"1.6" or "2.1".</param>
         /// <param name="Error">Why the node refused it.</param>
-        Boolean TryDial(String       URL,
+        Boolean TryConnect(String       URL,
                         String       OCPPVersion,
                         out String?  Error);
 

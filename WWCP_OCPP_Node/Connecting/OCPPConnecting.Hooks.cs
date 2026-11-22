@@ -41,10 +41,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 {
 
     /// <summary>
-    /// What a node that dials over OCPP does of its own with the device model
+    /// What a node that connects over OCPP does of its own with the device model
     /// of its OCPP 2.1 node: nothing, unless it says otherwise.
     /// </summary>
-    public partial class OCPPDialling
+    public partial class OCPPConnecting
     {
 
         #region (override) SubProtocolsOf(Connection)
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region (override) SshSubsystem / ConnectOverSSH(Connection, Node, Login, SshConnection, CancellationToken)
 
         /// <summary>
-        /// OCPP goes over the SSH subsystem of the white paper "OCPP over SSH".
+        /// OCPP goes over the SSH subsystem of the white paper "OCPP-over-SSH".
         /// </summary>
         public override String? SshSubsystem
 
@@ -118,19 +118,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// Open the given connection over SSH by the OCPP node of its version,
-        /// named as over a WebSocket - see Dial.
+        /// named as over a WebSocket - see ConnectOverWebSocket.
         /// </summary>
         public override async Task<(IWWCPClient? Client, Boolean IsConnected, Exception? Error)>
 
             ConnectOverSSH(ConnectionEntry                                          Connection,
                            AWWCPNetworkingNode                                      Node,
-                           org.GraphDefined.Vanaheimr.Hermod.SSH.Client.SshClientOptions  Login,
-                           Func<CancellationToken, ValueTask<org.GraphDefined.Vanaheimr.Hermod.SSH.Client.SshClient>>?  SshConnection,
+                           org.GraphDefined.Vanaheimr.Hermod.SSH.Client.SSHClientOptions  Login,
+                           Func<CancellationToken, ValueTask<org.GraphDefined.Vanaheimr.Hermod.SSH.Client.SSHClient>>?  SshConnection,
                            CancellationToken                                        CancellationToken)
 
         {
 
-            var result = await NodeOf(Connection.OCPPVersion).ConnectOCPPClient(
+            var result = await ReconnectingNodeOf(Connection.OCPPVersion).ConnectOCPPClient(
                                    RemoteURL:                 Connection.URL,
                                    NextHopNetworkingNodeId:   WWCPNode.NextHopOf(Connection),
                                    RoutingNetworkingNodeIds:  WWCPNode.CSMSNamesOf(Connection),
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// name of the CSMS as well - see NextHopOf and CSMSNamesOf.
         /// </summary>
         /// <remarks>
-        /// What every node that dials says is said here. A node that has more
+        /// What every node that connects says is said here. A node that has more
         /// to say of its lines - the networking mode, how often it pings, how
         /// long it waits, which versions of TLS it speaks - opens it itself.
         /// </remarks>
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                   String?                                                         TOTPLogin,
                                                                   CancellationToken                                               CancellationToken)
 
-            => NodeOf(Connection.OCPPVersion).ConnectOCPPWebSocketClient(
+            => ReconnectingNodeOf(Connection.OCPPVersion).ConnectOCPPWebSocketClient(
                    RemoteURL:                   Connection.URL,
                    NetworkingMode:              WWCPNode.NetworkingModeOf(Connection),
                    NextHopNetworkingNodeId:     WWCPNode.NextHopOf(Connection),
@@ -208,21 +208,43 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (override) DiallingNodes / DiallingNodeOrNoneOf(Version)
+        #region (override) ConnectingNodes / ConnectingNodeOrNoneOf(Connection)
 
         /// <summary>
-        /// The OCPP nodes this one dials with.
+        /// The OCPP nodes this one connects with.
         /// </summary>
-        public override IEnumerable<AWWCPNetworkingNode> DiallingNodes
+        public override IEnumerable<AWWCPNetworkingNode> ConnectingNodes
 
             => Nodes;
 
         /// <summary>
-        /// The OCPP node that dials a connection of the given version.
+        /// The OCPP node that makes the given connection: the one of its version.
         /// </summary>
-        public override AWWCPNetworkingNode? DiallingNodeOrNoneOf(OCPPVersion Version)
+        public override AWWCPNetworkingNode? ConnectingNodeOrNoneOf(ConnectionEntry Connection)
 
-            => NodeOrNoneOf(Version);
+            => NodeOrNoneOf(Connection.OCPPVersion);
+
+        #endregion
+
+        #region (private) ReconnectingNodeOf(Version)
+
+        /// <summary>
+        /// The OCPP node that speaks the given version, which connects
+        /// again after a connection dropped, and until it answers at all -
+        /// as what is said of a connection then promises: "it comes back by
+        /// itself". A kind that gave its nodes a policy of its own keeps it:
+        /// a charging station, where its nodes are made.
+        /// </summary>
+        private OCPPCommon.NetworkingNode.AOCPPNetworkingNode ReconnectingNodeOf(OCPPVersion Version)
+        {
+
+            var node = NodeOf(Version);
+
+            node.ReconnectPolicy ??= new WebSocketClientReconnectPolicy();
+
+            return node;
+
+        }
 
         #endregion
 
@@ -275,20 +297,20 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (protected) DialAgain(Old16, Old21, Because)
+        #region (protected) ConnectAgain(Old16, Old21, Because)
 
         /// <summary>
-        /// Hang up what the replaced OCPP nodes were connected to and dial it
+        /// Hang up what the replaced OCPP nodes were connected to and connect to it
         /// again, through the nodes that replaced them.
         /// </summary>
         /// <param name="Old16">The OCPP 1.6 node replaced.</param>
         /// <param name="Old21">The OCPP 2.1 node replaced.</param>
         /// <param name="Because">Why, as a sentence without its full stop.</param>
-        public Task DialAgain(OCPPv1_6.NetworkingNode.AOCPPNetworkingNode?  Old16,
+        public Task ConnectAgain(OCPPv1_6.NetworkingNode.AOCPPNetworkingNode?  Old16,
                                  OCPPv2_1.NetworkingNode.AOCPPNetworkingNode?  Old21,
                                  String                                        Because)
 
-            => WWCPNode.DialAgain([ Old16, Old21 ], Because);
+            => WWCPNode.ConnectAgain([ Old16, Old21 ], Because);
 
         #endregion
 

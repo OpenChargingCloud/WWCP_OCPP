@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
     /// <summary>
     /// A networking node between charge points and their central system, which
-    /// dials the central system in standard networking mode - no network path
+    /// connects to the central system in standard networking mode - no network path
     /// on the wire - and forwards what the charge points below it send up.
     /// </summary>
     /// <remarks>

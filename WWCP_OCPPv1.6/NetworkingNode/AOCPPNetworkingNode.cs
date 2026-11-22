@@ -418,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public override OCPP.WebSockets.OCPPWebSocketServer
 
             AttachWebSocketServer(String?                                                         HTTPServiceName              = null,
-                                  IIPAddress?                                                     IPAddress                    = null,
+                                  IPAddress?                                                     IPAddress                    = null,
                                   IPPort?                                                         TCPPort                      = null,
                                   I18NString?                                                     Description                  = null,
 

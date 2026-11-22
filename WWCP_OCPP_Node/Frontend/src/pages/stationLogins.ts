@@ -19,7 +19,7 @@ const PROFILE_OF: Record<ClientAuthentication, number> = { httpAuthWithoutTLS: 1
 /** NTS key establishment over SSH: a station's time over the connection it has anyway. */
 const channelNTSKE = 'ntske/1@open.charging.cloud';
 
-/** DNS over SSH: a station's names over the connection it has anyway. */
+/** DNS-over-SSH: a station's names over the connection it has anyway. */
 const channelDNS   = 'dns@open.charging.cloud';
 
 /** What a channel is called where there is little room. */
@@ -65,7 +65,7 @@ export const stationLoginsPage: Page = {
         let store: WebSocketLogins | null = null;
 
         /** The credential that was just set, offered once and then gone. */
-        let justMade: { id: string; what: string; secret: string } | null = null;
+        let justMade: { login: string; what: string; secret: string } | null = null;
 
         /** The group whose settings are open, or null while none is. */
         let editing: string | null = null;
@@ -88,7 +88,7 @@ export const stationLoginsPage: Page = {
 
                 ${justMade === null ? nothing : html`
                     <div class="notice ok">
-                        <strong>The ${justMade.what} of '${justMade.id}' is</strong>
+                        <strong>The ${justMade.what} of '${justMade.login}' is</strong>
                         <code class="password">${justMade.secret}</code><br />
                         Write it down or type it into the charging station now. This is the only place it is
                         handed out - the list below never carries it.
@@ -252,7 +252,7 @@ export const stationLoginsPage: Page = {
                         </label>
                         <label class="check">
                             <input type="checkbox" name="sshkey" ?checked=${ticked('sshkey')} />
-                            <span>An SSH key (OCPP over SSH - no security profile, so the profiles below are not asked)</span>
+                            <span>An SSH key (OCPP-over-SSH - no security profile, so the profiles below are not asked)</span>
                         </label>
                         <label class="check">
                             <input type="checkbox" name="keypin" ?checked=${ticked('keypin')} />
@@ -338,7 +338,7 @@ export const stationLoginsPage: Page = {
                                           </tr>
                                       </thead>
                                       <tbody>
-                                          ${repeat(logins.logins, station => station.id, station => loginRow(station, logins))}
+                                          ${repeat(logins.logins, station => station.login, station => loginRow(station, logins))}
                                       </tbody>
                                   </table>
                               </div>
@@ -382,7 +382,7 @@ export const stationLoginsPage: Page = {
 
                     </form>
 
-                    <h3>An SSH key, for OCPP over SSH</h3>
+                    <h3>An SSH key, for OCPP-over-SSH</h3>
 
                     <p class="hint">
                         The station's public key, as one line of an authorized_keys file - options such as
@@ -472,14 +472,14 @@ export const stationLoginsPage: Page = {
             return html`
                 <tr class="${station.enabled && group?.enabled !== false ? '' : 'dimmed'}">
 
-                    <td><code>${station.id}</code></td>
+                    <td><code>${station.login}</code></td>
 
                     <td>${textOf(station.description) ?? '-'}</td>
 
                     <td>
-                        <select class="station-group" data-id="${station.id}" ?disabled=${!mayChange}
+                        <select class="station-group" data-id="${station.login}" ?disabled=${!mayChange}
                                 .value=${live(station.group)}
-                                @change=${(event: Event) => void move(station.id, (event.target as HTMLSelectElement).value)}>
+                                @change=${(event: Event) => void move(station.login, (event.target as HTMLSelectElement).value)}>
                             ${repeat(logins.groups, one => one.id, one => html`
                                 <option value="${one.id}" ?selected=${one.id === station.group}>
                                     ${one.name}
@@ -514,12 +514,12 @@ export const stationLoginsPage: Page = {
                                      </div>`
                               : nothing}
                         ${(station.sshKeys ?? []).map(key => html`
-                              <div class="small muted station-sshkey" data-id="${station.id}" data-fingerprint="${key.fingerprint}">
+                              <div class="small muted station-sshkey" data-id="${station.login}" data-fingerprint="${key.fingerprint}">
                                   <code>${key.fingerprint}</code>${key.label ? ` - ${key.label}` : ''}
                                   ${key.isDisabled ? html`<span class="warn">switched off</span>` : nothing}
                                   <button type="button" class="btn small station-sshkey-remove"
-                                          data-id="${station.id}" data-fingerprint="${key.fingerprint}"
-                                          ?disabled=${!mayChange} @click=${() => void dropSSHKey(station.id, key.fingerprint)}>
+                                          data-id="${station.login}" data-fingerprint="${key.fingerprint}"
+                                          ?disabled=${!mayChange} @click=${() => void dropSSHKey(station.login, key.fingerprint)}>
                                       Take away
                                   </button>
                               </div>
@@ -528,11 +528,11 @@ export const stationLoginsPage: Page = {
                               ? html`<div class="small warn">its group does not accept SSH keys</div>`
                               : nothing}
                         ${(station.keyPins ?? []).map(keyPin => html`
-                              <div class="small muted station-keypin" data-id="${station.id}" data-pin="${keyPin.pin}">
+                              <div class="small muted station-keypin" data-id="${station.login}" data-pin="${keyPin.pin}">
                                   <code class="keypin">${keyPin.pin}</code>${keyPin.label ? ` - ${keyPin.label}` : ''}
                                   <button type="button" class="btn small station-keypin-remove"
-                                          data-id="${station.id}" data-pin="${keyPin.pin}"
-                                          ?disabled=${!mayChange} @click=${() => void dropKeyPin(station.id, keyPin.pin)}>
+                                          data-id="${station.login}" data-pin="${keyPin.pin}"
+                                          ?disabled=${!mayChange} @click=${() => void dropKeyPin(station.login, keyPin.pin)}>
                                       Take away
                                   </button>
                               </div>
@@ -549,41 +549,41 @@ export const stationLoginsPage: Page = {
 
                     <td>
                         <label class="switch small">
-                            <input type="checkbox" class="station-enabled" data-id="${station.id}"
+                            <input type="checkbox" class="station-enabled" data-id="${station.login}"
                                    .checked=${live(station.enabled)}
                                    ?disabled=${!mayChange}
-                                   @change=${(event: Event) => void enable(station.id, (event.target as HTMLInputElement).checked)} />
+                                   @change=${(event: Event) => void enable(station.login, (event.target as HTMLInputElement).checked)} />
                             <span>${station.enabled ? 'yes' : 'no'}</span>
                         </label>
                     </td>
 
                     <td class="right">
-                        <button type="button" class="btn small station-totp" data-id="${station.id}"
-                                ?disabled=${!mayChange} @click=${() => void giveAToken(station.id)}>
+                        <button type="button" class="btn small station-totp" data-id="${station.login}"
+                                ?disabled=${!mayChange} @click=${() => void giveAToken(station.login)}>
                             ${station.hasTOTP ? 'New token secret' : 'Give it a token'}
                         </button>
                         ${station.hasTOTP ? html`
-                            <button type="button" class="btn small station-totp-binding" data-id="${station.id}"
+                            <button type="button" class="btn small station-totp-binding" data-id="${station.login}"
                                     title=${station.totp?.tlsChannelBinding
                                                 ? 'Take a raw token again, which can be replayed while it stands.'
                                                 : 'Take only a token bound to the TLS session of its connection. The station then has to come over HTTP/3, and a token read off its connection is no use on another.'}
                                     ?disabled=${!mayChange}
-                                    @click=${() => void bindToken(station.id, !station.totp?.tlsChannelBinding)}>
+                                    @click=${() => void bindToken(station.login, !station.totp?.tlsChannelBinding)}>
                                 ${station.totp?.tlsChannelBinding ? 'Unbind token' : 'Bind token'}
                             </button>
-                            <button type="button" class="btn small station-totp-remove" data-id="${station.id}"
-                                    ?disabled=${!mayChange} @click=${() => void dropToken(station.id)}>
+                            <button type="button" class="btn small station-totp-remove" data-id="${station.login}"
+                                    ?disabled=${!mayChange} @click=${() => void dropToken(station.login)}>
                                 Drop token
                             </button>
                         ` : nothing}
                         ${station.hasPassword ? html`
-                            <button type="button" class="btn small station-password-remove" data-id="${station.id}"
-                                    ?disabled=${!mayChange} @click=${() => void dropPassword(station.id)}>
+                            <button type="button" class="btn small station-password-remove" data-id="${station.login}"
+                                    ?disabled=${!mayChange} @click=${() => void dropPassword(station.login)}>
                                 Drop password
                             </button>
                         ` : nothing}
-                        <button type="button" class="btn small danger station-remove" data-id="${station.id}"
-                                ?disabled=${!mayChange} @click=${() => void removeStation(station.id)}>
+                        <button type="button" class="btn small danger station-remove" data-id="${station.login}"
+                                ?disabled=${!mayChange} @click=${() => void removeStation(station.login)}>
                             Remove
                         </button>
                     </td>
@@ -707,7 +707,7 @@ export const stationLoginsPage: Page = {
                 store     = answer.logins;
                 justMade  = answer.password === undefined
                                 ? null
-                                : { id, what: 'password', secret: answer.password };
+                                : { login: id, what: 'password', secret: answer.password };
 
                 draw();
 
@@ -850,7 +850,7 @@ export const stationLoginsPage: Page = {
                 store     = answer.logins;
                 justMade  = answer.sharedSecret === undefined
                                 ? null
-                                : { id, what: 'TOTP shared secret', secret: answer.sharedSecret };
+                                : { login: id, what: 'TOTP shared secret', secret: answer.sharedSecret };
 
                 draw();
 

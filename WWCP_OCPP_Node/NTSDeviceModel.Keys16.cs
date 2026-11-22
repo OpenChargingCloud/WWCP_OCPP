@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("ntske.aead",               "AEADAlgorithm",    true,   ""),
             ("ntske.minRefresh",         "MinRefresh",       true,   "43200"),
             ("ntske.maxRefresh",         "MaxRefresh",       true,   "86400"),
-            ("ntske.sshPorts",           "SSHPort",          true,   NTSServerSSH.DefaultPort.ToString(CultureInfo.InvariantCulture)),
+            ("ntske.sshPorts",           "SSHPort",          true,   NTSServerSSH.DefaultPort.ToString()),
             ("ntske.sshUserNames",       "SSHUserName",      true,   NTSServerSSH.DefaultUser),
             ("ntske.sshConnection",      "SSHConnection",    true,   "Dedicated")
         ];

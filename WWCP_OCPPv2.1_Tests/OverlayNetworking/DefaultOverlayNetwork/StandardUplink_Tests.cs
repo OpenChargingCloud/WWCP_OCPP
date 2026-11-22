@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 {
 
     /// <summary>
-    /// A local controller that dials its CSMS in the standard networking mode, with a charging station
+    /// A local controller that connects to its CSMS in the standard networking mode, with a charging station
     /// behind it.
     /// </summary>
     /// <remarks>
@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
     /// </para>
     /// <para>
     /// So the CSMS sends a request for the station over that connection not at all, and is told the station
-    /// is unknown or unreachable this way. To reach it, the controller dials in the overlay network.
+    /// is unknown or unreachable this way. To reach it, the controller connects in the overlay network.
     /// </para>
     /// </remarks>
     [TestFixture]

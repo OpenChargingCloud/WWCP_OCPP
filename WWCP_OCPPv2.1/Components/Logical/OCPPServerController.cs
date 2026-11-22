@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// OCPP 2.1 has no component for this: a charging station is a client and
     /// has no stations below it. So this is a controller of its own, named as
     /// the controllers of the white papers are, and its variables are the
-    /// section "webSocketServer" of the node's configuration file, its OCPP over SSH
+    /// section "webSocketServer" of the node's configuration file, its OCPP-over-SSH
     /// and its logging, as the node's page shows them - besides what the server
     /// is doing, read-only.
     /// </para>
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         internal static readonly ControllerVariable[] Variables = [
 
-            new ("Enabled",                     DataTypes.Boolean,       "Whether the node listens for charging stations at all - and for a CSMS that dials it on the same port. Takes effect at once.",                                                                                       Writable: true),
+            new ("Enabled",                     DataTypes.Boolean,       "Whether the node listens for charging stations at all - and for a CSMS that connects to it on the same port. Takes effect at once.",                                                                                       Writable: true),
             new ("Address",                     DataTypes.String,        "The IP address of the interface it listens on; empty while it listens on every one. Takes effect at the next start.",                                                      MaxLimit: 45,                        Writable: true),
             new ("Port",                        DataTypes.Integer,       "The TCP port it listens on - and, for HTTP/3, the UDP port of the same number. Takes effect at the next start.",                                                           MinLimit: 1, MaxLimit: 65535,        Writable: true),
             new ("SecurityProfiles",            DataTypes.MemberList,    "The OCPP security profiles a charging station may connect with. Takes effect at once; 2 and 3 alone need a server certificate or a server key.",                          ValuesList: [ "1", "2", "3" ],       Writable: true),

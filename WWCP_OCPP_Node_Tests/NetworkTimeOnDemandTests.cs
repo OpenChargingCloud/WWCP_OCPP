@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
     /// loopback interface, addressed by its address: no name to resolve. The
     /// requests are handed to the processors the bridge gave the station's
     /// OCPP 2.1 node, as its adapter hands them over; what is told is taken
-    /// where the bridge tells it, since the station dials no CSMS.
+    /// where the bridge tells it, since the station connects to no CSMS.
     /// </remarks>
     [TestFixture]
     [NonParallelizable]

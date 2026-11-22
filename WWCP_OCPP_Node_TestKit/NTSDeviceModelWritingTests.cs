@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.SSH.Client;
 
@@ -485,12 +486,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         {
 
             // The host of ptb-a is an SSH peer of the node, which signs in there
-            // with the key below. Nothing dials it in this test.
+            // with the key below. Nothing connects to it in this test.
             var hostOfPtbA = ((JArray) OnDisk("legal")!["servers"]!).Single(server => server["id"]?.Value<String>() == "ptb-a")["hostname"]!.Value<String>()!;
 
             station!.Node.AddSSHPeer(new SSHPeer(DomainName.Parse(hostOfPtbA),
-                                                 22,
-                                                 new SshSharedConnection(ct => ValueTask.FromException<SshClient>(new InvalidOperationException("Not dialled in this test."))),
+                                                 IPPort.Parse(22),
+                                                 new SshSharedConnection(ct => ValueTask.FromException<SSHClient>(new InvalidOperationException("Not connected to in this test."))),
                                                  PublicKey: () => "ssh-ed25519 AAAAOCPP ocpp@station"));
 
             var results = await Set(OCPP21.DataConsistencyModel.ACID,

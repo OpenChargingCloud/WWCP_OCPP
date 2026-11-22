@@ -172,10 +172,10 @@ function aKeyPinnedStation(): StationConnections {
 }
 
 /**
- * A station whose CSMS dials it and signs in with its WebSocket login: the
+ * A station whose CSMS connects to it and signs in with its WebSocket login: the
  * connection names nothing it signs in with.
  */
-function aStationDialledByItsCSMS(): StationConnections {
+function aStationConnectedToByItsCSMS(): StationConnections {
     const station = aStation();
     return { ...station,
              connections: [ { ...station.connections[0]!, url: 'wss://this-station.example.org:9443/csms-01', inbound: true, inboundName: 'csms-01',
@@ -340,7 +340,7 @@ describe('the Connections page', () => {
 
         // A station without one has no card for it.
         const plain = await opened();
-        assert.equal(plain.querySelector('#ssh-key'), null, 'a station that dials nothing over SSH shows a key card');
+        assert.equal(plain.querySelector('#ssh-key'), null, 'a station that connects to nothing over SSH shows a key card');
 
     });
 
@@ -371,7 +371,7 @@ describe('the Connections page', () => {
             globalThis.confirm = realConfirm;
         }
 
-        // A station that dials nothing over SSH and believes no signer has no card for it.
+        // A station that connects to nothing over SSH and believes no signer has no card for it.
         const plain = await opened();
         assert.equal(plain.querySelector('#pin-set-signers'), null);
 
@@ -469,9 +469,9 @@ describe('the Connections page', () => {
 
     });
 
-    it('says that a CSMS that dials signs in with its WebSocket login, and sends nothing of a server for it', async () => {
+    it('says that a CSMS that connects signs in with its WebSocket login, and sends nothing of a server for it', async () => {
 
-        const root = await opened(aStationDialledByItsCSMS);
+        const root = await opened(aStationConnectedToByItsCSMS);
 
         const signsIn = root.querySelector('[data-proves="c1"]');
 

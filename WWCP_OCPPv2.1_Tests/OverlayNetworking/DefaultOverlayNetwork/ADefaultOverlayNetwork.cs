@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             => MessageEncodings.JSON;
 
         /// <summary>
-        /// The networking mode the local controller dials the CSMS in: the overlay network, unless a fixture
+        /// The networking mode the local controller connects to the CSMS in: the overlay network, unless a fixture
         /// says otherwise.
         /// </summary>
         protected virtual NetworkingMode UplinkNetworkingMode

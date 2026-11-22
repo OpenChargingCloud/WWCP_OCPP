@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// SetVariables request as well - see DNSDeviceModel.Writing.cs.
     /// </para>
     /// <para>
-    /// A name server asked over SSH (white paper "DNS over SSH", chapter 7)
+    /// A name server asked over SSH (white paper "DNS-over-SSH", chapter 7)
     /// is read the same way: the node says in "ssh" how it is asked, and
     /// beside it what the last attempt came to, the host key it showed and
     /// the key the node signs in with there.
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("CertificateFingerprint",  server => TextOf     (Child(server["judgement"], "certificate"))),
             ("RootFingerprint",         server => TextOf     (Child(server["judgement"], "root"))),
             ("KnownSince",              server => DateTimeOf (Child(server["known"],     "since"))),
-            // The transport SSH (white paper "DNS over SSH", section 7.1): how
+            // The transport SSH (white paper "DNS-over-SSH", section 7.1): how
             // the server is signed in at and what its host key is held to,
             // empty for every other transport - and what the last attempt came
             // to, which takes the place of CertificateStatus and its

@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 {
 
     /// <summary>
-    /// What a connection the other end dials says of what the other end signs
+    /// What a connection the other end makes says of what the other end signs
     /// in with: nothing. The other end signs in with the WebSocket login of the
     /// name it comes under - its password, one-time password, key pin, or a
     /// certificate issued to that name -, as whoever else signs in at the
@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         #region Data
 
-        private const String  Name           = "csms-01";
-        private const String  InboundURL     = "wss://this-controller.example.org:9443/" + Name;
+        private static readonly User_Id Name           = User_Id.Parse("csms-01");
+        private static readonly String InboundURL = "wss://this-controller.example.org:9443/" + Name;
         private const String  APassword      = "what-the-csms-signs-in-with-here";
 
         private String            directory  = "";
@@ -103,9 +103,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                                       out String?        Error,
                                       String?            KeyPins  = null,
                                       ServerPins?        Pins     = null,
-                                      String             URL      = InboundURL)
+                                      String?            URL      = null)
 
-            => store.TryAddConnection(I18NString.Create("The CSMS, dialling in"), org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse(URL), "CSMS", true, AuthenticationId, null,
+            => store.TryAddConnection(I18NString.Create("The CSMS, connecting here"), org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse(URL ?? InboundURL), "CSMS", true, AuthenticationId, null,
                                       out Id, out Error,
                                       ServerKeyPins:  KeyPins,
                                       Pins:           Pins is null ? null : new ServerPinsChange(Pins),
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
                 Assert.That(entry.Inbound,                                  Is.True);
-                Assert.That(entry.InboundName,                              Is.EqualTo(Name));
+                Assert.That(entry.InboundName,                              Is.EqualTo(Name.ToString()));
                 Assert.That(entry.AuthenticationId,                         Is.Null);
                 Assert.That(entry.ServerKeyPins,                            Is.Empty);
                 Assert.That(entry.IsKeyPinned,                              Is.False);
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
                 Assert.That(again.Inbound,      Is.True,  "not read back from the file");
-                Assert.That(again.InboundName,  Is.EqualTo(Name));
+                Assert.That(again.InboundName,  Is.EqualTo(Name.ToString()));
             });
 
         }
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         /// <summary>
         /// Credentials of this node are what it proves itself with where it
-        /// dials: refused on a connection the other end makes, written down and
+        /// connects: refused on a connection the other end makes, written down and
         /// changed into, with the login to say it on instead.
         /// </summary>
         [Test]
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.That(TryAddInbound(null, out var id, out error), Is.True, error);
 
-            Assert.That(store.TryUpdateConnection(id, I18NString.Create("The CSMS, dialling in"), URL.Parse(InboundURL), "CSMS", true, login, null, out var changed),
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("The CSMS, connecting here"), URL.Parse(InboundURL), "CSMS", true, login, null, out var changed),
                         Is.False, "credentials given to it afterwards");
 
             Assert.That(changed, Does.Contain("signs in with its WebSocket login"));
@@ -214,9 +214,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         #region TurnedAround_WhatWasKeptOfTheServer_IsNotTaken()
 
         /// <summary>
-        /// A connection this node dialled, its server known by a key pin and
+        /// A connection this node made, its server known by a key pin and
         /// signed in to with credentials of this node, is turned into one the
-        /// other end dials: refused while it keeps either, and taken once both
+        /// other end makes: refused while it keeps either, and taken once both
         /// are left out - with nothing of them kept.
         /// </summary>
         [Test]
@@ -252,15 +252,15 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         #endregion
 
-        #region SignedPinSets_AreNotForAConnectionTheOtherEndDials()
+        #region SignedPinSets_AreNotForAConnectionTheOtherEndConnects()
 
         /// <summary>
-        /// A signed pin set pins the server of a connection this node dials.
-        /// This node is the server of one the other end dials: the pin set
+        /// A signed pin set pins the server of a connection this node makes.
+        /// This node is the server of one the other end makes: the pin set
         /// does not reach it.
         /// </summary>
         [Test]
-        public void SignedPinSets_AreNotForAConnectionTheOtherEndDials()
+        public void SignedPinSets_AreNotForAConnectionTheOtherEndConnects()
         {
 
             Assert.That(TryAddInbound(null, out var id, out var error), Is.True, error);
@@ -270,10 +270,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             Assert.Multiple(() => {
 
                 Assert.That(store.TryTakeSignedServerKeyPins(id!, KeyPin.FromKey(another).ToHex(), 1, out _, out _, out var keyPins),  Is.False, "key pins taken");
-                Assert.That(keyPins,                                                                                                   Does.Contain("dialled by the other end"));
+                Assert.That(keyPins,                                                                                                   Does.Contain("made by the other end"));
 
                 Assert.That(store.TryTakeSignedServerCAKeyPins(id!, KeyPin.FromKey(another).ToHex(), 1, out var roots),               Is.False, "a root taken");
-                Assert.That(roots,                                                                                                     Does.Contain("dialled by the other end"));
+                Assert.That(roots,                                                                                                     Does.Contain("made by the other end"));
 
                 Assert.That(Entry(id!).ServerKeyPins,                                                                                  Is.Empty);
 
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         /// the other end signs in with - credentials, the key pins or the CA of
         /// its client certificate -, is refused rather than read as if it were
         /// obeyed, with the WebSocket login to say it on. A connection this node
-        /// dials keeps the names of a server.
+        /// makes keeps the names of a server.
         /// </summary>
         [Test]
         public void AFileOfBefore_IsRefused_WithWhatToDo()
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                 Assert.That(wrongOut,                                                                                             Does.Contain("serverKeyPins"));
 
                 Assert.That(ConnectionEntry.TryParse(Inbound("\"autoConnect\": true"),                                            out var plain, out var none), Is.True, none);
-                Assert.That(plain!.InboundName,                                                                                   Is.EqualTo(Name));
+                Assert.That(plain!.InboundName,                                                                                   Is.EqualTo(Name.ToString()));
 
             });
 

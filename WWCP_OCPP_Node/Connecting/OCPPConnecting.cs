@@ -40,20 +40,20 @@ namespace cloud.charging.open.protocols.OCPP.Node
 {
 
     /// <summary>
-    /// What OCPP says of the connections of a node that dials over it: a
+    /// What OCPP says of the connections of a node that connects over it: a
     /// charging station, a CSMS, a local controller or a gateway. They are
-    /// dialled by the node's OCPP nodes - the one for OCPP 2.1, and the one for
+    /// made by the node's OCPP nodes - the one for OCPP 2.1, and the one for
     /// OCPP 1.6 where it has one - offer OCPP's subprotocols, go over the SSH
-    /// subsystem of the white paper "OCPP over SSH", and are what the Device
+    /// subsystem of the white paper "OCPP-over-SSH", and are what the Device
     /// Model of OCPP 2.1 reads and changes as SSHClientController and
     /// TLSClientController.
     /// </summary>
     /// <remarks>
-    /// A node gives itself one (<see cref="WWCPNode.Dialling"/>); how its
-    /// connections are dialled, followed, believed, let go of and dialled
+    /// A node gives itself one (<see cref="WWCPNode.Connecting"/>); how its
+    /// connections are made, followed, believed, let go of and made
     /// again is <see cref="WWCPNode"/>'s and the same for every node.
     /// </remarks>
-    public partial class OCPPDialling : DiallingProtocol
+    public partial class OCPPConnecting : ConnectingProtocol
     {
 
         #region Data
@@ -94,12 +94,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// What OCPP says of the connections of the given node, whose OCPP
         /// nodes are asked for whenever they are needed: a node that is made
-        /// anew - its EVSEs changed - is the one dialled with from then on.
+        /// anew - its EVSEs changed - is the one connected with from then on.
         /// </summary>
         /// <param name="WWCPNode">The node whose connections these are.</param>
         /// <param name="Node16">The node that speaks OCPP 1.6 for it, where it has one.</param>
         /// <param name="Node21">The node that speaks OCPP 2.1 for it.</param>
-        public OCPPDialling(WWCPNode                                            WWCPNode,
+        public OCPPConnecting(WWCPNode                                            WWCPNode,
                             Func<OCPPv1_6.NetworkingNode.AOCPPNetworkingNode?>  Node16,
                             Func<OCPPv2_1.NetworkingNode.AOCPPNetworkingNode>   Node21)
 

@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// paper that the given source can answer, read from it at every read.
     /// <para>
     /// The transport SSH and the variables beginning with "SSH" are those of
-    /// the white paper "DNS over SSH" (section 7.1): a name server asked over
+    /// the white paper "DNS-over-SSH" (section 7.1): a name server asked over
     /// the subsystem "dns@open.charging.cloud", held to its host key instead
     /// of a certificate - or, with SSHConnection Shared, asked on the SSH
     /// connection the station keeps to the SSH peer its Address names.
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("RootFingerprint",         DataTypes.String,      "The SHA-256 fingerprint of the root CA its chain ended at."),
             new ("KnownSince",              DataTypes.DateTime,    "Since when the server is believed with its current certificate - over SSH, with its current host key."),
 
-            // Transport SSH, section 7.1 of the white paper "DNS over SSH".
+            // Transport SSH, section 7.1 of the white paper "DNS-over-SSH".
             new ("SSHUserName",             DataTypes.String,      "The login of the SSH user authentication; empty for the station's own identity.",                 MaxLimit: 32,                                       Writable: true),
             new ("SSHHostKeyPins",          DataTypes.String,      "Comma separated SHA-256 fingerprints of the host keys the server may show, as SHA256:<base64> of ssh-keygen -l.", MaxItems: 16,                        Writable: true),
             new ("SSHHostCAs",              DataTypes.String,      "Comma separated SHA-256 fingerprints of the SSH CA keys that may sign the host certificate of the server, for its Address as a principal.", MaxItems: 4, Writable: true),

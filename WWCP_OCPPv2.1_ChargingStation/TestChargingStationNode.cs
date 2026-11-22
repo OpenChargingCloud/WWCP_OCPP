@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         /// <summary>
         /// Answers a TriggerMessage of CustomTrigger - "SignSSHKey" of the white
-        /// paper "OCPP over SSH", say - or null to leave it NotImplemented.
+        /// paper "OCPP-over-SSH", say - or null to leave it NotImplemented.
         /// </summary>
         public Func<CSMS.TriggerMessageRequest, Task<CS.TriggerMessageResponse?>>?  OnCustomTrigger  { get; set; }
 
@@ -2714,7 +2714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     return byOwner;
 
                 // A CustomTrigger is the owner's to answer: "SignSSHKey" of the
-                // white paper "OCPP over SSH", say. None, and it is rejected.
+                // white paper "OCPP-over-SSH", say. None, and it is rejected.
                 if (request.RequestedMessage == MessageTrigger.CustomTrigger)
                     return OnCustomTrigger is Func<CSMS.TriggerMessageRequest, Task<CS.TriggerMessageResponse?>> customTrigger &&
                            await customTrigger(request) is CS.TriggerMessageResponse answered

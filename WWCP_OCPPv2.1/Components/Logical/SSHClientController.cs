@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
     /// <summary>
-    /// The SSH client controller of the white paper "OCPP over SSH" (section 9.2; decision 5): the
+    /// The SSH client controller of the white paper "OCPP-over-SSH" (section 9.2; decision 5): the
     /// instance named after a connection holds its host key pins and how they are checked; the instance
     /// without a name holds the station's own keys, one variable instance per purpose.
     /// </summary>
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             : base(nameof(SSHClientController),
                    null,
-                   I18NString.Create("The SSH keys this charging station signs in with (OCPP over SSH)."),
+                   I18NString.Create("The SSH keys this charging station signs in with (OCPP-over-SSH)."),
                    null)
 
         {

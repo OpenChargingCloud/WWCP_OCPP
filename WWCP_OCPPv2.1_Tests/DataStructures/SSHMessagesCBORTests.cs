@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 {
 
     /// <summary>
-    /// The SSH key messages (white paper "OCPP over SSH", section 9.3), written
+    /// The SSH key messages (white paper "OCPP-over-SSH", section 9.3), written
     /// as CBOR and read back from its bytes as the same - and refused when a
     /// mandatory key is not there.
     /// </summary>

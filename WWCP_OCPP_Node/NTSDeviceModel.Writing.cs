@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1;
@@ -995,7 +996,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private static Boolean TryParseServer(String                            Value,
                                               String                            Where,
                                               out String                        Host,
-                                              out UInt16?                       Port,
+                                              out IPPort?                       Port,
                                               [NotNullWhen(false)] out String?  Problem)
         {
 
@@ -1027,7 +1028,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         return false;
                     }
 
-                    Port = port;
+                    Port = IPPort.Parse(port);
                     text = text[..colon];
 
                 }
@@ -1286,8 +1287,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                     List<Server>  Servers)
         {
 
-            public UInt16 DefaultNTSKEPort { get; init; } = 4460;
-            public UInt16 DefaultNTPPort   { get; init; } = 123;
+            public IPPort DefaultNTSKEPort { get; init; } = IPPort.NTSKE;
+            public IPPort DefaultNTPPort   { get; init; } = IPPort.NTP;
 
             public static Group Of(String   Id,
                                    JObject  JSON)
@@ -1300,8 +1301,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                          : null,
                         Servers:     ServersOf(JSON)) {
 
-                       DefaultNTSKEPort  = JSON["limits"]?["defaultNTSKEPort"]?.Value<UInt16>() ?? 4460,
-                       DefaultNTPPort    = JSON["limits"]?["defaultNTPPort"]?  .Value<UInt16>() ?? 123
+                       DefaultNTSKEPort  = IPPort.Parse(JSON["limits"]?["defaultNTSKEPort"]?.Value<UInt16>() ?? IPPort.NTSKE.ToUInt16()),
+                       DefaultNTPPort    = IPPort.Parse(JSON["limits"]?["defaultNTPPort"]?  .Value<UInt16>() ?? IPPort.NTP.ToUInt16())
 
                    };
 
@@ -1333,8 +1334,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public String?       Id               { get; private set; }
             public String        Hostname         { get; private set; } = "";
             public Byte          Priority         { get; private set; }
-            public UInt16?       NTSKEPort        { get; private set; }
-            public UInt16?       NTPPort          { get; private set; }
+            public IPPort?       NTSKEPort        { get; private set; }
+            public IPPort?       NTPPort          { get; private set; }
             public Boolean       Enabled          { get; private set; } = true;
             public List<String>  Certificates     { get; private set; } = [];
             public List<String>  Roots            { get; private set; } = [];
@@ -1349,7 +1350,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public String?       NTSKEHostname    { get; private set; }
             public Boolean       SignedResponses  { get; private set; }
             public Boolean       OverSSH          { get; private set; }
-            public UInt16?       SSHPort          { get; private set; }
+            public IPPort?       SSHPort          { get; private set; }
             public String?       SSHUser          { get; private set; }
             public List<String>  SSHHostKeyPins   { get; private set; } = [];
             public List<String>  SSHHostCAs       { get; private set; } = [];
@@ -1373,8 +1374,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                  Id               = JSON["id"]?.Value<String>(),
                                  Hostname         = (JSON["hostname"]?.Value<String>() ?? "").TrimEnd('.'),
                                  Priority         = JSON["priority"] ?.Value<Byte>()   ?? 0,
-                                 NTSKEPort        = JSON["ntsKEPort"]?.Value<UInt16>(),
-                                 NTPPort          = JSON["ntpPort"]  ?.Value<UInt16>(),
+                                 NTSKEPort        = JSON["ntsKEPort"]?.Type == JTokenType.Integer ? IPPort.Parse(JSON.Value<UInt16>("ntsKEPort")) : null,
+                                 NTPPort          = JSON["ntpPort"]  ?.Type == JTokenType.Integer ? IPPort.Parse(JSON.Value<UInt16>("ntpPort"))   : null,
                                  Enabled          = JSON["enabled"]  ?.Value<Boolean>() ?? true,
                                  Certificates     = PinsIn(heldTo, "certificate"),
                                  Roots            = PinsIn(heldTo, "root"),
@@ -1401,7 +1402,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                  // has it go so: left out, the next change of
                                  // anything would have it go over TLS.
                                  OverSSH          = ssh is not null,
-                                 SSHPort          = ssh?["port"]?.Type == JTokenType.Integer ? ssh["port"]!.Value<UInt16>() : null,
+                                 SSHPort          = ssh?["port"]?.Type == JTokenType.Integer ? IPPort.Parse(ssh["port"]!.Value<UInt16>()) : null,
                                  SSHUser          = ssh?["user"]?.Value<String>() is { Length: > 0 } user ? user : null,
                                  SSHHostKeyPins   = ssh?["hostKeyPins"] is JArray hostKeyPins ? [.. hostKeyPins.Values<String>().OfType<String>()] : [],
                                  SSHHostCAs       = ssh?["hostCAs"]     is JArray hostCAs     ? [.. hostCAs.    Values<String>().OfType<String>()] : [],
@@ -1418,10 +1419,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             public static Server New(String?  Id,
                                      String   Hostname,
-                                     UInt16?  NTSKEPort,
+                                     IPPort?  NTSKEPort,
                                      Byte     Priority,
-                                     UInt16   DefaultNTSKEPort,
-                                     UInt16   DefaultNTPPort)
+                                     IPPort   DefaultNTSKEPort,
+                                     IPPort   DefaultNTPPort)
 
                 => new () {
                        Id         = Id,
@@ -1476,10 +1477,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
             /// is told apart by.
             /// </summary>
             public Boolean Same(Server Other)
-                => ToJSON(0, 0).ToString(Formatting.None) == Other.ToJSON(0, 0).ToString(Formatting.None);
+                => ToJSON(IPPort.Zero, IPPort.Zero).ToString(Formatting.None) == Other.ToJSON(IPPort.Zero, IPPort.Zero).ToString(Formatting.None);
 
             public void Rename(String   Host,
-                               UInt16?  Port)
+                               IPPort?  Port)
             {
 
                 if (!String.Equals(Hostname, Host, StringComparison.OrdinalIgnoreCase))
@@ -1598,7 +1599,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         break;
 
                     case "sshport":
-                        SSHPort = UInt16.Parse(Value, CultureInfo.InvariantCulture);
+                        SSHPort = IPPort.Parse(Value);
                         break;
 
                     case "sshusername":
@@ -1627,11 +1628,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         break;
 
                     case "serverport":
-                        NTPPort = UInt16.Parse(Value, CultureInfo.InvariantCulture);
+                        NTPPort = IPPort.Parse(Value);
                         break;
 
                     case "ntskeserverport":
-                        NTSKEPort = UInt16.Parse(Value, CultureInfo.InvariantCulture);
+                        NTSKEPort = IPPort.Parse(Value);
                         break;
 
                     case "priority":
@@ -1791,16 +1792,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
             /// The server as a group's list says it - with the usual left out,
             /// as the page leaves it out - and what the request found it held to.
             /// </summary>
-            public JObject ToJSON(UInt16  DefaultNTSKEPort,
-                                  UInt16  DefaultNTPPort)
+            public JObject ToJSON(IPPort  DefaultNTSKEPort,
+                                  IPPort  DefaultNTPPort)
             {
 
                 var json = new JObject(new JProperty("hostname", Hostname));
 
                 if (Id is not null)                                            json["id"]         = Id;
                 if (Priority != 0)                                             json["priority"]   = Priority;
-                if (NTSKEPort is UInt16 keyPort && keyPort != DefaultNTSKEPort) json["ntsKEPort"]  = keyPort;
-                if (NTPPort   is UInt16 ntpPort && ntpPort != DefaultNTPPort)   json["ntpPort"]    = ntpPort;
+                if (NTSKEPort is IPPort keyPort && keyPort != DefaultNTSKEPort) json["ntsKEPort"]  = keyPort.ToUInt16();
+                if (NTPPort   is IPPort ntpPort && ntpPort != DefaultNTPPort)   json["ntpPort"]    = ntpPort.ToUInt16();
                 if (!Enabled)                                                  json["enabled"]    = false;
                 if (AEAD is not null)                                          json["aead"]       = AEAD;
                 if (MinRefresh is UInt32 minRefresh)                           json["minRefreshSeconds"] = minRefresh;
@@ -1818,7 +1819,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     var ssh = new JObject();
 
-                    if (SSHPort is UInt16 sshPort)                             ssh["port"]         = sshPort;
+                    if (SSHPort is IPPort sshPort)                             ssh["port"]         = sshPort.ToUInt16();
                     if (SSHUser is not null)                                   ssh["user"]         = SSHUser;
                     if (SSHHostKeyPins.Count > 0)                              ssh["hostKeyPins"]  = new JArray(SSHHostKeyPins);
                     if (SSHHostCAs.    Count > 0)                              ssh["hostCAs"]      = new JArray(SSHHostCAs);

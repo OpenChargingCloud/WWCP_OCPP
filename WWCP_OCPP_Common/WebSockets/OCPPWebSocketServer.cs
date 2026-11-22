@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         public OCPPWebSocketServer(NetworkingNode.INetworkingNode                                  NetworkingNode,
 
                                    String?                                                         HTTPServiceName              = DefaultHTTPServiceName,
-                                   IIPAddress?                                                     IPAddress                    = null,
+                                   IPAddress?                                                     IPAddress                    = null,
                                    IPPort?                                                         TCPPort                      = null,
                                    I18NString?                                                     Description                  = null,
 

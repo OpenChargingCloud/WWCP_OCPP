@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         /// <summary>
         /// A key pin is learned only by a wss:// connection that trusts on first
         /// use, pins nothing and learned nothing yet, and still goes where it
-        /// was dialled.
+        /// was connected to.
         /// </summary>
         [Test]
         public void AKeyPinIsLearnedOnlyWhereThatIsConfigured()

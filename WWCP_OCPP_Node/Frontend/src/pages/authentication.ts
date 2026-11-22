@@ -95,7 +95,7 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
 
                         <label>What they are for
                             <input type="text" name="description" maxlength="${state.maxDescriptionLength}"
-                                   placeholder="${nodeTraits().dialsDown ? 'Login at station 7' : 'CSMS login'}" ?disabled=${!mayManage} />
+                                   placeholder="${nodeTraits().connectsDown ? 'Login at station 7' : 'CSMS login'}" ?disabled=${!mayManage} />
                             <span class="hint">
                                 The one field worth taking seriously. Six logins on a page a year from now are
                                 told apart by this and nothing else.
@@ -145,7 +145,7 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
                     ${state.authentications.length === 0
                           ? html`
                                 <p class="hint">
-                                    Nothing yet. This ${nodeNoun()} can only dial a ${farEnd()} that asks it for
+                                    Nothing yet. This ${nodeNoun()} can only connect to a ${farEnd()} that asks it for
                                     nothing, or one it shows a client certificate to.
                                 </p>
                             `
@@ -586,7 +586,7 @@ export const authenticationPage: Page = {
         const content = shell(root, {
             active:    '/configuration/authentication',
             title:     'Authentication',
-            subtitle:  `How this ${nodeNounInFull()} proves who it is when it dials a ${farEnd()}.`,
+            subtitle:  `How this ${nodeNounInFull()} proves who it is when it connects to a ${farEnd()}.`,
             actions:   reloadButton(() => panel?.reload() ?? Promise.resolve())
         });
 

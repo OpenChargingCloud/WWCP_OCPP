@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The GetInstalledSSHKeys request: a CSMS asks a Local Controller which SSH keys of charging stations it holds (white paper "OCPP over SSH", section 9.3).
+    /// The GetInstalledSSHKeys request: a CSMS asks a Local Controller which SSH keys of charging stations it holds (white paper "OCPP-over-SSH", section 9.3).
     /// </summary>
     public class GetInstalledSSHKeysRequest : ARequest<GetInstalledSSHKeysRequest>,
                                              IRequest

@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
     /// <summary>
     /// The connections made peers (work package P6 of EVQI Transport, section
     /// 11.7.1): a peers.json with the endpoints in it, made once of
-    /// connections.json, and nothing dialled differently.
+    /// connections.json, and nothing connected to differently.
     /// </summary>
     [TestFixture]
     public class PeerStoreTests
@@ -101,10 +101,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             => Store.PeerOf(ConnectionId) ?? throw new AssertionException($"'{ConnectionId}' is the endpoint of no peer.");
 
         /// <summary>
-        /// The connections as the dialling sees them: everything of each but
+        /// The connections as the connecting sees them: everything of each but
         /// its warnings, which are worked out when asked.
         /// </summary>
-        private static Dictionary<String, String> AsDialled(IEnumerable<ConnectionEntry> Connections)
+        private static Dictionary<String, String> AsConnected(IEnumerable<ConnectionEntry> Connections)
 
             => Connections.ToDictionary(entry => entry.Id,
                                         entry => { var json = entry.ToJSON(); json.Remove("warnings"); return json.ToString(Newtonsoft.Json.Formatting.None); });
@@ -130,15 +130,15 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         #endregion
 
-        #region EveryOldConnectionIsAnEndpointUnderItsOwnIdAndDialledAsBefore()
+        #region EveryOldConnectionIsAnEndpointUnderItsOwnIdAndConnectedAsBefore()
 
         /// <summary>
         /// The acceptance of P6: every existing connections.json loads, and
-        /// nothing is dialled differently - every connection is there under its
+        /// nothing is connected to differently - every connection is there under its
         /// id, exactly as it was, and connections.json is left as it was.
         /// </summary>
         [Test]
-        public void EveryOldConnectionIsAnEndpointUnderItsOwnIdAndDialledAsBefore()
+        public void EveryOldConnectionIsAnEndpointUnderItsOwnIdAndConnectedAsBefore()
         {
 
             AnOldFile(Old("main",   "CSMS",            "OCPP2.1", true,  1),
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                       Old("ssh",    "CSMS",            "OCPP2.1", true,  5, "ssh://cs001@csms.example.org:2222"));
 
             var oldFile   = File.ReadAllText(Path.Combine(path, ConnectionStore.ConnectionsFileName));
-            var expected  = AsDialled(JArray.Parse(oldFile).OfType<JObject>().Select(json => {
+            var expected  = AsConnected(JArray.Parse(oldFile).OfType<JObject>().Select(json => {
                                 ConnectionEntry.TryParse(json, out var entry, out _);
                                 return entry!;
                             }));
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             var store     = AStore();
 
             Assert.Multiple(() => {
-                Assert.That(AsDialled(store.Connections),  Is.EquivalentTo(expected));
+                Assert.That(AsConnected(store.Connections),  Is.EquivalentTo(expected));
                 Assert.That(store.Connections.Where(entry => entry.AutoConnect).Select(entry => entry.Id), Is.EquivalentTo(new[] { "main", "lc", "ssh" }));
                 Assert.That(File.ReadAllText(Path.Combine(path, ConnectionStore.ConnectionsFileName)), Is.EqualTo(oldFile), "connections.json is left as it was");
                 Assert.That(File.Exists(Path.Combine(path, ConnectionStore.PeersFileName)), Is.True);
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             // And so after it was read back from peers.json alone.
             File.Delete(Path.Combine(path, ConnectionStore.ConnectionsFileName));
 
-            Assert.That(AsDialled(AStore().Connections), Is.EquivalentTo(expected), "read back from peers.json");
+            Assert.That(AsConnected(AStore().Connections), Is.EquivalentTo(expected), "read back from peers.json");
 
         }
 
@@ -174,9 +174,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         #region ThePeersAreMadeAsSection11_7_1Says()
 
         /// <summary>
-        /// The oldest connection that dials by itself makes its peer the
+        /// The oldest connection that connects by itself makes its peer the
         /// primary, the oldest of the other OCPP version a successor; every
-        /// other one dialled by itself an observer, one that is not a service;
+        /// other one connected by itself an observer, one that is not a service;
         /// a CSMSBackup the next endpoint of the one CSMS of its version.
         /// </summary>
         [Test]
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                 Assert.That(PeerOf(store, "lc").OCPPVersion,      Is.EqualTo(OCPPVersion.OCPP1_6));
 
                 Assert.That(PeerOf(store, "second").Role,         Is.EqualTo(PeerRole.Observer));
-                Assert.That(PeerOf(store, "test").Role,           Is.EqualTo(PeerRole.Service), "dialled by hand only");
+                Assert.That(PeerOf(store, "test").Role,           Is.EqualTo(PeerRole.Service), "connected by hand only");
 
             });
 
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             var store   = AStore(notices);
 
             Assert.Multiple(() => {
-                Assert.That(notices,                Has.Some.Contains("nothing is dialled differently"), "told to who listens after the store was made");
+                Assert.That(notices,                Has.Some.Contains("nothing is connected differently"), "told to who listens after the store was made");
                 Assert.That(store.Migration,        Is.Not.Null);
                 Assert.That(store.ToJSON()["migration"]?["notes"], Is.Not.Null.And.Not.Empty);
             });
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             var reloaded = AStore(again);
 
             Assert.Multiple(() => {
-                Assert.That(again,                         Has.None.Contains("nothing is dialled differently"), "made once");
+                Assert.That(again,                         Has.None.Contains("nothing is connected differently"), "made once");
                 Assert.That(reloaded.Migration?.Notes,     Is.EqualTo(store.Migration!.Notes), "kept in peers.json");
             });
 
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         #region AHandEditedFileIsPutRightAndTold()
 
         /// <summary>
-        /// Two primaries, a service whose endpoint dials by itself, rights on
+        /// Two primaries, a service whose endpoint connects by itself, rights on
         /// the primary: put right where read, and told, and not written back.
         /// </summary>
         [Test]
@@ -383,10 +383,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         #endregion
 
-        #region ThePrimaryGoneTheOldestDialledTakesOver()
+        #region ThePrimaryGoneTheOldestConnectedTakesOver()
 
         [Test]
-        public void ThePrimaryGoneTheOldestDialledTakesOver()
+        public void ThePrimaryGoneTheOldestConnectedTakesOver()
         {
 
             var store = AStore();
@@ -410,10 +410,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         #endregion
 
-        #region WhetherItDialsByItselfMakesAPeerAServiceOrNot()
+        #region WhetherItConnectsByItselfMakesAPeerAServiceOrNot()
 
         [Test]
-        public void WhetherItDialsByItselfMakesAPeerAServiceOrNot()
+        public void WhetherItConnectsByItselfMakesAPeerAServiceOrNot()
         {
 
             var store = AStore();
@@ -426,12 +426,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
                 Assert.That(PeerOf(store, first).Role,   Is.EqualTo(PeerRole.Service));
-                Assert.That(PeerOf(store, second).Role,  Is.EqualTo(PeerRole.Primary), "the oldest still dialled");
+                Assert.That(PeerOf(store, second).Role,  Is.EqualTo(PeerRole.Primary), "the oldest still connected");
             });
 
             Assert.That(store.TryUpdateConnection(first, I18NString.Create("First"), URL.Parse("wss://one.example.org/"), "CSMS", true, null, null, out error), Is.True, error);
 
-            Assert.That(PeerOf(store, first).Role, Is.EqualTo(PeerRole.Observer), "dialled again, and the primary is another now");
+            Assert.That(PeerOf(store, first).Role, Is.EqualTo(PeerRole.Observer), "connected again, and the primary is another now");
 
         }
 
@@ -488,10 +488,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         #endregion
 
-        #region AnEndpointMovedIsDialledAsBefore()
+        #region AnEndpointMovedIsConnectedAsBefore()
 
         [Test]
-        public void AnEndpointMovedIsDialledAsBefore()
+        public void AnEndpointMovedIsConnectedAsBefore()
         {
 
             var store = AStore();
@@ -499,7 +499,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             store.TryAddConnection(I18NString.Create("Main"),  URL.Parse("wss://one.example.org/"), "CSMS",       true, null, null, out var main,  out _);
             store.TryAddConnection(I18NString.Create("Spare"), URL.Parse("wss://two.example.org/"), "CSMSBackup", true, null, null, out var spare, out _);
 
-            var before = AsDialled(store.Connections);
+            var before = AsConnected(store.Connections);
 
             Assert.That(store.TryMoveEndpoint(spare, PeerOf(store, main).Id, 0, out var error), Is.True, error);
 
@@ -508,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             Assert.Multiple(() => {
                 Assert.That(PeerOf(reloaded, main).EndpointIds,  Is.EqualTo(new[] { spare, main }), "at the place asked for");
                 Assert.That(reloaded.Peers,                      Has.Count.EqualTo(1), "the spare's own peer is gone");
-                Assert.That(AsDialled(reloaded.Connections),     Is.EquivalentTo(before));
+                Assert.That(AsConnected(reloaded.Connections),     Is.EquivalentTo(before));
             });
 
         }
@@ -536,8 +536,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                 Assert.That(store.TryUpdatePeer(oldPeer,  null, null, "Observer", null, null, out var error), Is.False, "the primary is not demoted directly");
                 Assert.That(error, Does.Contain("make that one the primary"));
 
-                Assert.That(store.TryUpdatePeer(diagPeer, null, null, "Observer", null, null, out error), Is.False, "dialled by hand only");
-                Assert.That(error, Does.Contain("dials by itself"));
+                Assert.That(store.TryUpdatePeer(diagPeer, null, null, "Observer", null, null, out error), Is.False, "connected by hand only");
+                Assert.That(error, Does.Contain("connects by itself"));
 
                 Assert.That(store.TryUpdatePeer(oldPeer,  null, null, null, null, JObject.Parse("""{ "outbound": [ "MeterValues" ] }"""), out error), Is.False);
                 Assert.That(error, Does.Contain("every right"));

@@ -1,5 +1,5 @@
 /**
- * The SSH keys a node that dials signs in with, among what it presents on
+ * The SSH keys a node that connects signs in with, among what it presents on
  * the page of its client identities, drawn in a document of happy-dom
  * against a stand-in node: its own key and the ones somebody made, each with
  * the line for a server and with where it signs in; a key is made by whoever
@@ -108,7 +108,7 @@ const keys    = (root: HTMLElement) => [ ...root.querySelectorAll<HTMLElement>('
 const cardOf  = (root: HTMLElement, id: string) => root.querySelector<HTMLElement>(`#ssh-keys [data-ssh-key="${id}"]`)!;
 
 
-describe('the SSH keys of a node that dials, among its client identities', () => {
+describe('the SSH keys of a node that connects, among its client identities', () => {
 
     it('shows its own key and the ones somebody made, each with its line and where it signs in', async () => {
 

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Hermod;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -261,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     var named = id ?? peer;
 
                     entries.Add(PeerEntry(named, "Address",   host));
-                    entries.Add(PeerEntry(named, "Port",      (port ?? 22).ToString(CultureInfo.InvariantCulture)));
+                    entries.Add(PeerEntry(named, "Port",      (port ?? IPPort.SSH).ToString()));
                     entries.Add(PeerEntry(named, "UserName",  user ?? ""));
 
                     if (pins is not null)
@@ -364,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private static Boolean TryURL(String              Text,
                                       out String?         User,
                                       out String          Host,
-                                      out UInt16?         Port,
+                                      out IPPort?         Port,
                                       out List<String>?   Pins)
         {
 
@@ -387,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (!UInt16.TryParse(match.Groups[3].Value, NumberStyles.None, CultureInfo.InvariantCulture, out var port) || port == 0)
                     return false;
 
-                Port = port;
+                Port = IPPort.Parse(port);
 
             }
 

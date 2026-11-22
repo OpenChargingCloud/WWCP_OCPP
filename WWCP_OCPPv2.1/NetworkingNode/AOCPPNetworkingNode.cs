@@ -521,7 +521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public override OCPP.WebSockets.OCPPWebSocketServer
 
             AttachWebSocketServer(String?                                                         HTTPServiceName              = DefaultHTTPServiceName,
-                                  IIPAddress?                                                     IPAddress                    = null,
+                                  IPAddress?                                                     IPAddress                    = null,
                                   IPPort?                                                         TCPPort                      = null,
                                   I18NString?                                                     Description                  = null,
 

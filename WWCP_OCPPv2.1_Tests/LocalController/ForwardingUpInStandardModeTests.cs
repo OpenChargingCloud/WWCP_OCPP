@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
 {
 
     /// <summary>
-    /// A local controller that dials its CSMS in standard networking mode - no
+    /// A local controller that connects to its CSMS in standard networking mode - no
     /// network path on the wire, as a CSMS that knows nothing of overlay
     /// networks has it - and forwards its stations' requests up.
     /// </summary>

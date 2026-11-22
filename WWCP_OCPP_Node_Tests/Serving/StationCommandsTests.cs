@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             File.WriteAllText(configFile, """{ "dns": { "enabled": false }, "nts": { "groups": { "legal": { "enabled": false } } } }""");
 
             node = new WWCPNode(
-                       HTTPPort:          IPPort.Parse(TestPorts.Free()),
+                       HTTPPort:          TestPorts.Free(),
                        AccountsPath:      Path.Combine(directory, "accounts"),
                        ConfigFile:        new WWCPConfigFile(configFile),
                        CertificatesPath:  Path.Combine(directory, "certificates"),

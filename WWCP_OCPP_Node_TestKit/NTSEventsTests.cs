@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
     /// </summary>
     /// <remarks>
     /// The node is built and never started, so its connections are never
-    /// dialled and what is told stays in the queues, where the tests read it.
+    /// made and what is told stays in the queues, where the tests read it.
     /// </remarks>
         public abstract class NTSEventsTests : ABridgeTests
     {
@@ -84,20 +84,20 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         #endregion
 
 
-        #region AChangeOnThePageIsToldToEachVersionThatIsDialled()
+        #region AChangeOnThePageIsToldToEachVersionThatIsConnected()
 
         /// <summary>
         /// A change of the legal group made on the page is a
         /// ReconfigurationOfSecurityParameters for the CSMS, naming what changed
         /// and who changed it - queued at both nodes where both versions are
-        /// dialled.
+        /// connected.
         /// </summary>
         [Test]
-        public void AChangeOnThePageIsToldToEachVersionThatIsDialled()
+        public void AChangeOnThePageIsToldToEachVersionThatIsConnected()
         {
 
-            Dial("2.1");
-            Dial("1.6");
+            ConfigureConnection("2.1");
+            ConfigureConnection("1.6");
 
             ChangeOnThePage("""{ "minServers": 1 }""");
 
@@ -114,28 +114,28 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
-        #region NothingIsToldWhereNoCSMSIsDialled()
+        #region NothingIsToldWhereNoCSMSIsConnected()
 
         /// <summary>
         /// A version no connection is configured for is told nothing, and a
-        /// node that dials no CSMS at all queues nothing.
+        /// node that connects to no CSMS at all queues nothing.
         /// </summary>
         [Test]
-        public void NothingIsToldWhereNoCSMSIsDialled()
+        public void NothingIsToldWhereNoCSMSIsConnected()
         {
 
             ChangeOnThePage("""{ "minServers": 1 }""");
 
             var nowhere = (station!.OCPPv2_1Node.OfflineQueue.Pending.Count, station.OCPPv1_6Node.OfflineQueue.Pending.Count);
 
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             ChangeOnThePage("""{ "minServers": 2 }""");
 
             Assert.Multiple(() => {
                 Assert.That(nowhere,                                       Is.EqualTo((0, 0)));
                 Assert.That(station.OCPPv2_1Node.OfflineQueue.Pending,    Has.Count.EqualTo(1));
-                Assert.That(station.OCPPv1_6Node.OfflineQueue.Pending,    Is.Empty,  "1.6 is dialled by no connection");
+                Assert.That(station.OCPPv1_6Node.OfflineQueue.Pending,    Is.Empty,  "no connection is made over 1.6");
             });
 
         }
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         public async Task AChangeThroughOCPPIsNotToldBack()
         {
 
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             var node    = station!.OCPPv2_1Node;
             var results = await OCPP21.DeviceModel.SetVariablesAsync(
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         public void TheLegalTimeLimitedAndRestoredIsTold()
         {
 
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             var legal = station!.Node.NTSGroups.Single(group => group.IsLegal);
             var local = station.Node.NTSGroups.Single(group => !group.IsLegal);
@@ -211,8 +211,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         public void AnOffsetReachedIsSettingSystemTime()
         {
 
-            Dial("2.1");
-            Dial("1.6");
+            ConfigureConnection("2.1");
+            ConfigureConnection("1.6");
 
             station!.Bridge.WhenNTSOffsetReached(station.Node.LegalTime, TimeSpan.FromSeconds(-7.25));
 
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         public void ARefusedTimeServerCertificateIsTold()
         {
 
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             using var key    = ECDsa.Create(ECCurve.NamedCurves.nistP256);
             var request      = new System.Security.Cryptography.X509Certificates.CertificateRequest("CN=ptbtime1.example.invalid", key, HashAlgorithmName.SHA256);
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         public void AMonitorOnAGroupTellsAChangeMadeOnThePage()
         {
 
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             var node = station!.OCPPv2_1Node;
             var set  = node.VariableMonitors.Set([ new OCPP21.SetMonitoringData(0, OCPP21.MonitorType.Delta, OCPP21.Severities.Alert,
@@ -302,14 +302,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         #endregion
 
 
-        #region (private) Dial(Version) / ChangeOnThePage(Settings) / Security(Queue)
+        #region (private) ConfigureConnection(Version) / ChangeOnThePage(Settings) / Security(Queue)
 
         /// <summary>
-        /// A connection of the given version, configured and never dialled.
+        /// A connection of the given version, configured and never made.
         /// </summary>
-        private void Dial(String Version)
+        private void ConfigureConnection(String Version)
         {
-            Assert.That(station!.TryDial("ws://127.0.0.1:9/cs", Version, out var error),
+            Assert.That(station!.TryConnect("ws://127.0.0.1:9/cs", Version, out var error),
                         Is.True,
                         error);
         }

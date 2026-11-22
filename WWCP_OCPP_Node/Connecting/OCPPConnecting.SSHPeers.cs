@@ -20,6 +20,7 @@
 using cloud.charging.open.protocols.WWCP.Node;
 using System.Collections.Concurrent;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.SSH;
 using org.GraphDefined.Vanaheimr.Hermod.SSH.Client;
@@ -61,18 +62,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// not confirmed yet, or that would learn its key from whoever asked first.
     /// On probation the station sends nothing but its BootNotification, and
     /// executes nothing but a signed pin set (section 10.4 of the white paper
-    /// "OCPP over SSH"); time or names from that host would be time or names
+    /// "OCPP-over-SSH"); time or names from that host would be time or names
     /// from a server nobody vouched for yet.
     /// </para>
     /// </remarks>
-    public partial class OCPPDialling
+    public partial class OCPPConnecting
     {
 
         #region (override) SignsInAtSSHPeersWithItsKey / DefaultSSHPeerUser
 
         /// <summary>
         /// A node of OCPP signs in at its SSH peers with the key of its
-        /// connections, as a peer it dialled over ssh:// shares it.
+        /// connections, as a peer it connected to over ssh:// shares it.
         /// </summary>
         public override Boolean SignsInAtSSHPeersWithItsKey
 
@@ -81,9 +82,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// It signs in as its OCPP 2.1 node is named.
         /// </summary>
-        public override String? DefaultSSHPeerUser
+        public override User_Id? DefaultSSHPeerUser
 
-            => Node21.Id.ToString();
+            => User_Id.Parse(Node21.Id.ToString());
 
         #endregion
 

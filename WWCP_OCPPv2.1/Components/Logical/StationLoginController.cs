@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("TOTPChannelBinding",  DataTypes.Boolean,     "Whether a token has to be bound to the TLS session of its connection.",                                                                                                  Writable: true),
             new ("HasTOTP",             DataTypes.Boolean,     "Whether it may sign in with a one-time token."),
 
-            new ("SSHKeys",             DataTypes.String,      "The SHA-256 fingerprints of its SSH keys for OCPP over SSH, comma separated."),
+            new ("SSHKeys",             DataTypes.String,      "The SHA-256 fingerprints of its SSH keys for OCPP-over-SSH, comma separated."),
             new ("SSHKeyAdd",           DataTypes.String,      "An SSH public key to add, as one line of an authorized_keys file. Written, never read.",                                         MaxLimit: 8000,                        Writable: true, WriteOnly: true),
             new ("SSHKeyRemove",        DataTypes.String,      "The SHA-256 fingerprint of an SSH key to take away, \"SHA256:...\" as OpenSSH writes it. Written, never read.",                  MaxLimit: 100,                         Writable: true, WriteOnly: true),
 

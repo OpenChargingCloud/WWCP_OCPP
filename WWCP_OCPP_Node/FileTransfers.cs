@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (file is null)
                 return new (false, ReasonCode: NothingToSend, Info: "There is no file for this request.");
 
-            if (!SftpLocation.IsFileName(file.FileName))
+            if (!SFTPLocation.IsFileName(file.FileName))
             {
                 await file.Content.DisposeAsync().ConfigureAwait(false);
                 node.Log.Warning($"'{file.FileName}' is no name of a file to upload: the {Request.Kind} request is rejected.", "ocpp", "sftp", "filetransfer");
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var name = Path.GetFileName(judgement.Location!.Path);
 
-            if (!SftpLocation.IsFileName(name))
+            if (!SFTPLocation.IsFileName(name))
                 return new (false, ReasonCode: InvalidURL, Info: "The location names no file.");
 
             var mine = new CancellationTokenSource();
@@ -487,7 +487,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     await Wait(until, Mine.Token).ConfigureAwait(false);
 
                     // Judged again when the connection is made: a peer that is no file
-                    // server any more by then is not dialled.
+                    // server any more by then is not connected to.
                     if (!node.JudgeFileTransfer(URL, FileTransferDirections.Download).IsAllowed)
                         return;
 

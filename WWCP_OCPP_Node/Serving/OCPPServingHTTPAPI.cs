@@ -27,8 +27,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
 {
 
     /// <summary>
-    /// The HTTP API of a node that dials a CSMS and serves the nodes below it:
-    /// what every node that dials has - see <see cref="OCPPDiallingHTTPAPI"/> -
+    /// The HTTP API of a node that connects to a CSMS and serves the nodes below it:
+    /// what every node that connects has - see <see cref="OCPPConnectingHTTPAPI"/> -
     /// and the routes of its charging station server, under
     /// /v1/configuration/ocpp-server - see OCPPServingHTTPAPI.OCPPServer.cs -
     /// and of commissioning over SSH, under /v1/configuration/commissioning -
@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// The same routes for a local controller and for a gateway, each of
     /// which adds what else it has.
     /// </summary>
-    public abstract partial class OCPPServingHTTPAPI : OCPPDiallingHTTPAPI
+    public abstract partial class OCPPServingHTTPAPI : OCPPConnectingHTTPAPI
     {
 
         #region Properties
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region Constructor(s)
 
         /// <summary>
-        /// The API of a node that dials a CSMS and serves the nodes below it,
+        /// The API of a node that connects to a CSMS and serves the nodes below it,
         /// on the given HTTP server.
         /// </summary>
         /// <param name="ConnectionsResource">The resource a user needs a right to for the connections.</param>

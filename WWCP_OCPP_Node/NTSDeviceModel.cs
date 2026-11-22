@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("NTSKEServerURL",          server       => HostOf     (server["ntsKEHostname"])),
             ("SignedResponses",         server       => server["signedResponses"]?.Value<Boolean>() == true ? "true" : "false"),
             // How its key exchange goes over SSH: the usual where it goes over TLS.
-            ("SSHPort",                 server       => IntegerOf  (Child(server["ssh"], "port")) is { Length: > 0 } sshPort ? sshPort : NTSServerSSH.DefaultPort.ToString(CultureInfo.InvariantCulture)),
+            ("SSHPort",                 server       => IntegerOf  (Child(server["ssh"], "port")) is { Length: > 0 } sshPort ? sshPort : NTSServerSSH.DefaultPort.ToString()),
             ("SSHUserName",             server       => TextOf     (Child(server["ssh"], "user")) is { Length: > 0 } sshUser ? sshUser : NTSServerSSH.DefaultUser),
             ("SSHHostKeyPins",          server       => PinsOf     (server["ssh"], "hostKeyPins")),
             ("SSHHostCAs",              server       => PinsOf     (server["ssh"], "hostCAs")),

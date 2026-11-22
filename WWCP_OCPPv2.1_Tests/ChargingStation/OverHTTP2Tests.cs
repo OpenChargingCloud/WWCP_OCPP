@@ -155,11 +155,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #endregion
 
-        #region (private) Dial(Over, WithTLS, Password = "1234abcd")
+        #region (private) Connect(Over, WithTLS, Password = "1234abcd")
 
-        private async Task<HTTPResponse> Dial(WebSocketHTTPVersion?  Over,
-                                              Boolean                WithTLS,
-                                              String                 Password = "1234abcd")
+        private async Task<HTTPResponse> Connect(WebSocketHTTPVersion?  Over,
+                                                 Boolean                WithTLS,
+                                                 String                 Password = "1234abcd")
         {
 
             chargingStation = new TestChargingStationNode(
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ACSMS(WithTLS);
 
-            var response = await Dial(Over, WithTLS);
+            var response = await Connect(Over, WithTLS);
 
             Assert.That(response.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols), response.EntirePDU);
 
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ACSMS(WithTLS, AcceptHTTP2);
 
-            var response = await Dial(Over, WithTLS);
+            var response = await Connect(Over, WithTLS);
 
             Assert.That(response.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols), response.EntirePDU);
 
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ACSMS(WithTLS: true);
 
-            var response = await Dial(Over, WithTLS: true, Password: "not-the-password");
+            var response = await Connect(Over, WithTLS: true, Password: "not-the-password");
 
             Assert.Multiple(() => {
                 Assert.That(response.HTTPStatusCode,  Is.EqualTo(HTTPStatusCode.Unauthorized),  response.EntirePDU);
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ACSMS(WithTLS: true, AcceptHTTP2: false);
 
-            var response = await Dial(WebSocketHTTPVersion.HTTP2, WithTLS: true);
+            var response = await Connect(WebSocketHTTPVersion.HTTP2, WithTLS: true);
 
             Assert.Multiple(() => {
                 Assert.That(response.HTTPStatusCode,  Is.Not.EqualTo(HTTPStatusCode.SwitchingProtocols));

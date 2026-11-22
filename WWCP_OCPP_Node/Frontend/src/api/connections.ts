@@ -7,11 +7,11 @@ import type { I18NString }      from './i18n';
 export { inEnglish, textOf, type I18NString } from './i18n';
 
 
-// What a node that dials its back ends keeps for it, and how it is asked: the
-// credentials it proves itself with, and the connections it dials and where
+// What a node that connects to its back ends keeps for it, and how it is asked: the
+// credentials it proves itself with, and the connections it makes and where
 // each of them stands. A charging station and a
 // local controller keep them alike, and serve them by the same routes -
-// OCPPDiallingHTTPAPI's - so the types and the calls are here, for the pages
+// OCPPConnectingHTTPAPI's - so the types and the calls are here, for the pages
 // of both. A kind of node names them in its own api/client.ts as well, and
 // spreads the calls into its own api.
 
@@ -55,20 +55,20 @@ export interface LoginToSave {
     tlsChannelBinding?:  boolean;
 }
 
-/** One place this station dials. */
+/** One place this station connects to. */
 export interface StationConnection {
     id:                  string;
     description:         I18NString;
     url:                 string;
     connectionType:      string;
-    /** Which OCPP is spoken here, and so which of this station's two nodes dials. */
+    /** Which OCPP is spoken here, and so which of this station's two nodes connects. */
     ocppVersion:         string;
     autoConnect:  boolean;
-    /** Whether the other end dials: it comes to this node's OCPP server, under the name its URL ends with. */
+    /** Whether the other end connects: it comes to this node's OCPP server, under the name its URL ends with. */
     inbound?:     boolean;
     /** The name the other end of an inbound connection comes under. */
     inboundName?: string;
-    /** The node at its other end, by the name it is spoken to: where this node dials downwards, and so routes by it. */
+    /** The node at its other end, by the name it is spoken to: where this node connects downwards, and so routes by it. */
     remoteNodeId?: string;
     /** Whether the URL makes a TLS connection, which decides what the rest can mean. */
     secure:              boolean;
@@ -187,7 +187,7 @@ export interface ConnectionToSave {
     connectionType:      string;
     ocppVersion:         string;
     autoConnect:  boolean;
-    /** Whether the other end dials; left out, it stays as it is. */
+    /** Whether the other end connects; left out, it stays as it is. */
     inbound?:     boolean;
     /** The node at its other end; left out, it stays as it is. */
     remoteNodeId?: string;
@@ -290,24 +290,24 @@ export interface ConnectionTest {
 }
 
 /**
- * Where a connection this station dialled stands.
+ * Where a connection this station made stands.
  *
  * Three kinds of "not connected", because they ask three different things of
  * whoever is looking: lost and trying are waited out, the station comes back by
  * itself; refused needs the other end fixed; not connected and failed need this
  * end fixed. And one that is not connected on purpose: standby, an endpoint of
- * a back end that has more than one, dialled when the one dialled now cannot be
+ * a back end that has more than one, connected to when the one connected to now cannot be
  * reached.
  */
 export type ConnectionStatus = 'connected' | 'lost' | 'trying' | 'refused' | 'notConnected' | 'failed' | 'standby' | 'waiting';
 
-/** What became of one connection this station dialled, and since when. */
+/** What became of one connection this station made, and since when. */
 export interface ConnectionState {
     status:          ConnectionStatus;
     since:           string;
     /** The sentence the station logged when it came to stand there. */
     said:            string;
-    /** What was dialled - which is what is written down now only until something is changed. */
+    /** What was connected to - which is what is written down now only until something is changed. */
     description:     I18NString;
     url:             string;
     ocppVersion:     string;
@@ -316,14 +316,14 @@ export interface ConnectionState {
     nextAttemptAt?:  string;
 }
 
-/** Where every connection this station dialled stands, and what time it is there. */
+/** Where every connection this station made stands, and what time it is there. */
 export interface ConnectionStates {
     /** The station's own clock, which is what "since" and "next" are counted from. */
     timestamp:  string;
     states:     Record<string, ConnectionState>;
 }
 
-/** An identity of the node's certificate store, as far as a connection is concerned: what it may show when it is dialled. */
+/** An identity of the node's certificate store, as far as a connection is concerned: what it may show when it is made. */
 export interface ConnectionCertificate {
     /** The handle of the identity in the certificate store. */
     id:                  string;
@@ -359,7 +359,7 @@ export interface StationConnections extends ConnectionStates {
     pinSetSigners?:        PinSetSigner[];
     connectionTypes:       string[];
     ocppVersions:          string[];
-    /** What this kind of node writes down as a connection; left out, everything a node that dials its back end does. */
+    /** What this kind of node writes down as a connection; left out, everything a node that connects to its back end does. */
     rules?: {
         /** Whether a connection may be one the other end makes. */
         inbound:                boolean;
@@ -383,7 +383,7 @@ export interface StationConnections extends ConnectionStates {
 /**
  * The routes of the credentials and the connections, as a kind of node has
  * them in its own api: api.authentications and api.connections. Who the node
- * is when it dials - the identity a connection shows - is its certificate
+ * is when it connects - the identity a connection shows - is its certificate
  * store's, and every node's: see "@node/api/client".
  */
 export const connectionsAPI = {
@@ -440,7 +440,7 @@ export const connectionsAPI = {
                                  request<StationConnections>('POST', '/configuration/connections/pinSetSigners/remove', { publicKey }),
 
         /**
-         * Where each connection this station dialled stands - asked again and
+         * Where each connection this station made stands - asked again and
          * again while the page is open, and therefore only that, rather than
          * everything the page was drawn from.
          */

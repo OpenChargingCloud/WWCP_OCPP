@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The DeleteSSHKey request: a CSMS withdraws an SSH key of a charging station from a Local Controller (white paper "OCPP over SSH", section 9.3).
+    /// The DeleteSSHKey request: a CSMS withdraws an SSH key of a charging station from a Local Controller (white paper "OCPP-over-SSH", section 9.3).
     /// </summary>
     public class DeleteSSHKeyRequest : ARequest<DeleteSSHKeyRequest>,
                                       IRequest

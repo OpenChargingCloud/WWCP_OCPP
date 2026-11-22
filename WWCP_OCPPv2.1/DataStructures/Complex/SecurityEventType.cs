@@ -480,24 +480,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                 true);
 
         /// <summary>
-        /// A name server over SSH showed a host key that neither a pin nor a CA vouches for, or an invalid host certificate (DNS over SSH, section 7.4).
+        /// A name server over SSH showed a host key that neither a pin nor a CA vouches for, or an invalid host certificate (DNS-over-SSH, section 7.4).
         /// </summary>
         public readonly static SecurityEventType InvalidNameServerHostKey               = new ("InvalidNameServerHostKey",
-                                                                                               "A name server over SSH showed a host key that neither a pin nor a CA vouches for, or an invalid host certificate (DNS over SSH, section 7.4).",
+                                                                                               "A name server over SSH showed a host key that neither a pin nor a CA vouches for, or an invalid host certificate (DNS-over-SSH, section 7.4).",
                                                                                                 true);
 
         /// <summary>
-        /// A name server over SSH was believed with another host key than before (DNS over SSH, section 7.4).
+        /// A name server over SSH was believed with another host key than before (DNS-over-SSH, section 7.4).
         /// </summary>
         public readonly static SecurityEventType NameServerHostKeyChanged               = new ("NameServerHostKeyChanged",
-                                                                                               "A name server over SSH was believed with another host key than before (DNS over SSH, section 7.4).",
+                                                                                               "A name server over SSH was believed with another host key than before (DNS-over-SSH, section 7.4).",
                                                                                                 false);
 
         /// <summary>
-        /// A name server over SSH did not take the station's key (DNS over SSH, section 7.4).
+        /// A name server over SSH did not take the station's key (DNS-over-SSH, section 7.4).
         /// </summary>
         public readonly static SecurityEventType NameServerAuthenticationFailed         = new ("NameServerAuthenticationFailed",
-                                                                                               "A name server over SSH did not take the station's key (DNS over SSH, section 7.4).",
+                                                                                               "A name server over SSH did not take the station's key (DNS-over-SSH, section 7.4).",
                                                                                                 false);
 
         #endregion

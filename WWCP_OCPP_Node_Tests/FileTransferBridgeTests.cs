@@ -22,6 +22,7 @@ using System.Security.Cryptography;
 using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -55,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
         #region Data
 
-        private const String  Login = WWCPNode.DefaultAdminUser;
+        private static readonly User_Id Login = WWCPNode.DefaultAdminUser;
 
         private String         directory  = "";
         private String         uploads    = "";
@@ -114,8 +115,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
         private String Pin
             => server!.SSHHostKey!.Split(' ')[1];
 
-        private UInt16 Port
-            => server!.SSHPort!.Value.ToUInt16();
+        private IPPort Port
+            => server!.SSHPort!.Value;
 
         private FileTransfers Transfers
             => station!.Bridge.FileTransfers;
@@ -123,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
         /// <summary>
         /// A file server, and a station that holds it, enrolled and confirmed.
         /// </summary>
-        private async Task Enrolled(String? Pin = null, UInt16? Port = null, Boolean ServerRuns = true)
+        private async Task Enrolled(String? Pin = null, IPPort? Port = null, Boolean ServerRuns = true)
         {
 
             var home = Path.Combine(directory, "server");
@@ -138,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
                                   }
                                   """);
 
-                var made = new WWCPNode(HTTPPort:          IPPort.Parse(TestPorts.Free()),
+                var made = new WWCPNode(HTTPPort:          TestPorts.Free(),
                                         AccountsPath:      Path.Combine(home, "accounts"),
                                         ConfigFile:        new WWCPConfigFile(Path.Combine(home, WWCPConfigFile.DefaultFileName)),
                                         CertificatesPath:  Path.Combine(home, "certificates"),
@@ -178,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
         }
 
-        private String URL(String Path, UInt16? Port = null, String Host = "127.0.0.1")
+        private String URL(String Path, IPPort? Port = null, String Host = "127.0.0.1")
             => $"sftp://{Login}@{Host}:{Port ?? this.Port}{Path}";
 
         private Task<OCPPv2_1.CS.GetLogResponse> GetLog(String  Location,
@@ -312,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
             };
 
             // A server the station does not hold, a path it is not allowed, a port that is not the peer's.
-            foreach (var location in new[] { URL("/upload/", Host: "127.0.0.2"), URL("/firmware/"), URL("/upload/", Port: (UInt16) (Port + 1)) })
+            foreach (var location in new[] { URL("/upload/", Host: "127.0.0.2"), URL("/firmware/"), URL("/upload/", Port: IPPort.Parse((UInt16) (Port.ToUInt16() + 1))) })
             {
 
                 var refused = await GetLog(location);

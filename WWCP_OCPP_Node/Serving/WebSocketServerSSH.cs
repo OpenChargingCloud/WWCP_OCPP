@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 {
 
     /// <summary>
-    /// The "ssh" field of the "webSocketServer" section: OCPP over SSH, which the
+    /// The "ssh" field of the "webSocketServer" section: OCPP-over-SSH, which the
     /// charging stations may speak beside the HTTP WebSocket port - on the SSH
     /// server of this local controller, as the subsystem
     /// "ocpp@open.charging.cloud".
@@ -262,8 +262,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         public override String ToString()
 
             => Enabled == true
-                   ? $"OCPP over SSH on{(Subprotocols is not null ? $", speaking {String.Join(" and ", Subprotocols)}" : "")}"
-                   : "OCPP over SSH off";
+                   ? $"OCPP-over-SSH on{(Subprotocols is not null ? $", speaking {String.Join(" and ", Subprotocols)}" : "")}"
+                   : "OCPP-over-SSH off";
 
         #endregion
 

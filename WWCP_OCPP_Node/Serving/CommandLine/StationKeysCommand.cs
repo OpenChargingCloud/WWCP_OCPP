@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.CLI;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
@@ -30,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
 {
 
     /// <summary>
-    /// The SSH keys charging stations sign in with for OCPP over SSH: listed,
+    /// The SSH keys charging stations sign in with for OCPP-over-SSH: listed,
     /// given, and taken away - on every node that serves charging stations.
     /// </summary>
     /// <remarks>
@@ -52,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
     /// </para>
     /// <para>
     /// A key does not let a station in on its own: the station must be switched
-    /// on, its group must take SSH keys, and the node must serve OCPP over SSH.
+    /// on, its group must take SSH keys, and the node must serve OCPP-over-SSH.
     /// Where one of them is missing, the answer says so - as the web interface
     /// does beside the key. The node is named as it names itself: "this local
     /// controller", "this gateway".
@@ -151,10 +152,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
             return Task.FromResult(
                        rest.Length switch {
                            0 => EveryStationsKeys(),
-                           1 => Listed(rest[0]),
+                           1 => Listed(User_Id.Parse(rest[0])),
                            _ => verb switch {
-                                    "add"                           => Add(rest[0], String.Join(" ", rest[2..])),
-                                    "remove" when rest.Length == 3  => Remove(rest[0], rest[2]),
+                                    "add"                           => Add(User_Id.Parse(rest[0]), String.Join(" ", rest[2..])),
+                                    "remove" when rest.Length == 3  => Remove(User_Id.Parse(rest[0]), rest[2]),
                                     _                               => [ $"Usage: {Help()}" ]
                                 }
                        }
@@ -168,21 +169,21 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
 
         public override String Help()
 
-            => $"{CommandName} [<station> [add <authorized_keys line> | remove <fingerprint>]] - the SSH keys charging stations sign in with for OCPP over SSH";
+            => $"{CommandName} [<station> [add <authorized_keys line> | remove <fingerprint>]] - the SSH keys charging stations sign in with for OCPP-over-SSH";
 
         #endregion
 
 
-        #region (private) EveryStationsKeys() / Listed(Station)
+        #region (private) EveryStationsKeys() / Listed(Login)
 
         private String[] EveryStationsKeys()
         {
 
             var lines = new List<String>();
 
-            foreach (var login in node.WebSocketLogins.Logins.Where(login => login.HasSSHKey).OrderBy(login => login.Id, StringComparer.Ordinal))
+            foreach (var login in node.WebSocketLogins.Logins.Where(login => login.HasSSHKey).OrderBy(login => login.Login))
             {
-                lines.Add($"{login.Id}:");
+                lines.Add($"{login.Login}:");
                 lines.AddRange(login.Keys.Select(key => "  " + Line(key)));
                 lines.AddRange(WhyNoKeyLetsIn(login).Select(why => "  " + why));
             }
@@ -196,14 +197,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
 
         }
 
-        private String[] Listed(String Station)
+        private String[] Listed(User_Id Login)
         {
 
-            if (!node.WebSocketLogins.TryGet(Station, out var login))
-                return [ $"'{Station}' is no charging station of this {node.Kind.Name}." ];
+            if (!node.WebSocketLogins.TryGet(Login, out var login))
+                return [ $"'{Login}' is no charging station of this {node.Kind.Name}." ];
 
             if (!login.HasSSHKey)
-                return [ $"'{login.Id}' has no SSH key." ];
+                return [ $"'{login.Login}' has no SSH key." ];
 
             return [ .. login.Keys.Select(Line),
                      .. WhyNoKeyLetsIn(login),
@@ -235,18 +236,18 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
 
         #endregion
 
-        #region (private) Add(Station, Line)
+        #region (private) Add(Login, Line)
 
-        private String[] Add(String  Station,
+        private String[] Add(User_Id Login,
                              String  Line)
         {
 
             if (Line.Trim().Length == 0)
                 return [ $"Usage: {Help()}" ];
 
-            var listed = node.WebSocketLogins.TryGet(Station, out _);
+            var listed = node.WebSocketLogins.TryGet(Login, out _);
 
-            if (!node.TryAddStationSSHKey(Station,
+            if (!node.TryAddStationSSHKey(Login,
                                           Line,
                                           Label:        null,
                                           GroupId:      null,
@@ -260,15 +261,15 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
             }
 
             node.Log.Notice(
-                $"{cli.Caller.Asker} gave the charging station '{Station}' the SSH key {key.Fingerprint}.",
+                $"{cli.Caller.Asker} gave the charging station '{Login}' the SSH key {key.Fingerprint}.",
                 cli.Caller.Tags("ocpp", "station", "auth", "ssh")
             );
 
-            node.WebSocketLogins.TryGet(Station, out var login);
+            node.WebSocketLogins.TryGet(Login, out var login);
 
             return [ listed
-                         ? $"'{Station}' signs in over SSH with the key {key.Fingerprint} now."
-                         : $"'{Station}' is a charging station of this {node.Kind.Name} now, in the group '{login?.GroupId}', and signs in over SSH with the key {key.Fingerprint}.",
+                         ? $"'{Login}' signs in over SSH with the key {key.Fingerprint} now."
+                         : $"'{Login}' is a charging station of this {node.Kind.Name} now, in the group '{login?.GroupId}', and signs in over SSH with the key {key.Fingerprint}.",
                      .. login is not null ? WhyNoKeyLetsIn(login) : [],
                      .. WhyNoStationSignsIn() ];
 
@@ -276,14 +277,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
 
         #endregion
 
-        #region (private) Remove(Station, Fingerprint)
+        #region (private) Remove(Login, Fingerprint)
 
-        private String[] Remove(String  Station,
+        private String[] Remove(User_Id Login,
                                 String  Fingerprint)
         {
 
-            if (!node.WebSocketLogins.TryGet(Station, out var login))
-                return [ $"'{Station}' is no charging station of this {node.Kind.Name}." ];
+            if (!node.WebSocketLogins.TryGet(Login, out var login))
+                return [ $"'{Login}' is no charging station of this {node.Kind.Name}." ];
 
             var wanted   = UserSSHKey.FingerprintFromURL(Fingerprint)["SHA256:".Length..];
             var matching = login.Keys.
@@ -291,50 +292,50 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
                                ToArray();
 
             if (wanted.Length == 0 || matching.Length == 0)
-                return [ $"'{login.Id}' has no key {Fingerprint}." ];
+                return [ $"'{login.Login}' has no key {Fingerprint}." ];
 
             if (matching.Length > 1 && !matching.Any(key => key.Fingerprint == "SHA256:" + wanted))
-                return [ $"'{Fingerprint}' is the beginning of {matching.Length} keys of '{login.Id}': {String.Join(", ", matching.Select(key => key.Fingerprint))}." ];
+                return [ $"'{Fingerprint}' is the beginning of {matching.Length} keys of '{login.Login}': {String.Join(", ", matching.Select(key => key.Fingerprint))}." ];
 
             var key = matching.FirstOrDefault(key => key.Fingerprint == "SHA256:" + wanted) ?? matching[0];
 
-            if (!node.WebSocketLogins.TryRemoveSSHKey(login.Id, key.Fingerprint, out var error, out _))
+            if (!node.WebSocketLogins.TryRemoveSSHKey(login.Login, key.Fingerprint, out var error, out _))
                 return [ $"The key was not taken away: {error}" ];
 
             node.Log.Notice(
-                $"{cli.Caller.Asker} took the SSH key {key.Fingerprint} of the charging station '{login.Id}' away.",
+                $"{cli.Caller.Asker} took the SSH key {key.Fingerprint} of the charging station '{login.Login}' away.",
                 cli.Caller.Tags("ocpp", "station", "auth", "ssh")
             );
 
-            return [ $"The key {key.Fingerprint} lets '{login.Id}' in no more." ];
+            return [ $"The key {key.Fingerprint} lets '{login.Login}' in no more." ];
 
         }
 
         #endregion
 
 
-        #region (private) WhyNoKeyLetsIn(Login) / WhyNoStationSignsIn()
+        #region (private) WhyNoKeyLetsIn(Station) / WhyNoStationSignsIn()
 
         /// <summary>
         /// What keeps this station out whatever key it has - the station, or
         /// its group.
         /// </summary>
-        private IEnumerable<String> WhyNoKeyLetsIn(WebSocketLogin Login)
+        private IEnumerable<String> WhyNoKeyLetsIn(WebSocketLogin Station)
         {
 
-            if (!Login.Enabled)
-                yield return $"'{Login.Id}' is switched off: no key lets it in.";
+            if (!Station.Enabled)
+                yield return $"'{Station.Login}' is switched off: no key lets it in.";
 
-            var group = node.WebSocketLogins.GroupOf(Login);
+            var group = node.WebSocketLogins.GroupOf(Station);
 
             if (group is null)
-                yield return $"The group '{Login.GroupId}' of '{Login.Id}' is gone: no key lets it in.";
+                yield return $"The group '{Station.GroupId}' of '{Station.Login}' is gone: no key lets it in.";
 
             else if (!group.Enabled)
-                yield return $"The group '{group.Id}' of '{Login.Id}' is switched off: no key lets it in.";
+                yield return $"The group '{group.Id}' of '{Station.Login}' is switched off: no key lets it in.";
 
             else if (!group.Allows(AuthMethod.SSHKey))
-                yield return $"The group '{group.Id}' of '{Login.Id}' does not accept SSH keys: no key lets it in.";
+                yield return $"The group '{group.Id}' of '{Station.Login}' does not accept SSH keys: no key lets it in.";
 
         }
 
@@ -345,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
         {
 
             if (!node.OCPPOverSSHServed)
-                yield return "OCPP over SSH is switched off: no charging station signs in over SSH.";
+                yield return "OCPP-over-SSH is switched off: no charging station signs in over SSH.";
 
             else if (node.OCPPServerSSHURL is null)
                 yield return $"The SSH server of this {node.Kind.Name} is off: no charging station signs in over SSH.";

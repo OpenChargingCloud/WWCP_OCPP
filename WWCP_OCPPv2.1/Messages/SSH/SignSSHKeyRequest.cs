@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// The SignSSHKey request: a charging station shows a new SSH key of one of its purposes, or its first one, for its CSMS to enroll (white paper "OCPP over SSH", section 9.3).
+    /// The SignSSHKey request: a charging station shows a new SSH key of one of its purposes, or its first one, for its CSMS to enroll (white paper "OCPP-over-SSH", section 9.3).
     /// </summary>
     public class SignSSHKeyRequest : ARequest<SignSSHKeyRequest>,
                                     IRequest

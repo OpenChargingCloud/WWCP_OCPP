@@ -1,7 +1,7 @@
 /*
  * How Node finds "@ocpp/...".
  *
- * What the nodes that dial a CSMS share - the pages of their connections
+ * What the nodes that connect to a CSMS share - the pages of their connections
  * and credentials - is imported as "@ocpp/...", which webpack's
  * alias and the tsconfig's paths turn into WWCP_OCPP_Node/Frontend/src. The
  * tests are run by Node, which is told so here, as WWCP_Node's

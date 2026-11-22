@@ -20,7 +20,7 @@ const { connectionsPage }     = await import('./pages/connections.ts');
 const { authenticationPage }  = await import('./pages/authentication.ts');
 
 
-/** A node that dials nowhere yet, and has nothing to prove itself with. */
+/** A node that connects nowhere yet, and has nothing to prove itself with. */
 function nothingYet(): StationConnections {
     return {
         directory:              'connections',
@@ -60,7 +60,7 @@ describe('the pages of the connections, untold', () => {
         assert.equal(connectionsResource(), 'connections');
         assert.equal(nodeNoun(),            'station');
         assert.equal(nodeNounInFull(),      'charging station');
-        assert.deepEqual(nodeTraits(),      { oneNodePerOCPPVersion: true, isDialled: false, dialsDown: false });
+        assert.deepEqual(nodeTraits(),      { oneNodePerOCPPVersion: true, isConnectedTo: false, connectsDown: false });
         assert.equal(farEnd(),              'back end');
 
     });
@@ -77,7 +77,7 @@ describe('the pages of the connections, told they are a local controller\'s', ()
     const told = () => {
         setConnectionsResource('csms');
         setNodeNoun('local controller');
-        setNodeTraits({ oneNodePerOCPPVersion: false, isDialled: true });
+        setNodeTraits({ oneNodePerOCPPVersion: false, isConnectedTo: true });
     };
 
     it('let whoever may change the resource it names change the connections, and nobody for the right to "connections"', async () => {
@@ -107,8 +107,8 @@ describe('the pages of the connections, told they are a local controller\'s', ()
                                 node, root => root.querySelector('#add-form') !== null);
         const text = written(root);
 
-        assert.match(text, /Where this local controller dials, and what it proves itself with\./);
-        assert.match(text, /Nothing yet\. This local controller dials nowhere and waits to be dialled\./);
+        assert.match(text, /Where this local controller connects to, and what it proves itself with\./);
+        assert.match(text, /Nothing yet\. This local controller connects nowhere and waits to be connected to\./);
         assert.match(text, /A URL does not say which OCPP is spoken over it, so it is said here\./);
         assert.doesNotMatch(text, /[Tt]his (charging )?station/);
         assert.doesNotMatch(text, /is two nodes/);
@@ -123,7 +123,7 @@ describe('the pages of the connections, told they are a local controller\'s', ()
                                 node, root => root.querySelector('#add-form') !== null);
         const text = written(root);
 
-        assert.match(text, /How this local controller proves who it is when it dials a back end\./);
+        assert.match(text, /How this local controller proves who it is when it connects to a back end\./);
         assert.match(text, /it is what the other end calls this local controller\./);
         assert.doesNotMatch(text, /[Tt]his (charging )?station/);
 
@@ -139,16 +139,16 @@ describe("the pages of the connections, told they are a CSMS's", () => {
         // What the tests after these draw is a charging station's again.
         setConnectionsResource('connections');
         setNodeNoun('station', 'charging station');
-        setNodeTraits({ oneNodePerOCPPVersion: true, isDialled: false, dialsDown: false });
+        setNodeTraits({ oneNodePerOCPPVersion: true, isConnectedTo: false, connectsDown: false });
     });
 
     const told = () => {
         setConnectionsResource('stations');
         setNodeNoun('CSMS');
-        setNodeTraits({ oneNodePerOCPPVersion: false, isDialled: true, dialsDown: true });
+        setNodeTraits({ oneNodePerOCPPVersion: false, isConnectedTo: true, connectsDown: true });
     };
 
-    /** What a CSMS writes down: what is below it, by its name, over ws:// and wss:// alone, and nothing that dials it. */
+    /** What a CSMS writes down: what is below it, by its name, over ws:// and wss:// alone, and nothing that connects to it. */
     const below = ({ path }: Asked): unknown => {
 
         if (path === '/configuration/connections' || path === '/configuration/authentications')
@@ -175,7 +175,7 @@ describe("the pages of the connections, told they are a CSMS's", () => {
 
     };
 
-    it('offer what is below a CSMS, ask for the node at the other end, and offer nothing that dials it', async () => {
+    it('offer what is below a CSMS, ask for the node at the other end, and offer nothing that connects to it', async () => {
 
         told();
 

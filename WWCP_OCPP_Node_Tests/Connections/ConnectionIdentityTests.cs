@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void WhatAConnectionMayNotName()
         {
 
-            Assert.That(store.TryAddPasswordAuthentication("cs001", "not-the-real-one", I18NString.Create("CSMS login"), out var login, out var noLogin), Is.True, noLogin);
+            Assert.That(store.TryAddPasswordAuthentication(User_Id.Parse("cs001"), "not-the-real-one", I18NString.Create("CSMS login"), out var login, out var noLogin), Is.True, noLogin);
 
             Assert.Multiple(() => {
 

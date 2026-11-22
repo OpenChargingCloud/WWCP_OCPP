@@ -291,7 +291,7 @@ export const ocppServerPage: Page = {
                         </label>
 
                         <span class="hint">
-                            What the charging stations dial. A certificate that does not carry these names is a
+                            What the charging stations connect to. A certificate that does not carry these names is a
                             certificate they refuse, whatever else is right about it - so this list is what goes
                             into a signing request, and what an uploaded certificate is held against.
                         </span>
@@ -384,7 +384,7 @@ export const ocppServerPage: Page = {
         }
 
 
-        // OCPP over SSH: on this controller's SSH server, beside the socket
+        // OCPP-over-SSH: on this controller's SSH server, beside the socket
         // below, and switched on and off without a restart.
         function sshCard(configuration: OCPPServerConfiguration): TemplateResult | typeof nothing {
 
@@ -396,7 +396,7 @@ export const ocppServerPage: Page = {
             return html`
                 <section class="card" id="ssh-card">
 
-                    <h2><i class="fa-solid fa-terminal"></i> OCPP over SSH</h2>
+                    <h2><i class="fa-solid fa-terminal"></i> OCPP-over-SSH</h2>
 
                     <label class="switch">
                         <input type="checkbox" id="ssh-enabled"

@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// The DeleteSSHKey response (white paper "OCPP over SSH", section 9.3).
+    /// The DeleteSSHKey response (white paper "OCPP-over-SSH", section 9.3).
     /// </summary>
     public class DeleteSSHKeyResponse : AResponse<DeleteSSHKeyRequest,
                                             DeleteSSHKeyResponse>,

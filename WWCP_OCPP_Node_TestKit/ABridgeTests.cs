@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
             var response  = await http.PostAsync($"{WWCPNode.ExtAPIPath.ToString().Trim('/')}/login",
                                                  new FormUrlEncodedContent([
-                                                     new KeyValuePair<String, String>("login",     WWCPNode.DefaultAdminUser),
+                                                     new KeyValuePair<String, String>("login",     WWCPNode.DefaultAdminUser.ToString()),
                                                      new KeyValuePair<String, String>("password",  Password)
                                                  ]));
 

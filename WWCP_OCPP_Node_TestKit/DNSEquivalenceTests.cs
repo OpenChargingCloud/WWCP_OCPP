@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
             var seen        = Get(Station, "dns-2", "Port").AttributeValue;
 
-            await SaveOnThePage(http, AsLoaded(SecondPort: 5300));
+            await SaveOnThePage(http, AsLoaded(SecondPort: IPPort.Parse(5300)));
 
             var set         = await Set(Station, null, Server("dns-2", "Port", "5353", Old: seen));
 
@@ -355,11 +355,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
             var set         = await Set(Station, null, Server("dns-1", "CertificatePins", APin));
 
-            await SaveOnThePage(http, AsLoaded(SecondPort: 5300));
+            await SaveOnThePage(http, AsLoaded(SecondPort: IPPort.Parse(5300)));
 
             var kept        = Held(Station)["servers"]?[0];
 
-            await SaveOnThePage(http, AsLoaded(SecondPort: 5300, FirstHeldToItsRoot: false));
+            await SaveOnThePage(http, AsLoaded(SecondPort: IPPort.Parse(5300), FirstHeldToItsRoot: false));
 
             var taken       = Held(Station)["servers"]?[0];
 
@@ -435,7 +435,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         #region ANameServerTheCSMSWouldNotResolveThroughIsRefusedByEitherVersion()
 
         /// <summary>
-        /// The CSMS is dialled by a name that resolves through a name server
+        /// The CSMS is connected to by a name that resolves through a name server
         /// over TLS. Moved to a name server whose certificate nobody vouches
         /// for, through SetVariables and through dns.ports, the node would
         /// lose its CSMS: both are refused, as CSMSUnreachable where OCPP 2.1
@@ -472,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                                                         [ CertificateUsages.DNS ], out _, out error),
                             Is.True, error);
 
-                Assert.That(station.TryDial($"ws://{CSMS}:9/cs", "2.1", out error),
+                Assert.That(station.TryConnect($"ws://{CSMS}:9/cs", "2.1", out error),
                             Is.True, error);
 
                 var before     = station.Node.DNSConfigurationJSON().ToString();
@@ -514,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         #region ANameServerTheLegalTimeWouldNotResolveThroughIsRefusedByEitherVersion()
 
         /// <summary>
-        /// No CSMS is dialled by its name, but the legal time asks its one
+        /// No CSMS is connected to by its name, but the legal time asks its one
         /// NTS-KE server by its name, which resolves through a name server
         /// over TLS. Moved to a name server whose certificate nobody vouches
         /// for, through SetVariables and through dns.ports, the legal time
@@ -678,7 +678,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         /// entry with what the page showed it held to: unchanged, but for the
         /// port of the second, and the first's root, where it is taken away.
         /// </summary>
-        private static String AsLoaded(Int32    SecondPort          = 53,
+        private static String AsLoaded(IPPort?  SecondPort          = null,
                                        Boolean  FirstHeldToItsRoot  = true)
         {
 
@@ -689,7 +689,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             return $$"""
                    [ { "id": "dns-1", "address": "192.0.2.53",    "port": 853,  "transport": "TLS", "queryTimeoutSeconds": null, {{itsRoot}}
                        "pinsAsShown": { "rootFingerprint": "{{ARoot}}", "onMismatch": "record" } },
-                     { "id": "dns-2", "address": "2001:db8::53",  "port": {{SecondPort}}, "transport": "UDP", "queryTimeoutSeconds": null, "pinsAsShown": { } },
+                     { "id": "dns-2", "address": "2001:db8::53",  "port": {{SecondPort ?? IPPort.DNS}}, "transport": "UDP", "queryTimeoutSeconds": null, "pinsAsShown": { } },
                      { "id": "dns-3", "address": "198.51.100.53", "port": 5353, "transport": "TCP", "queryTimeoutSeconds": 3,    "pinsAsShown": { } } ]
                    """;
 

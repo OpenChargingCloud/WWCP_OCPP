@@ -60,7 +60,7 @@ export const commissioningPage: Page = {
 
                     <section class="card">
 
-                        <h2><i class="fa-solid fa-screwdriver-wrench"></i> OCPP over SSH</h2>
+                        <h2><i class="fa-solid fa-screwdriver-wrench"></i> OCPP-over-SSH</h2>
 
                         <p class="hint" id="commissioning-state">
                             ${commissioning.served

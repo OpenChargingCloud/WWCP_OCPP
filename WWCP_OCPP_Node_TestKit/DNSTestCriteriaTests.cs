@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
     /// <remarks>
     /// The node is built and never started: a handshake is the node's
     /// judgement of the certificate a server showed, said to it directly, and
-    /// what is told to the CSMS waits in the queue of the version dialled.
+    /// what is told to the CSMS waits in the queue of the version connected.
     /// </remarks>
         public abstract class DNSTestCriteriaTests : ABridgeTests
     {
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                    """);
 
             TrustForNameServers(certificate);
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             Judge(SslPolicyErrors.RemoteCertificateNameMismatch);
 
@@ -526,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
-        #region (private) Change(Section) / Dial(Version) / TrustForNameServers(Root) / Judge(PolicyErrors)
+        #region (private) Change(Section) / ConfigureConnection(Version) / TrustForNameServers(Root) / Judge(PolicyErrors)
 
         /// <summary>
         /// The name resolution changed as the page changes it.
@@ -539,11 +539,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         }
 
         /// <summary>
-        /// A connection of the given version, configured and never dialled.
+        /// A connection of the given version, configured and never made.
         /// </summary>
-        private void Dial(String Version)
+        private void ConfigureConnection(String Version)
         {
-            Assert.That(station!.TryDial("ws://127.0.0.1:9/cs", Version, out var error),
+            Assert.That(station!.TryConnect("ws://127.0.0.1:9/cs", Version, out var error),
                         Is.True,
                         error);
         }

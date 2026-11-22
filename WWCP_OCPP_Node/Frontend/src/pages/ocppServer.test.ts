@@ -34,7 +34,7 @@ function controller({ method, path, body }: Asked): unknown {
             return refused(409, 'no server certificate yet');
         const update = body as OCPPServerUpdate;
         held = { ...held, ...update } as OCPPServerConfiguration;
-        // OCPP over SSH is a field of its own, merged as the controller merges it.
+        // OCPP-over-SSH is a field of its own, merged as the controller merges it.
         if (update.ssh !== undefined)
             held.ssh = { ...anOCPPServer().ssh, ...held.ssh, ...update.ssh,
                          state: sshServerOn
@@ -179,14 +179,14 @@ describe('the charging station server\'s page', () => {
 
     });
 
-    it('switches OCPP over SSH on, and says where the stations connect and which host key they pin', async () => {
+    it('switches OCPP-over-SSH on, and says where the stations connect and which host key they pin', async () => {
 
         const root = await opened();
 
         assert.equal(root.querySelector('#ssh-no-server'), null, 'an SSH server that is on was said to be off');
 
         change(root.querySelector<HTMLInputElement>('#ssh-enabled')!, true);
-        await until(() => held.ssh.enabled && root.querySelector('#ssh-card .ok') !== null, 'OCPP over SSH was not switched on');
+        await until(() => held.ssh.enabled && root.querySelector('#ssh-card .ok') !== null, 'OCPP-over-SSH was not switched on');
 
         assert.deepEqual(asked.find(one => one.method === 'PUT')?.body, { ssh: { enabled: true } }, 'more than the switch was sent');
         assert.match(root.querySelector('#ssh-card')!.textContent!, /ssh:\/\/lc001\.example\.org:22/);
@@ -194,7 +194,7 @@ describe('the charging station server\'s page', () => {
 
     });
 
-    it('says so where OCPP over SSH is on and the SSH server is not', async () => {
+    it('says so where OCPP-over-SSH is on and the SSH server is not', async () => {
 
         sshServerOn = false;
 
@@ -205,7 +205,7 @@ describe('the charging station server\'s page', () => {
 
             change(root.querySelector<HTMLInputElement>('#ssh-enabled')!, true);
             await until(() => held.ssh.enabled && root.querySelector('#ssh-no-server') !== null,
-                        'OCPP over SSH switched on without an SSH server was not said to reach nobody');
+                        'OCPP-over-SSH switched on without an SSH server was not said to reach nobody');
 
             assert.equal(root.querySelector('#ssh-host-key'), null, 'a host key was shown for an SSH server that is off');
 

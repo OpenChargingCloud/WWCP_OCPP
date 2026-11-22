@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         /// ranges of ports for itself, for UDP and TCP apart, and the UDP port of
         /// the number of a TCP port the system handed out may be a client's.
         /// </summary>
-        private static UInt16 APortFreeForBoth()
+        private static IPPort APortFreeForBoth()
         {
 
             for (var attempt = 0; attempt < 200; attempt++)
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     tcp6.Start();
                     tcp6.Stop();
 
-                    return (UInt16) port;
+                    return IPPort.Parse((UInt16) port);
 
                 }
                 catch (System.Net.Sockets.SocketException)
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                       );
 
             server  = csms.AttachWebSocketServer(
-                          TCPPort:                    IPPort.Parse(port),
+                          TCPPort:                    port,
                           RequireAuthentication:      true,
                           DisableWebSocketPings:      true,
                           ServerCertificateSelector:  WithTLS
@@ -218,11 +218,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #endregion
 
-        #region (private) Dial(Over, WithTLS, Password = "1234abcd")
+        #region (private) Connect(Over, WithTLS, Password = "1234abcd")
 
-        private async Task<HTTPResponse> Dial(WebSocketHTTPVersion?  Over,
-                                              Boolean                WithTLS,
-                                              String                 Password = "1234abcd")
+        private async Task<HTTPResponse> Connect(WebSocketHTTPVersion?  Over,
+                                                 Boolean                WithTLS,
+                                                 String                 Password = "1234abcd")
         {
 
             chargingStation = new TestChargingStationNode(
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ACSMS(WithTLS: true);
 
-            var response = await Dial(WebSocketHTTPVersion.HTTP3, WithTLS: true);
+            var response = await Connect(WebSocketHTTPVersion.HTTP3, WithTLS: true);
 
             Assert.That(response.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols), response.EntirePDU);
 
@@ -315,17 +315,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ACSMS(WithTLS: true);
 
-            var first = await Dial(WebSocketHTTPVersion.Auto, WithTLS: true);
+            var first = await Connect(WebSocketHTTPVersion.Auto, WithTLS: true);
 
             Assert.That(first.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols), first.EntirePDU);
 
             Assert.That(first.AltSvc?.Services.Select(service => (service.ProtocolId, service.Port)),
-                        Is.EqualTo(new[] { ("h3", server!.IPPort.ToUInt16()) }),
+                        Is.EqualTo(new[] { ("h3", server!.IPPort) }),
                         "what the CSMS says of HTTP/3");
 
             await chargingStation!.Stop();
 
-            var second = await Dial(WebSocketHTTPVersion.Auto, WithTLS: true);
+            var second = await Connect(WebSocketHTTPVersion.Auto, WithTLS: true);
 
             Assert.That(second.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols), second.EntirePDU);
 
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ACSMS(WithTLS: true);
 
-            var response = await Dial(WebSocketHTTPVersion.HTTP3, WithTLS: true, Password: "not-the-password");
+            var response = await Connect(WebSocketHTTPVersion.HTTP3, WithTLS: true, Password: "not-the-password");
 
             Assert.Multiple(() => {
                 Assert.That(response.HTTPStatusCode,  Is.EqualTo(HTTPStatusCode.Unauthorized),  response.EntirePDU);
@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ACSMS(WithTLS: true, AcceptHTTP3: false);
 
-            var refused = await Dial(WebSocketHTTPVersion.HTTP3, WithTLS: true);
+            var refused = await Connect(WebSocketHTTPVersion.HTTP3, WithTLS: true);
 
             Assert.Multiple(() => {
                 Assert.That(refused.HTTPStatusCode,  Is.Not.EqualTo(HTTPStatusCode.SwitchingProtocols));
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             await chargingStation!.Stop();
 
-            var asBefore = await Dial(WebSocketHTTPVersion.Auto, WithTLS: true);
+            var asBefore = await Connect(WebSocketHTTPVersion.Auto, WithTLS: true);
 
             Assert.Multiple(() => {
                 Assert.That(asBefore.HTTPStatusCode,  Is.EqualTo(HTTPStatusCode.SwitchingProtocols),  asBefore.EntirePDU);
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ACSMS(WithTLS: false);
 
-            var response = await Dial(null, WithTLS: false);
+            var response = await Connect(null, WithTLS: false);
 
             Assert.Multiple(() => {
                 Assert.That(server!.HTTP3Port,        Is.Null);

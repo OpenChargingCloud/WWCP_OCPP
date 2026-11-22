@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         Boolean                                 DisableWebSocketPings        { get; set; }
         DNSClient?                              DNSClient                    { get; }
         String                                  HTTPServiceName              { get; }
-        IIPAddress                              IPAddress                    { get; }
+        IPAddress                              IPAddress                    { get; }
         IPPort                                  IPPort                       { get; }
         IPSocket                                IPSocket                     { get; }
         Boolean                                 IsRunning                    { get; }

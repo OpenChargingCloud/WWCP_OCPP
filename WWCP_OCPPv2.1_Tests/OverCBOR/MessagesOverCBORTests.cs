@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverCBOR
     }
 
     /// <summary>
-    /// OCPP over SSH, with charging stations that offer "ocpp2.1cbor" alone when
+    /// OCPP-over-SSH, with charging stations that offer "ocpp2.1cbor" alone when
     /// they sign in: the same subprotocol as over a WebSocket, and the same
     /// messages - CBOR in the binary frames of the SSH subsystem.
     /// </summary>

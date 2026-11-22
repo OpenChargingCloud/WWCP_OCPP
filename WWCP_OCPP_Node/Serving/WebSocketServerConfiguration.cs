@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
     /// <summary>
     /// The "webSocketServer" section of the configuration file: the HTTP
     /// WebSocket server the charging stations below a node connect to, and the
-    /// back ends above it that dial it.
+    /// back ends above it that connect to it.
     /// </summary>
     /// <remarks>
     /// One section for every node that serves WebSockets - a local controller,
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
     /// <param name="SSH">Whether, and how, the charging stations may connect over SSH as well.</param>
     /// <param name="HTTP3">Whether WebSockets are taken over HTTP/3 as well, on the UDP port of the same number; not where not said.</param>
     public sealed record WebSocketServerConfiguration(Boolean?                                         Enabled                      = null,
-                                                      IIPAddress?                                      Address                      = null,
+                                                      IPAddress?                                      Address                      = null,
                                                       IPPort?                                          TCPPort                      = null,
                                                       IReadOnlyList<WebSocketClientAuthentication>?    ClientAuthentication         = null,
                                                       IReadOnlyList<String>?                           Subprotocols                 = null,
@@ -291,9 +291,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
             #region The interface to listen on
 
-            IIPAddress? address = null;
+            IPAddress? address = null;
 
-            if (addressText is not null && !IPAddress.TryParse(addressText, out address))
+            if (addressText is not null && (address = IPAddress.TryParse(addressText)) is null)
             {
                 Error = $"'{SectionName}.address' must be an IP address, e.g. \"0.0.0.0\" for every interface.";
                 return false;
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
             #endregion
 
-            #region OCPP over SSH
+            #region OCPP-over-SSH
 
             WebSocketServerSSH? ssh = null;
 

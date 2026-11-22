@@ -89,9 +89,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
         /// connection over TLS there is now, and none for one there is not.
         /// </summary>
         /// <remarks>
-        /// Called by whoever keeps the connections after every change it wrote, before it dials what
-        /// changed, so that a connection dialled again has its instance by then. A failure is said in the
-        /// log and kept here: the dialling told after this must not miss the change for it.
+        /// Called by whoever keeps the connections after every change it wrote, before it connects to what
+        /// changed, so that a connection made again has its instance by then. A failure is said in the
+        /// log and kept here: the connecting told after this must not miss the change for it.
         /// </remarks>
         /// <param name="Node">The node, where there is one yet.</param>
         /// <param name="Warning">A sentence for the log.</param>

@@ -9,37 +9,37 @@
  *
  *   setConnectionsResource('csms');
  *   setNodeNoun('local controller');
- *   setNodeTraits({ oneNodePerOCPPVersion: false, isDialled: true });
+ *   setNodeTraits({ oneNodePerOCPPVersion: false, isConnectedTo: true });
  *
  * A charging station, whose station port is the connections' as well:
  *
  *   setStationsResource('connections');
  *
- * A node that dials downwards - a CSMS, dialling the charging stations and
- * local controllers that cannot dial it - says that as well:
+ * A node that connects downwards - a CSMS, connecting to the charging stations and
+ * local controllers that cannot connect to it - says that as well:
  *
- *   setNodeTraits({ oneNodePerOCPPVersion: false, isDialled: true, dialsDown: true });
+ *   setNodeTraits({ oneNodePerOCPPVersion: false, isConnectedTo: true, connectsDown: true });
  */
 
 /** What a kind of node is, where the pages say something that is not true of every kind. */
 export interface NodeTraits {
-    /** Whether it is one OCPP node for each version of OCPP it speaks, so that a connection says which of them dials. */
+    /** Whether it is one OCPP node for each version of OCPP it speaks, so that a connection says which of them connects. */
     oneNodePerOCPPVersion:  boolean;
-    /** Whether it is dialled itself, as a server, beside dialling its back ends. */
-    isDialled:              boolean;
+    /** Whether it is connected to itself, as a server, beside connecting to its back ends. */
+    isConnectedTo:              boolean;
     /**
-     * Whether what it dials is below it - charging stations, local
+     * Whether what it connects to is below it - charging stations, local
      * controllers - and not its back end: then the pages speak of the node at
      * the other end, and of no CSMS there.
      */
-    dialsDown:              boolean;
+    connectsDown:              boolean;
 }
 
 let resource  = 'connections';
 let stations  = 'stations';
 let noun      = 'station';
 let inFull    = 'charging station';
-let traits: NodeTraits = { oneNodePerOCPPVersion: true, isDialled: false, dialsDown: false };
+let traits: NodeTraits = { oneNodePerOCPPVersion: true, isConnectedTo: false, connectsDown: false };
 
 
 /** Name the resource a right to the connections is a right to: "connections" on a charging station, "csms" on a local controller. */
@@ -55,8 +55,8 @@ export function connectionsResource(): string {
 /**
  * Name the resource a right to the station port and its WebSocket logins is a
  * right to: "stations" on a local controller, a gateway and a CSMS,
- * "connections" on a charging station - whoever may change where it dials may
- * change who dials it.
+ * "connections" on a charging station - whoever may change where it connects to may
+ * change who connects to it.
  */
 export function setStationsResource(Name: string): void {
     stations = Name;
@@ -99,8 +99,8 @@ export function nodeTraits(): NodeTraits {
 
 /**
  * What is at the other end of a connection, in a word: the "back end" of a
- * node that dials upwards, the "node" a node that dials downwards reaches.
+ * node that connects upwards, the "node" a node that connects downwards reaches.
  */
 export function farEnd(): string {
-    return traits.dialsDown ? 'node' : 'back end';
+    return traits.connectsDown ? 'node' : 'back end';
 }

@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
                 """);
 
             node = new WWCPNode(
-                       HTTPPort:          IPPort.Parse(TestPorts.Free()),
+                       HTTPPort:          TestPorts.Free(),
                        AccountsPath:      Path.Combine(directory, "accounts"),
                        ConfigFile:        new WWCPConfigFile(configFile),
                        CertificatesPath:  Path.Combine(directory, "certificates"),

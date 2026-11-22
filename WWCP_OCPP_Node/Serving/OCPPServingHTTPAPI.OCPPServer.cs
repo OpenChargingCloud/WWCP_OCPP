@@ -84,19 +84,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             AddHandler(root + "logins",             GetStations,              HTTPMethod.GET);
             AddHandler(root + "logins",             PostStation,              HTTPMethod.POST);
-            AddHandler(root + "logins/{id}",        PutStation,               HTTPMethod.PUT);
-            AddHandler(root + "logins/{id}",        DeleteStation,            HTTPMethod.DELETE);
+            AddHandler(root + "logins/{login}",        PutStation,               HTTPMethod.PUT);
+            AddHandler(root + "logins/{login}",        DeleteStation,            HTTPMethod.DELETE);
 
-            AddHandler(root + "logins/{id}/totp",     PutStationTOTP,         HTTPMethod.PUT);
-            AddHandler(root + "logins/{id}/totp",     DeleteStationTOTP,      HTTPMethod.DELETE);
-            AddHandler(root + "logins/{id}/totp/binding", PutStationTOTPBinding, HTTPMethod.PUT);
-            AddHandler(root + "logins/{id}/password", DeleteStationPassword,  HTTPMethod.DELETE);
+            AddHandler(root + "logins/{login}/totp",     PutStationTOTP,         HTTPMethod.PUT);
+            AddHandler(root + "logins/{login}/totp",     DeleteStationTOTP,      HTTPMethod.DELETE);
+            AddHandler(root + "logins/{login}/totp/binding", PutStationTOTPBinding, HTTPMethod.PUT);
+            AddHandler(root + "logins/{login}/password", DeleteStationPassword,  HTTPMethod.DELETE);
 
-            AddHandler(root + "logins/{id}/sshKeys",               PostStationSSHKey,    HTTPMethod.POST);
-            AddHandler(root + "logins/{id}/sshKeys/{fingerprint}", DeleteStationSSHKey,  HTTPMethod.DELETE);
+            AddHandler(root + "logins/{login}/sshKeys",               PostStationSSHKey,    HTTPMethod.POST);
+            AddHandler(root + "logins/{login}/sshKeys/{fingerprint}", DeleteStationSSHKey,  HTTPMethod.DELETE);
 
-            AddHandler(root + "logins/{id}/keyPins",               PostStationKeyPin,    HTTPMethod.POST);
-            AddHandler(root + "logins/{id}/keyPins/{pin}",         DeleteStationKeyPin,  HTTPMethod.DELETE);
+            AddHandler(root + "logins/{login}/keyPins",               PostStationKeyPin,    HTTPMethod.POST);
+            AddHandler(root + "logins/{login}/keyPins/{pin}",         DeleteStationKeyPin,  HTTPMethod.DELETE);
 
         }
 
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             => ConnectionFields.TryDescriptionOf(JSON, out Description, out Error);
 
         /// <summary>
-        /// POST .../logins with {"id", "password", "group", "description"}: add a
+        /// POST .../logins with {"login", "password", "group", "description"}: add a
         /// charging station, or give one a new password.
         /// </summary>
         /// <remarks>
@@ -307,13 +307,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
-            var id = json.Value<String>("id") ?? "";
+            if (User_Id.TryParse(json.Value<String>("login")) is not User_Id login)
+                return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, "A charging station needs a login."));
 
             if (!TryDescriptionOf(json, out var description, out var wrongDescription))
                 return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, wrongDescription));
 
             if (!Serving.WebSocketLogins.TrySetPasswordAuthentication(
-                     id,
+                     login,
                      json.Value<String>("password"),
                      json.Value<String>("group"),
                      description,
@@ -323,10 +324,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
             }
 
-            Log.Notice($"'{user.Id}' set the password of the charging station '{id}'.", "ocpp", "station", "auth", "web");
+            Log.Notice($"'{user.Id}' set the password of the charging station '{login}'.", "ocpp", "station", "auth", "web");
 
             var response = new JObject(
-                               new JProperty("id",        id),
+                               new JProperty("login",     login.ToString()),
                                new JProperty("logins",    Serving.WebSocketLogins.ToJSON())
                            );
 
@@ -335,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// PUT .../logins/{id} with {"enabled"}, {"group"},
+        /// PUT .../logins/{login} with {"enabled"}, {"group"},
         /// {"localController"} and/or {"gateway"}: let a charging station in,
         /// stop letting it in, move it to another group, or mark it as a local
         /// controller's or a gateway's login, which may send in the name of
@@ -348,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryAuthorize(Request, Permission.Edit(StationsResource), true, out var user, out var refused))
                 return Task.FromResult(refused);
 
-            if (!TryGetId(Request, out var id, out var badRequest))
+            if (!TryGetLogin(Request, out var login, out var badRequest))
                 return Task.FromResult(badRequest);
 
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
@@ -380,19 +381,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, "A login is a local controller's or a gateway's, not both."));
 
             if (group is not null &&
-                !Serving.WebSocketLogins.TrySetGroup(id, group, out var groupError, out var groupNotSaved))
+                !Serving.WebSocketLogins.TrySetGroup(login, group, out var groupError, out var groupNotSaved))
             {
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.NotFound, groupError, groupNotSaved));
             }
 
             if (enabled is Boolean wanted &&
-                !Serving.WebSocketLogins.TrySetEnabled(id, wanted, out var error, out var notSaved))
+                !Serving.WebSocketLogins.TrySetEnabled(login, wanted, out var error, out var notSaved))
             {
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.NotFound, error, notSaved));
             }
 
             if (localController is Boolean marked &&
-                !Serving.WebSocketLogins.TrySetLocalController(id, marked, out var markError, out var markNotSaved))
+                !Serving.WebSocketLogins.TrySetLocalController(login, marked, out var markError, out var markNotSaved))
             {
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.NotFound, markError, markNotSaved));
             }
@@ -400,28 +401,28 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // After the local controller's mark: marking the one takes the
             // other away, and both true was refused above.
             if (gateway is Boolean markedAsGateway &&
-                !Serving.WebSocketLogins.TrySetGateway(id, markedAsGateway, out var gatewayError, out var gatewayNotSaved))
+                !Serving.WebSocketLogins.TrySetGateway(login, markedAsGateway, out var gatewayError, out var gatewayNotSaved))
             {
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.NotFound, gatewayError, gatewayNotSaved));
             }
 
             if (localController is Boolean isController)
                 Log.Notice(isController
-                               ? $"'{user.Id}' marked '{id}' as a local controller."
-                               : $"'{user.Id}' took the mark of a local controller from '{id}'.",
+                               ? $"'{user.Id}' marked '{login}' as a local controller."
+                               : $"'{user.Id}' took the mark of a local controller from '{login}'.",
                            "ocpp", "station", "security", "web");
 
             if (gateway is Boolean isGateway)
                 Log.Notice(isGateway
-                               ? $"'{user.Id}' marked '{id}' as a gateway."
-                               : $"'{user.Id}' took the mark of a gateway from '{id}'.",
+                               ? $"'{user.Id}' marked '{login}' as a gateway."
+                               : $"'{user.Id}' took the mark of a gateway from '{login}'.",
                            "ocpp", "station", "security", "web");
 
             if (group is not null)
-                Log.Info($"'{user.Id}' moved the charging station '{id}' into the login group '{group}'.", "ocpp", "station", "auth", "web");
+                Log.Info($"'{user.Id}' moved the charging station '{login}' into the login group '{group}'.", "ocpp", "station", "auth", "web");
 
             if (enabled is Boolean said)
-                Log.Info($"'{user.Id}' {(said ? "let in" : "shut out")} the charging station '{id}'.", "ocpp", "station", "auth", "web");
+                Log.Info($"'{user.Id}' {(said ? "let in" : "shut out")} the charging station '{login}'.", "ocpp", "station", "auth", "web");
 
             return Task.FromResult(
                        JSONResponse(Request, HTTPStatusCode.OK, Serving.WebSocketLogins.ToJSON())
@@ -430,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// PUT .../logins/{id}/totp with {"sharedSecret", "validitySeconds",
+        /// PUT .../logins/{login}/totp with {"sharedSecret", "validitySeconds",
         /// "length", "alphabet", "hashAlgorithm", "group", "description"}: let a
         /// charging station in with a one-time token.
         /// </summary>
@@ -447,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryAuthorize(Request, Permission.Edit(StationsResource), true, out var user, out var refused))
                 return Task.FromResult(refused);
 
-            if (!TryGetId(Request, out var id, out var badRequest))
+            if (!TryGetLogin(Request, out var login, out var badRequest))
                 return Task.FromResult(badRequest);
 
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
@@ -478,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             var sharedSecret = json.Value<String>("sharedSecret");
 
             if (!Serving.WebSocketLogins.TrySetTOTPAuthentication(
-                     id,
+                     login,
                      sharedSecret,
                      seconds.HasValue ? TimeSpan.FromSeconds(seconds.Value) : null,
                      json.Value<UInt32?>("length"),
@@ -492,18 +493,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
             }
 
-            Log.Notice($"'{user.Id}' set the TOTP configuration of the charging station '{id}'.", "ocpp", "station", "auth", "web");
+            Log.Notice($"'{user.Id}' set the TOTP configuration of the charging station '{login}'.", "ocpp", "station", "auth", "web");
 
             var response = new JObject(
-                               new JProperty("id",        id),
+                               new JProperty("login",     login.ToString()),
                                new JProperty("logins",    Serving.WebSocketLogins.ToJSON())
                            );
 
             // None was sent, so one was made up: shown once here, as somebody
             // is standing in front of the charging station now.
             if (String.IsNullOrWhiteSpace(sharedSecret) &&
-                Serving.WebSocketLogins.TryGet(id, out var login) &&
-                login.TOTP is TOTPSettings totp)
+                Serving.WebSocketLogins.TryGet(login, out var station) &&
+                station.TOTP is TOTPSettings totp)
             {
                 response.Add("sharedSecret", totp.SharedSecret);
             }
@@ -513,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// PUT .../logins/{id}/totp/binding with {"tlsChannelBinding": true
+        /// PUT .../logins/{login}/totp/binding with {"tlsChannelBinding": true
         /// or false}: whether the one-time token of a charging station has to
         /// be bound to the TLS session of its connection.
         /// </summary>
@@ -528,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryAuthorize(Request, Permission.Edit(StationsResource), true, out var user, out var refused))
                 return Task.FromResult(refused);
 
-            if (!TryGetId(Request, out var id, out var badRequest))
+            if (!TryGetLogin(Request, out var login, out var badRequest))
                 return Task.FromResult(badRequest);
 
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
@@ -540,10 +541,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var bound = binding.Value<Boolean>();
 
-            if (!Serving.WebSocketLogins.TrySetTOTPBinding(id, bound, out var error, out var notSaved))
+            if (!Serving.WebSocketLogins.TrySetTOTPBinding(login, bound, out var error, out var notSaved))
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.NotFound, error, notSaved));
 
-            Log.Notice($"'{user.Id}' {(bound ? "asked for" : "no longer asks for")} the one-time token of the charging station '{id}' to be bound to its connection.",
+            Log.Notice($"'{user.Id}' {(bound ? "asked for" : "no longer asks for")} the one-time token of the charging station '{login}' to be bound to its connection.",
                        "ocpp", "station", "auth", "web");
 
             return Task.FromResult(JSONResponse(Request, HTTPStatusCode.OK, Serving.WebSocketLogins.ToJSON()));
@@ -551,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// DELETE .../logins/{id}/totp: stop letting a charging station in
+        /// DELETE .../logins/{login}/totp: stop letting a charging station in
         /// with a one-time token.
         /// </summary>
         private Task<HTTPResponse> DeleteStationTOTP(HTTPRequest Request)
@@ -561,7 +562,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                   "TOTP configuration"));
 
         /// <summary>
-        /// DELETE .../logins/{id}/password: stop letting a charging station
+        /// DELETE .../logins/{login}/password: stop letting a charging station
         /// in with a password.
         /// </summary>
         private Task<HTTPResponse> DeleteStationPassword(HTTPRequest Request)
@@ -571,8 +572,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                   "password"));
 
         /// <summary>
-        /// POST .../logins/{id}/sshKeys with {"line", "label", "group",
-        /// "description"}: give a charging station an SSH key for OCPP over SSH,
+        /// POST .../logins/{login}/sshKeys with {"line", "label", "group",
+        /// "description"}: give a charging station an SSH key for OCPP-over-SSH,
         /// adding the station where it is not listed yet.
         /// </summary>
         /// <remarks>
@@ -586,7 +587,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryAuthorize(Request, Permission.Edit(StationsResource), true, out var user, out var refused))
                 return Task.FromResult(refused);
 
-            if (!TryGetId(Request, out var id, out var badRequest))
+            if (!TryGetLogin(Request, out var login, out var badRequest))
                 return Task.FromResult(badRequest);
 
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
@@ -596,7 +597,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, wrongDescription));
 
             if (!Serving.TryAddStationSSHKey(
-                     id,
+                     login,
                      json.Value<String>("line"),
                      json.Value<String>("label"),
                      json.Value<String>("group"),
@@ -609,11 +610,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
             }
 
-            Log.Notice($"'{user.Id}' gave the charging station '{id}' the SSH key {key}.", "ocpp", "station", "auth", "ssh", "web");
+            Log.Notice($"'{user.Id}' gave the charging station '{login}' the SSH key {key}.", "ocpp", "station", "auth", "ssh", "web");
 
             return Task.FromResult(
                        JSONResponse(Request, HTTPStatusCode.OK, new JObject(
-                           new JProperty("id",           id),
+                           new JProperty("login",        login.ToString()),
                            new JProperty("fingerprint",  key.Fingerprint),
                            new JProperty("logins",       Serving.WebSocketLogins.ToJSON())
                        ))
@@ -622,7 +623,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// DELETE .../logins/{id}/sshKeys/{fingerprint}: take an SSH key away
+        /// DELETE .../logins/{login}/sshKeys/{fingerprint}: take an SSH key away
         /// from a charging station. A session it opened ends.
         /// </summary>
         /// <remarks>
@@ -636,7 +637,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryAuthorize(Request, Permission.Edit(StationsResource), true, out var user, out var refused))
                 return Task.FromResult(refused);
 
-            if (!TryGetId(Request, out var id, out var badRequest))
+            if (!TryGetLogin(Request, out var login, out var badRequest))
                 return Task.FromResult(badRequest);
 
             if (Request.ParsedURLParameters.ElementAtOrDefault(1)?.Trim() is not { Length: > 0 } fingerprintText)
@@ -644,10 +645,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var fingerprint = UserSSHKey.FingerprintFromURL(fingerprintText);
 
-            if (!Serving.WebSocketLogins.TryRemoveSSHKey(id, fingerprint, out var error, out var notSaved))
+            if (!Serving.WebSocketLogins.TryRemoveSSHKey(login, fingerprint, out var error, out var notSaved))
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.NotFound, error, notSaved));
 
-            Log.Notice($"'{user.Id}' took the SSH key {fingerprint} of the charging station '{id}' away.", "ocpp", "station", "auth", "ssh", "web");
+            Log.Notice($"'{user.Id}' took the SSH key {fingerprint} of the charging station '{login}' away.", "ocpp", "station", "auth", "ssh", "web");
 
             return Task.FromResult(
                        JSONResponse(Request, HTTPStatusCode.OK, Serving.WebSocketLogins.ToJSON())
@@ -656,7 +657,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// POST .../logins/{id}/keyPins with {"pin", "label", "group",
+        /// POST .../logins/{login}/keyPins with {"pin", "label", "group",
         /// "description"}: let a charging station in by the key pin of its TLS client
         /// key, adding the station where it is not listed yet.
         /// </summary>
@@ -671,7 +672,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryAuthorize(Request, Permission.Edit(StationsResource), true, out var user, out var refused))
                 return Task.FromResult(refused);
 
-            if (!TryGetId(Request, out var id, out var badRequest))
+            if (!TryGetLogin(Request, out var login, out var badRequest))
                 return Task.FromResult(badRequest);
 
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
@@ -681,7 +682,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, wrongDescription));
 
             if (!Serving.WebSocketLogins.TryAddKeyPin(
-                     id,
+                     login,
                      json.Value<String>("pin"),
                      json.Value<String>("label"),
                      json.Value<String>("group"),
@@ -694,11 +695,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
             }
 
-            Log.Notice($"'{user.Id}' gave the charging station '{id}' the key pin {keyPin.Pin}.", "ocpp", "station", "auth", "tls", "web");
+            Log.Notice($"'{user.Id}' gave the charging station '{login}' the key pin {keyPin.Pin}.", "ocpp", "station", "auth", "tls", "web");
 
             return Task.FromResult(
                        JSONResponse(Request, HTTPStatusCode.OK, new JObject(
-                           new JProperty("id",        id),
+                           new JProperty("login",     login.ToString()),
                            new JProperty("keyPin",    keyPin.Pin.ToHex()),
                            new JProperty("logins",    Serving.WebSocketLogins.ToJSON())
                        ))
@@ -707,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// DELETE .../logins/{id}/keyPins/{pin}: stop letting a charging
+        /// DELETE .../logins/{login}/keyPins/{pin}: stop letting a charging
         /// station in by a key pin. A connection it opened stays open; the next
         /// one is refused.
         /// </summary>
@@ -721,16 +722,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryAuthorize(Request, Permission.Edit(StationsResource), true, out var user, out var refused))
                 return Task.FromResult(refused);
 
-            if (!TryGetId(Request, out var id, out var badRequest))
+            if (!TryGetLogin(Request, out var login, out var badRequest))
                 return Task.FromResult(badRequest);
 
             if (Request.ParsedURLParameters.ElementAtOrDefault(1)?.Trim() is not { Length: > 0 } pin)
                 return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, "The key pin is required."));
 
-            if (!Serving.WebSocketLogins.TryRemoveKeyPin(id, pin, out var error, out var notSaved))
+            if (!Serving.WebSocketLogins.TryRemoveKeyPin(login, pin, out var error, out var notSaved))
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.NotFound, error, notSaved));
 
-            Log.Notice($"'{user.Id}' took the key pin {pin} of the charging station '{id}' away.", "ocpp", "station", "auth", "tls", "web");
+            Log.Notice($"'{user.Id}' took the key pin {pin} of the charging station '{login}' away.", "ocpp", "station", "auth", "tls", "web");
 
             return Task.FromResult(
                        JSONResponse(Request, HTTPStatusCode.OK, Serving.WebSocketLogins.ToJSON())
@@ -749,13 +750,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryAuthorize(Request, Permission.Edit(StationsResource), true, out var user, out var refused))
                 return refused;
 
-            if (!TryGetId(Request, out var id, out var badRequest))
+            if (!TryGetLogin(Request, out var login, out var badRequest))
                 return badRequest;
 
-            if (!Clear(id, out var error, out var notSaved))
+            if (!Clear(login, out var error, out var notSaved))
                 return NotChanged(Request, HTTPStatusCode.NotFound, error, notSaved);
 
-            Log.Notice($"'{user.Id}' took the {What} of the charging station '{id}' away.", "ocpp", "station", "auth", "web");
+            Log.Notice($"'{user.Id}' took the {What} of the charging station '{login}' away.", "ocpp", "station", "auth", "web");
 
             return JSONResponse(Request, HTTPStatusCode.OK, Serving.WebSocketLogins.ToJSON());
 
@@ -766,12 +767,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// they promise: the error where they refuse. Without it, the compiler
         /// could not tell that the error handed on above is never null.
         /// </summary>
-        private delegate Boolean TryClearDelegate(String                            Id,
+        private delegate Boolean TryClearDelegate(User_Id                           Login,
                                                   [NotNullWhen(false)] out String?  Error,
                                                   out Boolean                       NotSaved);
 
         /// <summary>
-        /// DELETE .../logins/{id}: forget a charging station.
+        /// DELETE .../logins/{login}: forget a charging station.
         /// </summary>
         private Task<HTTPResponse> DeleteStation(HTTPRequest Request)
         {
@@ -779,17 +780,17 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryAuthorize(Request, Permission.Edit(StationsResource), true, out var user, out var refused))
                 return Task.FromResult(refused);
 
-            if (!TryGetId(Request, out var id, out var badRequest))
+            if (!TryGetLogin(Request, out var login, out var badRequest))
                 return Task.FromResult(badRequest);
 
-            if (!Serving.WebSocketLogins.TryRemove(id, out var error, out var notSaved))
+            if (!Serving.WebSocketLogins.TryRemove(login, out var error, out var notSaved))
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.NotFound, error, notSaved));
 
             // What the kind of node forgets with it - a CSMS, the certificates
             // it knows of the station.
-            var alsoForgotten = Serving.StationLoginRemoved(id);
+            var alsoForgotten = Serving.StationLoginRemoved(login);
 
-            Log.Notice($"'{user.Id}' removed the charging station '{id}'{alsoForgotten}.", "ocpp", "station", "auth", "web");
+            Log.Notice($"'{user.Id}' removed the charging station '{login}'{alsoForgotten}.", "ocpp", "station", "auth", "web");
 
             return Task.FromResult(
                        JSONResponse(Request, HTTPStatusCode.OK, Serving.WebSocketLogins.ToJSON())
@@ -978,6 +979,25 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// The identification out of the path, or the 400 that says there was
         /// none.
         /// </summary>
+        private static Boolean TryGetLogin(HTTPRequest       Request,
+                                           out User_Id       Login,
+                                           out HTTPResponse  ErrorResponse)
+        {
+
+            ErrorResponse  = default!;
+
+            if (User_Id.TryParse(Request.ParsedURLParameters.FirstOrDefault()) is User_Id login)
+            {
+                Login = login;
+                return true;
+            }
+
+            Login          = default;
+            ErrorResponse  = ErrorJSON(Request, HTTPStatusCode.BadRequest, "The login of a charging station is required.");
+            return false;
+
+        }
+
         private static Boolean TryGetId(HTTPRequest         Request,
                                         out String          Id,
                                         out HTTPResponse    ErrorResponse)

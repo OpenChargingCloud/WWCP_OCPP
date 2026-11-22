@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
             }
 
-            public void DialAgain(String Id) { }
+            public void ConnectAgain(String Id) { }
 
         }
 
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
         /// <summary>
         /// The first handshake: the server shows a key, the trust learns its key pin, and the connection
-        /// made with it is followed - what Follow does once the dial got through.
+        /// made with it is followed - what Follow does once the connection got through.
         /// </summary>
         private (ServerKeyPinTrust Trust, KeyPin Learned) FirstHandshake()
         {

@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         public async Task AKeyIsChangedAsOCPP21ChangesItsVariable()
         {
 
-            Assert.That(station!.TryDial("ws://127.0.0.1:9/cp", "1.6", out var error),
+            Assert.That(station!.TryConnect("ws://127.0.0.1:9/cp", "1.6", out var error),
                         Is.True,
                         error);
 
@@ -391,17 +391,17 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
-        #region SwitchedOffWhileTheCentralSystemIsDialledByNameIsRejected()
+        #region SwitchedOffWhileTheCentralSystemIsConnectedByNameIsRejected()
 
         /// <summary>
         /// Name resolution cannot be switched off while a central system is
-        /// dialled by its name, in 1.6 as in 2.1 (T19).
+        /// connected to by its name, in 1.6 as in 2.1 (T19).
         /// </summary>
         [Test]
-        public async Task SwitchedOffWhileTheCentralSystemIsDialledByNameIsRejected()
+        public async Task SwitchedOffWhileTheCentralSystemIsConnectedByNameIsRejected()
         {
 
-            Assert.That(station!.TryDial("ws://csms.example.invalid/cp", "1.6", out var error),
+            Assert.That(station!.TryConnect("ws://csms.example.invalid/cp", "1.6", out var error),
                         Is.True,
                         error);
 

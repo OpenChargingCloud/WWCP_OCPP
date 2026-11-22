@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
             // Or for the line up of this node that it accepted: the CSMS - or
-            // the controller above it - dialled it, under the name its URL ends
+            // the controller above it - connected to it, under the name its URL ends
             // with, and writes its own identification into what it asks. Like a
             // client it has one far end, and the server is told that the name
             // is that connection's as well, so the route to the server leads
@@ -663,8 +663,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         jsonRequestMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        // A line up this node accepted - its CSMS dialled it - is read
-                        // as one it dialled: what comes over it is for this node.
+                        // A line up this node accepted - its CSMS connected to it - is read
+                        // as one it made: what comes over it is for this node.
                         switch (WebSocketConnection.IsALineUp() ? ConnectionRole.Client : WebSocketConnection.Role)
                         {
 
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //
                     // That happens whenever a connection is registered under a well-known alias
                     // rather than under the identification its far end actually puts into the
-                    // network path - a local controller dialling NetworkingNode_Id.CSMS, for
+                    // network path - a local controller connecting to NetworkingNode_Id.CSMS, for
                     // instance, while the CSMS signs its requests as "csms01".
                     //
                     // An incoming request is proof that its sender is reachable this way, so
@@ -1096,8 +1096,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         jsonSendMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        // A line up this node accepted - its CSMS dialled it - is read
-                        // as one it dialled: what comes over it is for this node.
+                        // A line up this node accepted - its CSMS connected to it - is read
+                        // as one it made: what comes over it is for this node.
                         switch (WebSocketConnection.IsALineUp() ? ConnectionRole.Client : WebSocketConnection.Role)
                         {
 
@@ -1375,8 +1375,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         binaryRequestMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        // A line up this node accepted - its CSMS dialled it - is read
-                        // as one it dialled: what comes over it is for this node.
+                        // A line up this node accepted - its CSMS connected to it - is read
+                        // as one it made: what comes over it is for this node.
                         switch (WebSocketConnection.IsALineUp() ? ConnectionRole.Client : WebSocketConnection.Role)
                         {
 
@@ -1418,7 +1418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //
                     // That happens whenever a connection is registered under a well-known alias
                     // rather than under the identification its far end actually puts into the
-                    // network path - a local controller dialling NetworkingNode_Id.CSMS, for
+                    // network path - a local controller connecting to NetworkingNode_Id.CSMS, for
                     // instance, while the CSMS signs its requests as "csms01".
                     //
                     // An incoming request is proof that its sender is reachable this way, so
@@ -1720,8 +1720,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         binarySendMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        // A line up this node accepted - its CSMS dialled it - is read
-                        // as one it dialled: what comes over it is for this node.
+                        // A line up this node accepted - its CSMS connected to it - is read
+                        // as one it made: what comes over it is for this node.
                         switch (WebSocketConnection.IsALineUp() ? ConnectionRole.Client : WebSocketConnection.Role)
                         {
 

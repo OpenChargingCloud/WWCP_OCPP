@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         {
 
             logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
-            logins.TrySetPasswordAuthentication("cs001", ThePassword, "field", null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), ThePassword, "field", null, out _);
 
             Assert.Multiple(() => {
 
@@ -285,9 +285,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         {
 
             logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
-            logins.TrySetPasswordAuthentication("cs001", ThePassword, "field", null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), ThePassword, "field", null, out _);
 
-            Assert.That(logins.TrySetGroup("cs001", WebSocketLoginGroup.DefaultId, out var moved), Is.True, moved);
+            Assert.That(logins.TrySetGroup(User_Id.Parse("cs001"), WebSocketLoginGroup.DefaultId, out var moved), Is.True, moved);
             Assert.That(logins.TryRemoveGroup("field", out var error),                    Is.True, error);
 
             Assert.That(logins.GetGroup("field"), Is.Null);
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             Assert.Multiple(() => {
 
-                Assert.That(logins.TrySetPasswordAuthentication("cs001", ThePassword, "nowhere", null, out var onAdding),
+                Assert.That(logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), ThePassword, "nowhere", null, out var onAdding),
                             Is.False);
                 Assert.That(onAdding, Does.Contain("nowhere"));
 
@@ -324,10 +324,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void MovingALoginToAGroupThatIsNotThereIsRefused()
         {
 
-            logins.TrySetPasswordAuthentication("cs001", ThePassword, null, null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), ThePassword, null, null, out _);
 
             Assert.Multiple(() => {
-                Assert.That(logins.TrySetGroup("cs001", "nowhere", out var error),  Is.False);
+                Assert.That(logins.TrySetGroup(User_Id.Parse("cs001"), "nowhere", out var error),  Is.False);
                 Assert.That(error, Is.Not.Null);
                 Assert.That(logins.Logins.Single().GroupId,                        Is.EqualTo(WebSocketLoginGroup.DefaultId));
             });
@@ -347,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         {
 
             logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
-            logins.TrySetPasswordAuthentication("cs001", ThePassword, "field", null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), ThePassword, "field", null, out _);
 
             Assert.That(logins.EnabledCount, Is.EqualTo(1));
 
@@ -371,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         {
 
             logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
-            logins.TrySetPasswordAuthentication("cs001", ThePassword, "field", null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), ThePassword, "field", null, out _);
 
             Assert.That(logins.SecurePasswords(), Does.ContainKey("cs001"));
 
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             logins.TryAddOrUpdateGroup("field", "Field test", false,
                                        [AuthMethod.TOTP, AuthMethod.Certificate], [ WebSocketClientAuthentication.HTTPAuthOverTLS, WebSocketClientAuthentication.TLSClientCertificate ], I18NString.Create("the yard"), out _);
 
-            logins.TrySetPasswordAuthentication("cs001", ThePassword, "field", I18NString.Create("Ladepunkt 1"), out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), ThePassword, "field", I18NString.Create("Ladepunkt 1"), out _);
 
             var again = new WebSocketLogins(logins.Path, clock);
 
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 new JObject(
                     new JProperty("logins", new JArray(
                         new JObject(
-                            new JProperty("id",       "cs001"),
+                            new JProperty("login",    "cs001"),
                             new JProperty("password", org.GraphDefined.Vanaheimr.Hermod.HTTP.SecurePassword.Create(ThePassword).ToString()),
                             new JProperty("enabled",  true),
                             new JProperty("addedAt",  "2025-01-01T00:00:00.0000000+00:00"),
@@ -452,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             Assert.Multiple(() => {
                 Assert.That(again.Logins.Single().GroupId,  Is.EqualTo(WebSocketLoginGroup.DefaultId));
-                Assert.That(again.Verify("cs001", ThePassword), Is.True,
+                Assert.That(again.Verify(User_Id.Parse("cs001"), ThePassword), Is.True,
                             "A charging station that could sign in before the update cannot sign in after it.");
                 Assert.That(again.EnabledCount,             Is.EqualTo(1));
             });
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                     new JProperty("groups",   new JArray()),
                     new JProperty("logins", new JArray(
                         new JObject(
-                            new JProperty("id",       "cs001"),
+                            new JProperty("login",    "cs001"),
                             new JProperty("group",    "gone"),
                             new JProperty("password", org.GraphDefined.Vanaheimr.Hermod.HTTP.SecurePassword.Create(ThePassword).ToString()),
                             new JProperty("enabled",  true)

@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using OCPP16 = cloud.charging.open.protocols.OCPPv1_6;
@@ -177,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(JToken.DeepEquals(OnDisk()[1], JObject.Parse($$"""{ "id": "time", "address": "10.10.0.7", "user": "station-7", "port": 2222, "hostKeyPins": [ "{{PinB}}", "{{PinC}}" ] }""")),
                             Is.True, OnDisk().ToString());
 
-                Assert.That(station!.Node.SSHPeerTo(DomainName.Parse("10.10.0.7"))?.Port, Is.EqualTo(2222));
+                Assert.That(station!.Node.SSHPeerTo(DomainName.Parse("10.10.0.7"))?.Port, Is.EqualTo(IPPort.Parse(2222)));
                 Assert.That(Keys.Keys,                                 Does.Contain("sshPeer.time.url"));
 
             });

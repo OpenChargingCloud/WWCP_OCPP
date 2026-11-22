@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The SignSSHKey response (white paper "OCPP over SSH", section 9.3).
+    /// The SignSSHKey response (white paper "OCPP-over-SSH", section 9.3).
     /// </summary>
     public class SignSSHKeyResponse : AResponse<SignSSHKeyRequest,
                                           SignSSHKeyResponse>,

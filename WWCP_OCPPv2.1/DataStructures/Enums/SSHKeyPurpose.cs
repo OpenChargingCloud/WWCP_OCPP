@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
     /// <summary>
     /// What a charging station signs in to over SSH with a key of its own: one key per purpose
-    /// (white paper "OCPP over SSH", decision 9).
+    /// (white paper "OCPP-over-SSH", decision 9).
     /// </summary>
     public enum SSHKeyPurpose
     {
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The station's own key: the one it signs in with on the SSH connection it keeps to an SSH
         /// peer, which OCPP, the key exchange of a time server and name resolution are channels of
-        /// (white paper "OCPP over SSH", section 7.2). Called "OCPP" before.
+        /// (white paper "OCPP-over-SSH", section 7.2). Called "OCPP" before.
         /// </summary>
         Station,
 
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         SFTP,
 
         /// <summary>
-        /// The subsystem dns@open.charging.cloud of the white paper "DNS over SSH" (section 7.3), where
+        /// The subsystem dns@open.charging.cloud of the white paper "DNS-over-SSH" (section 7.3), where
         /// a name server has an SSH connection of its own. A key of its own, as time has one: it is
         /// withdrawn at a name server without the station's own key being touched, and a name server
         /// that is neither the station's CSMS nor its Local Controller never holds the key that opens

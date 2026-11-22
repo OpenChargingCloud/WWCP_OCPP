@@ -68,12 +68,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// is built, and changing it waits for the next start. Which of the two a
     /// change was is reported back rather than left to be discovered.
     ///
-    /// <b>And the CSMS, where it is the one that dials.</b> A CSMS this node
-    /// cannot dial dials the node, on this same port: written down as a
+    /// <b>And the CSMS, where it is the one that connects.</b> A CSMS this node
+    /// cannot connect to connects to the node, on this same port: written down as a
     /// connection the other end makes, let in under the name its URL ends with
     /// by the credentials it names - and from then on the line up of this
     /// node, not a charging station of it. See
-    /// <see cref="ServeTheBackEndsThatDial"/> and <see cref="ValidateStation"/>.
+    /// <see cref="ServeTheBackEndsThatConnect"/> and <see cref="StationSignIns"/>.
     ///
     /// <b>And over SSH, where somebody switches it on.</b> The charging
     /// stations may speak OCPP over the SSH server of this node as well,
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// the commissioning tools' as well, where an account signs in - see
     /// OCPPServingNode.Commissioning.cs.
     ///
-    /// <b>Moved here from the LocalController library</b>, as the dialling
+    /// <b>Moved here from the LocalController library</b>, as the connecting
     /// moved into WWCP_Node before it, so that a gateway has the same
     /// server, stores, sections and pages as a local controller - see
     /// OCPPServingNode.cs for what a kind still says of its own.
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         /// <remarks>
         /// Kept by this controller rather than read from the connection's
-        /// Login. The server leaves the checking to <see cref="ValidateStation"/>,
+        /// Login. The server leaves the checking to <see cref="StationSignIns"/>,
         /// and Hermod sets a Login only where it authenticated the upgrade
         /// itself - so to Hermod every one of these connections is anonymous,
         /// and the log said "'?' is connected" of a station it had just let in.
@@ -197,7 +197,22 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected const String StationIdKey = "webSocketServer.chargingStation";
 
         /// <summary>
-        /// The server of OCPP over SSH: built with the station server, and
+        /// What the door of the station port calls the port, who comes to it
+        /// and the ways a client authenticates there - OCPP's security
+        /// profiles - in the log and in a refusal.
+        /// </summary>
+        public static readonly WebSocketSignInWords StationWords = new () {
+                                                                       Port            = "the station port",
+                                                                       Who             = "A charging station or a back end",
+                                                                       PinnedLogin     = "the charging station",
+                                                                       Realm           = "OCPP",
+                                                                       Tags            = [ "ocpp", "station" ],
+                                                                       InboundTags     = [ "ocpp", "csms" ],
+                                                                       Authentication  = authentication => $"security profile {authentication.SecurityProfile()}"
+                                                                   };
+
+        /// <summary>
+        /// The server of OCPP-over-SSH: built with the station server, and
         /// handed to the node's SSH server while it is served.
         /// </summary>
         protected OCPPSshServer?                             ocppSshServer;
@@ -215,12 +230,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private LoginSSHSignIns?                         stationSSHSignIns;
 
         /// <summary>
-        /// Whether OCPP over SSH is served right now.
+        /// Whether OCPP-over-SSH is served right now.
         /// </summary>
         protected volatile Boolean                           ocppOverSSHServed;
 
         /// <summary>
-        /// What OCPP over SSH is called in what the SSH server says: who, the
+        /// What OCPP-over-SSH is called in what the SSH server says: who, the
         /// SSH page, the log.
         /// </summary>
         public const String OCPPOverSSHLabel = "OCPP";
@@ -247,6 +262,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// Which charging stations may sign in, and with what.
         /// </summary>
         public WebSocketLogins          WebSocketLogins       { get; private set; } = default!;
+
+        /// <summary>
+        /// Who comes in at the station port: the sign-in checks of its door,
+        /// for a charging station and a back end that connects alike.
+        /// </summary>
+        public WebSocketSignIns         StationSignIns        { get; private set; } = default!;
 
         /// <summary>
         /// The server itself, or null when this controller was built without
@@ -358,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                $"{ocppServerSettings.TCPPort ?? WebSocketServerConfiguration.DefaultTCPPort}";
 
         /// <summary>
-        /// The server of OCPP over SSH, or null when this controller was built
+        /// The server of OCPP-over-SSH, or null when this controller was built
         /// without a station server.
         /// </summary>
         public OCPPSshServer?  StationSSHServer
@@ -366,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// Whether the charging stations may connect over SSH right now: the
-        /// station server is running, OCPP over SSH is switched on, and the
+        /// station server is running, OCPP-over-SSH is switched on, and the
         /// node's SSH server serves it.
         /// </summary>
         public Boolean OCPPOverSSHServed
@@ -447,7 +468,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ClientTrust        = new ClientTrustStore(
                                      Path.Combine(directory, ClientTrustStore.DefaultDirectoryName),
                                      TimeProvider,
-                                     NodeNoun
+                                     NodeNoun,
+                                     "charging station"
                                  );
 
             ClientTrust.OnNotice += (level, message) => Log.Log(level, message, "ocpp", "tls", "trust");
@@ -475,7 +497,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             WebSocketLogins.OnChanged += () => {
 
                 foreach (var server in StationServers)
-                    ApplyStationLogins(server);
+                    StationSignIns.ApplyLogins(server);
 
                 // Over SSH, a station whose key was taken away or that was
                 // switched off is signed out now rather than at the next
@@ -490,6 +512,35 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             #endregion
 
+            #region The door of the station port, by the two stores
+
+            // What the port allows, whether it speaks TLS and what is logged
+            // are asked at every sign-in, as the stores are: a change of them
+            // is in effect at the next one. The version of OCPP is the one of
+            // the server a WebSocket came to: the server of OCPP 1.6 is handed
+            // those that ask for it.
+            StationSignIns     = new WebSocketSignIns(
+                                     Logins:               WebSocketLogins,
+                                     ClientTrust:          ClientTrust,
+                                     SignInBrake:          SignInBrake,
+                                     Log:                  Log,
+                                     Authentications:      () => ocppServerSettings.ClientAuthentication ?? WebSocketServerConfiguration.DefaultClientAuthentication,
+                                     OverTLS:              () => ocppServerTLS,
+                                     ChecksRevocation:     () => ocppServerSettings.CheckCertificateRevocation == true,
+                                     SaysSignIns:          () => ocppServerSettings.Logging?.Authentication != false,
+                                     InboundConnectionOf:  (server, name) => InboundConnectionOf(
+                                                                                 ReferenceEquals(server, ocppWebSocketServer16)
+                                                                                     ? OCPPVersion.OCPP1_6
+                                                                                     : OCPPVersion.OCPP2_1,
+                                                                                 name
+                                                                             ),
+                                     LetInAsInbound:       LetInAsInbound,
+                                     LetInOthers:          LetInAsStation,
+                                     Words:                StationWords
+                                 );
+
+            #endregion
+
             var settings        = ocppServerSettings;
             var subprotocols    = settings.Subprotocols ?? WebSocketServerConfiguration.DefaultSubprotocols;
 
@@ -499,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             #endregion
 
-            #region OCPP over SSH, on the node's SSH server
+            #region OCPP-over-SSH, on the node's SSH server
 
             // Built here, as the WebSocket server is, with what it is
             // configured as at the start; served or not while running.
@@ -515,7 +566,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                         OCPPSshServer.OCPPSubsystem,
                                         () => ocppOverSSHServed,
                                         TimeProvider,
-                                        () => SSHSubsystems.Select(subsystem => subsystem.Name)
+                                        () => SSHSubsystems.Select(subsystem => subsystem.Name),
+                                        SSHSubsystemOfLogin
                                     );
 
                 stationSSHSignIns.OnNotice += (level, message) => {
@@ -578,7 +630,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // Each WebSocket is handed by the subprotocol it asks for to the
             // node that speaks it: the server of OCPP 2.1 listens, and hands
             // one of OCPP 1.6 to the server of the node of OCPP 1.6. Who comes
-            // in is decided by each as by the other - see ValidateStation -
+            // in is decided by each as by the other - see StationSignIns -
             // and the TLS of the port is the listening server's, before a
             // subprotocol is asked for.
             ocppWebSocketServer = Node21.AttachWebSocketServer(
@@ -593,13 +645,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                       // profile 3 authenticates with its
                                       // certificate and has no password to send,
                                       // and the check built in here cannot tell
-                                      // the two apart. See ValidateStation.
+                                      // the two apart. See StationSignIns.
                                       RequireAuthentication:        false,
                                       SecWebSocketProtocols:        subprotocols21,
                                       DisableWebSocketPings:        false,
                                       WebSocketPingEvery:           settings.PingEvery,
 
-                                      ClientCertificateValidator:   ValidateStationCertificate,
+                                      ClientCertificateValidator:   StationSignIns.ValidateCertificate,
                                       AllowedTLSProtocols:          settings.MinimumTLSVersion,
 
                                       // "Ask for one", not "insist on one": a
@@ -621,23 +673,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                                   );
 
-            // A station's certificate let in by its key pin names nobody: the
-            // station is the one the pin is listed for, and its path has to say
-            // so - see ValidateStation. Told to the server as well, or it would
-            // read the common name, register the connection under it, and turn
-            // a station whose certificate names another away with a 403. The
-            // same for a back end that dials: it signs in with a WebSocket
+            // Behind the door of the station port: a station's certificate let
+            // in by its key pin names nobody, who asks for a WebSocket is
+            // decided there, and the logins with a password are put in. The
+            // same for a back end that connects: it signs in with a WebSocket
             // login as well.
-            ocppWebSocketServer.AcceptedByKeyPin = certificate => WebSocketLogins.FindKeyPin(KeyPin.FromCertificate(certificate)) is not null;
-
-            ocppWebSocketServer.OnValidateWebSocketConnection += ValidateStation;
+            StationSignIns.Guard(ocppWebSocketServer);
 
             // A WebSocket server of WWCP takes HTTP/3 unless told otherwise:
             // here what the file says from the start, and whether the port is
             // encrypted, which HTTP/3 needs, once it starts.
             ocppWebSocketServer.AcceptHTTP3 = settings.TakesHTTP3;
 
-            ApplyStationLogins(ocppWebSocketServer);
             WireOCPPServerLogging(ocppWebSocketServer);
             FollowStationsSeen(ocppWebSocketServer);
 
@@ -668,11 +715,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                                             );
 
-                    ocppWebSocketServer16.AcceptedByKeyPin = certificate => WebSocketLogins.FindKeyPin(KeyPin.FromCertificate(certificate)) is not null;
+                    StationSignIns.Guard(ocppWebSocketServer16);
 
-                    ocppWebSocketServer16.OnValidateWebSocketConnection += ValidateStation;
-
-                    ApplyStationLogins(ocppWebSocketServer16);
                     WireOCPPServerLogging(ocppWebSocketServer16);
                     FollowStationsSeen(ocppWebSocketServer16);
 
@@ -694,7 +738,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// The servers of OCPP over SSH, attached to the nodes this node has
+        /// The servers of OCPP-over-SSH, attached to the nodes this node has
         /// now; served or not while running.
         /// </summary>
         private void AttachOCPPOverSSH(WebSocketServerConfiguration settings)
@@ -746,7 +790,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// keeps nothing of it: the new node would otherwise answer none of the
         /// WebSockets the old one's server takes. Built as it was built at the
         /// start, so that what waits for a restart goes on waiting. The servers
-        /// of OCPP over SSH - the stations' and the commissioning tools' - are
+        /// of OCPP-over-SSH - the stations' and the commissioning tools' - are
         /// built again on the new nodes as well, and the subsystem put on anew:
         /// whoever was connected over SSH connects again.
         /// </remarks>
@@ -764,7 +808,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             AttachCommissioning();
 
             if (ocppSubsystem is not null && ServeTheOCPPSubsystem(Anew: true) is String problem)
-                Log.Critical($"OCPP over SSH could not be served by the rebuilt OCPP nodes: {problem}", "ocpp", "ssh");
+                Log.Critical($"OCPP-over-SSH could not be served by the rebuilt OCPP nodes: {problem}", "ocpp", "ssh");
 
             if (ocppWebSocketServer is not { } server21)
                 return;
@@ -945,7 +989,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (settings.SSH?.Enabled == true)
                 ServeOCPPOverSSH();
 
-            ServeTheBackEndsThatDial();
+            ServeTheBackEndsThatConnect();
 
             #region What is about to run out, now and every day after this
 
@@ -1086,7 +1130,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             StopServingOCPPOverSSH("the station server stopped");
 
-            StopServingTheBackEndsThatDial($"The station server of this {NodeNoun} stopped.");
+            StopServingTheBackEndsThatConnect($"The station server of this {NodeNoun} stopped.");
 
             await ocppWebSocketServer.Shutdown($"The {NodeNoun} is shutting down.");
 
@@ -1100,23 +1144,23 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private) ServeTheBackEndsThatDial() / StopServingTheBackEndsThatDial(Why)
+        #region (private) ServeTheBackEndsThatConnect() / StopServingTheBackEndsThatConnect(Why)
 
         /// <summary>
-        /// Let in, over the station port, the back ends that dial this
+        /// Let in, over the station port, the back ends that connect to this
         /// controller: the connections the other end makes, where this
         /// controller reports to a CSMS at all.
         /// </summary>
         /// <remarks>
         /// The port is the charging stations' and stays theirs: who signs in
-        /// there is decided in <see cref="ValidateStation"/>, which asks first
+        /// there is decided in <see cref="StationSignIns"/>, which asks first
         /// whether somebody comes under the name of such a connection. Nothing
         /// of it is the server's to know.
         /// </remarks>
-        private void ServeTheBackEndsThatDial()
+        private void ServeTheBackEndsThatConnect()
         {
 
-            if (ocppWebSocketServer is null || !ocppServerStarted || !LetsBackEndsDialIn)
+            if (ocppWebSocketServer is null || !ocppServerStarted || !LetsBackEndsConnect)
                 return;
 
             ServeInbound(OCPPVersion.OCPP2_1, ocppWebSocketServer);
@@ -1124,11 +1168,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (ocppWebSocketServer16 is not null)
                 ServeInbound(OCPPVersion.OCPP1_6, ocppWebSocketServer16);
 
+            ServeTheBackEndsThatConnectOverSSH();
+
             var written = Connections.Connections.Count(connection => connection.Inbound);
 
             if (written > 0)
                 Log.Notice($"{written} connection{(written == 1 ? "" : "s")} of this {NodeNoun} {(written == 1 ? "is" : "are")} made by the other end: " +
-                           $"a CSMS dials {OCPPServerURL}<its name>, the port of the charging stations.",
+                           $"a CSMS connects to {OCPPServerURL}<its name>, the port of the charging stations.",
                            "ocpp", "csms");
 
         }
@@ -1136,10 +1182,35 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// Let no back end in any more, and let go of those that are.
         /// </summary>
-        private void StopServingTheBackEndsThatDial(String Why)
+        private void StopServingTheBackEndsThatConnect(String Why)
         {
-            StopServingInbound(OCPPVersion.OCPP2_1, Why);
-            StopServingInbound(OCPPVersion.OCPP1_6, Why);
+            StopServingInbound       (OCPPVersion.OCPP2_1, Why);
+            StopServingInbound       (OCPPVersion.OCPP1_6, Why);
+            StopServingInboundOverSSH(OCPPVersion.OCPP2_1, Why);
+            StopServingInboundOverSSH(OCPPVersion.OCPP1_6, Why);
+        }
+
+        /// <summary>
+        /// Let in over the OCPP subsystem of the node's SSH server the back
+        /// ends that connect to this node over SSH: where OCPP-over-SSH is served,
+        /// the station server runs, and this node reports to a CSMS at all.
+        /// </summary>
+        /// <remarks>
+        /// Who signs in is the SSH server's to decide, by the WebSocket login
+        /// of the name an ssh:// connection the other end makes comes under -
+        /// with its password, its one-time password or its SSH key.
+        /// </remarks>
+        private void ServeTheBackEndsThatConnectOverSSH()
+        {
+
+            if (ocppSshServer is null || !ocppOverSSHServed || !ocppServerStarted || !LetsBackEndsConnect)
+                return;
+
+            ServeInbound(OCPPVersion.OCPP2_1, ocppSshServer);
+
+            if (ocppSshServer16 is not null)
+                ServeInbound(OCPPVersion.OCPP1_6, ocppSshServer16);
+
         }
 
         #endregion
@@ -1147,7 +1218,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region TryAddStationSSHKey(Id, Line, Label, GroupId, Description, CreatedBy, out Key, out Error, out NotSaved)
 
         /// <summary>
-        /// Give a charging station an SSH key for OCPP over SSH - adding the
+        /// Give a charging station an SSH key for OCPP-over-SSH - adding the
         /// station where it is not listed yet.
         /// </summary>
         /// <remarks>
@@ -1165,7 +1236,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="Key">The key, as it was added.</param>
         /// <param name="Error">Why it was refused.</param>
         /// <param name="NotSaved">True where the file could not be written.</param>
-        public Boolean TryAddStationSSHKey(String                                Id,
+        public Boolean TryAddStationSSHKey(User_Id                               Login,
                                            String?                               Line,
                                            String?                               Label,
                                            String?                               GroupId,
@@ -1179,18 +1250,24 @@ namespace cloud.charging.open.protocols.OCPP.Node
             Key       = null;
             NotSaved  = false;
 
-            var id = Id?.Trim() ?? "";
-
-            if (User_Id.TryParse(id) is User_Id userId &&
-                ExtAPI.TryGetUser(userId, out var user) &&
-                user is not null)
+            if (ExtAPI.TryGetUser(Login, out var user))
             {
-                Error = $"'{id}' is an account of this {NodeNoun}. A charging station of the same name could not sign in over SSH: " +
+                Error = $"'{Login}' is an account of this {NodeNoun}. A charging station of the same name could not sign in over SSH: " +
                          "both would sign in under one name, and a name that is both is let in as neither.";
                 return false;
             }
 
-            return WebSocketLogins.TryAddSSHKey(id, Line, Label, GroupId, Description, CreatedBy, out Key, out Error, out NotSaved);
+            return WebSocketLogins.TryAddSSHKey(
+                       Login,
+                       Line,
+                       Label,
+                       GroupId,
+                       Description,
+                       CreatedBy,
+                       out Key,
+                       out Error,
+                       out NotSaved
+                   );
 
         }
 
@@ -1199,11 +1276,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region (private) ServeOCPPOverSSH() / StopServingOCPPOverSSH(Why)
 
         /// <summary>
-        /// Serve OCPP over SSH from now on: the subsystem on the node's SSH
+        /// Serve OCPP-over-SSH from now on: the subsystem on the node's SSH
         /// server, and the stations with an SSH key let in to it.
         /// </summary>
         /// <remarks>
-        /// Said out loud where it cannot work: OCPP over SSH switched on with
+        /// Said out loud where it cannot work: OCPP-over-SSH switched on with
         /// the node's SSH server off is a door painted on a wall.
         /// </remarks>
         private void ServeOCPPOverSSH()
@@ -1223,17 +1300,21 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 ocppOverSSHServed = false;
 
-                Log.Critical($"OCPP over SSH could not be served: {problem}", "ocpp", "station", "ssh");
+                Log.Critical($"OCPP-over-SSH could not be served: {problem}", "ocpp", "station", "ssh");
                 return;
 
             }
+
+            // The back ends that connect over SSH, where the station server runs
+            // already - otherwise when it starts.
+            ServeTheBackEndsThatConnectOverSSH();
 
             var stations = WebSocketLogins.Logins.Count(login => login.Enabled && login.HasSSHKey);
             var withTotp = WebSocketLogins.Logins.Count(login => login.Enabled && login.HasTOTP);
 
             if (!SSHEnabled)
                 Log.Warning(
-                    $"OCPP over SSH is switched on, but the SSH server of this {NodeNoun} is off - so no charging station can reach it " +
+                    $"OCPP-over-SSH is switched on, but the SSH server of this {NodeNoun} is off - so no charging station can reach it " +
                     "over SSH. Switch SSH on under Configuration.",
                     "ocpp", "station", "ssh"
                 );
@@ -1248,7 +1329,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// Serve OCPP over SSH no longer: every station connected over it
+        /// Serve OCPP-over-SSH no longer: every station connected over it
         /// ends, and the subsystem goes where it serves no commissioning tool
         /// either.
         /// </summary>
@@ -1261,9 +1342,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             ocppOverSSHServed = false;
 
+            StopServingInboundOverSSH(OCPPVersion.OCPP2_1, Why);
+            StopServingInboundOverSSH(OCPPVersion.OCPP1_6, Why);
+
             ServeTheOCPPSubsystem();
 
-            Log.Info($"OCPP over SSH is no longer served: {Why}.", "ocpp", "station", "ssh");
+            Log.Info($"OCPP-over-SSH is no longer served: {Why}.", "ocpp", "station", "ssh");
 
         }
 
@@ -1341,481 +1425,66 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private) ValidateStation(...)
+        #region (protected virtual) SSHSubsystemOfLogin(Login)
 
         /// <summary>
-        /// Whether what asks for a WebSocket at the station port may come in -
-        /// a charging station, or a back end that dials this node - by its
-        /// WebSocket login: the OCPP security profiles and the login groups,
-        /// decided in one place.
+        /// The SSH subsystem a WebSocket login may open: OCPP's - unless the
+        /// kind says that the login is a connection of another protocol, which
+        /// then gets the subsystem of that one, and not OCPP's.
+        /// </summary>
+        /// <param name="Login">A WebSocket login that signed in to the SSH server.</param>
+        protected virtual String SSHSubsystemOfLogin(User_Id Login)
+
+            => OCPPSshServer.OCPPSubsystem;
+
+        #endregion
+
+        #region (private) LetInAsStation(Connection, Login, How, Detail, ByCertificate)
+
+        /// <summary>
+        /// Let in as a charging station what signed in at the station port
+        /// under a WebSocket login that is no back end that connects to this
+        /// node: said, kept on the connection, and - where it signed in with a
+        /// certificate - told to the kind of node.
         /// </summary>
         /// <remarks>
-        /// <b>One way to sign in.</b> A charging station and a back end whose
-        /// connection the other end makes sign in alike, with a WebSocket
-        /// login; the name decides afterwards which of the two it is - see
-        /// LetIn below.
-        ///
-        /// <b>Three ways in, and each is checked twice.</b> A certificate, a
-        /// password or a one-time token; and whichever it is, the server as a
-        /// whole has to allow the security profile it arrives on, and the group
-        /// the login belongs to has to allow both the profile and the method.
-        /// The group can only narrow what the server allows, never widen it.
-        ///
-        /// <b>Profile 3 first.</b> A station that authenticated with a
-        /// certificate has already been checked against the accepted chains by
-        /// the time this runs; it needs no password and is not asked for one.
-        /// If it is also listed as a login, its group has its say - which is
-        /// how a certificate station is put under the same rules as the rest.
-        /// If it is not listed, the accepted chains are the whole of the
-        /// decision, as they were before there were groups.
-        ///
-        /// <b>Then a password or a token</b>, which are the same question over
-        /// the same transport: is this the credential this identification
-        /// should be showing? What decides the profile is whether the port is
-        /// encrypted, and that was settled when the server started. TOTP is not
-        /// an OCPP security profile at all, so it is judged under the profile
-        /// its transport would have had.
-        ///
-        /// A refusal says as little as it can to the station and as much as it
-        /// can to the log. "Unauthorized" back over the wire; which
-        /// identification it was, where it came from and what was wrong with it
-        /// into the log, where somebody who is allowed to know may read it.
+        /// Who signs in is decided by <see cref="StationSignIns"/>, for a
+        /// charging station and a back end alike; the name decides
+        /// afterwards which of the two it is, and this is the station.
         /// </remarks>
-        private Task<HTTPResponse?> ValidateStation(DateTimeOffset             Timestamp,
-                                                    AWebSocketEndpoint         Server,
-                                                    WebSocketServerConnection  Connection,
-                                                    EventTracking_Id           EventTrackingId,
-                                                    CancellationToken          CancellationToken)
+        private String? LetInAsStation(WebSocketServerConnection  Connection,
+                                       String                     Login,
+                                       String                     How,
+                                       String                     Detail,
+                                       X509Certificate2?          ByCertificate)
         {
 
-            var profiles  = OCPPSecurityProfiles;
-            var from      = Connection.RemoteSocket.ToString();
-            var version   = ReferenceEquals(Server, ocppWebSocketServer16)
-                                ? OCPPVersion.OCPP1_6
-                                : OCPPVersion.OCPP2_1;
-
-            #region An address that guessed too often is told to wait
-
-            // Whatever it comes with now - but for a client certificate, which
-            // is no guess.
-            if (Connection.ClientCertificate is null &&
-                SignInBrake.IsHeldBack(Connection.RemoteSocket.IPAddress.ToString()))
+            // The name of a connection that carries another protocol is that
+            // connection's, and no charging station's: an EMSP that connects to a
+            // CSMS over OCPI does not sign in as a station over OCPP.
+            if (Connections?.Connections.FirstOrDefault(entry => entry.Inbound &&
+                                                                 entry.Use != ConnectionUse.OCPP &&
+                                                                 entry.InboundName == Login) is ConnectionEntry other)
             {
-                return TooManyGuesses(Connection);
+                return $"'{Login}' is the name '{other.Description.FirstText()}' comes under, which connects over {other.Protocol}, and no charging station";
             }
 
-            #endregion
+            if (ocppServerSettings.Logging?.Authentication != false)
+                Log.Info($"The charging station '{Login}' signed in from {Connection.RemoteSocket} with {How} ({Detail}).",
+                         "ocpp", "station", "auth");
 
-            #region Security profile 3: it brought a certificate
+            Connection.TryAddCustomData(StationIdKey, Login);
 
-            if (Connection.ClientCertificate is not null)
+            // What it signed in with is what runs out - and what a kind of
+            // node may ask it to renew before it does.
+            if (ByCertificate is not null &&
+                ByCertificate.GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType.SimpleName, false) is String named &&
+                !named.IsNullOrEmpty())
             {
-
-                if (!profiles.Contains<Byte>(3))
-                    return Refuse(Connection, "it authenticated with a certificate, and security profile 3 is not allowed here");
-
-                var keyPin = KeyPin.FromCertificate(Connection.ClientCertificate);
-
-                #region By its key pin: the login the pin is listed for, on its own path, and nobody else
-
-                // A certificate whose key pin is listed was let through the
-                // handshake by the pin alone, and its chain, its name and its
-                // dates were never looked at: anybody can wrap a key in a
-                // certificate that says anything. So its common name names
-                // nobody, and the login it is let in as is the one the pin is
-                // listed for - only on that login's own path, the last segment
-                // of the URL, which is what the CN check of OCPP's security
-                // profile 3 is for a certificate (A00.FR.511).
-                if (WebSocketLogins.FindKeyPin(keyPin) is WebSocketLogin pinned)
-                {
-
-                    var path = StationOfPath(Connection.HTTPRequest);
-
-                    if (path != pinned.Id)
-                        return Refuse(Connection, $"its key pin {keyPin} is the WebSocket login '{pinned.Id}''s, and it asked to connect as " +
-                                                  (path is null ? "nobody in particular" : $"'{path}'"));
-
-                    if (!pinned.Enabled)
-                        return Refuse(Connection, $"the WebSocket login '{pinned.Id}' is switched off here");
-
-                    if (!GroupAllows(pinned, AuthMethod.KeyPin, 3, out var whyNot))
-                        return Refuse(Connection, $"the WebSocket login '{pinned.Id}' {whyNot}");
-
-                    return LetIn(pinned.Id, $"its key pin {keyPin}", "security profile 3");
-
-                }
-
-                // Its pin was listed once and is no longer: the handshake may
-                // have let it through by that pin, before the pin was taken
-                // away - the client decides how long it waits between the two.
-                // Such a certificate skipped the accepted chains, so it is held
-                // against them now, rather than read as one that passed them.
-                if (WebSocketLogins.WasEverListed(keyPin) &&
-                    !ClientTrust.Validate(Connection.ClientCertificate, null, ocppServerSettings.CheckCertificateRevocation == true).Accepted)
-                {
-                    return Refuse(Connection, $"its key pin {keyPin} is no WebSocket login's any more, and its certificate does not lead to an accepted chain");
-                }
-
-                #endregion
-
-                // The certificate itself was held against the accepted chains
-                // during the handshake; a connection that got this far with one
-                // has passed.
-                var named  = Connection.ClientCertificate.GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType.SimpleName, false);
-                var who    = named.IsNullOrEmpty() ? Connection.ClientCertificate.Subject : named;
-
-                // Listed as a login as well? Then it is in a group, and the
-                // group decides. Not listed is not an error: the chain was the
-                // whole decision before groups existed and still is - for a
-                // charging station, and for a back end that dials alike.
-                if (!named.IsNullOrEmpty() &&
-                    WebSocketLogins.TryGet(named, out var certificateLogin))
-                {
-
-                    if (!certificateLogin.Enabled)
-                        return Refuse(Connection, $"the WebSocket login '{named}' is switched off here");
-
-                    // Either by key pin or by certificate authority, never both
-                    // (EVQI Transport, key pins, 5.4): a login listed with key
-                    // pins is let in by them, and a certificate an authority
-                    // issued to its name with another key is a key it was never
-                    // given - the very thing a pin is there to refuse.
-                    if (certificateLogin.HasKeyPin)
-                        return Refuse(Connection, $"the WebSocket login '{named}' is let in by its key pins, and the key of this certificate is none of them");
-
-                    if (!GroupAllows(certificateLogin, AuthMethod.Certificate, 3, out var why))
-                        return Refuse(Connection, $"the WebSocket login '{named}' {why}");
-
-                }
-
-                return LetIn(who, "a certificate", "security profile 3", ByCertificate: Connection.ClientCertificate);
-
+                StationSignedInWithCertificate(named, ByCertificate);
             }
 
-            if (!profiles.Contains<Byte>(1) && !profiles.Contains<Byte>(2))
-                return Refuse(Connection, "only security profile 3 is allowed here and it presented no certificate");
-
-            #endregion
-
-            #region Which profile a credential on this port would be
-
-            var profile = (Byte) (ocppServerTLS ? 2 : 1);
-
-            if (!profiles.Contains(profile))
-                return Refuse(
-                           Connection,
-                           profile == 1
-                               ? $"the station port is unencrypted, so this would be security profile 1, which is not allowed here"
-                               : $"the station port is encrypted, so this would be security profile 2, which is not allowed here"
-                       );
-
-            #endregion
-
-            #region A password
-
-            if (Connection.HTTPRequest?.Authorization is HTTPBasicAuthentication basicAuthentication)
-            {
-
-                var id = basicAuthentication.Username;
-
-                // Verified before the group is consulted, and always. The
-                // store hashes a fixed word for an identification it does not
-                // have, so that an unknown one does not answer faster than a
-                // known one - and asking the group first would put that back:
-                // a login in a group that forbids passwords would be refused
-                // without the hashing, and the difference is measurable.
-                var right   = WebSocketLogins.Verify(id, basicAuthentication.Password);
-                var known   = WebSocketLogins.TryGet(id, out var login);
-                var method  = AuthMethod.Basic;
-
-                // What a client that knows nothing but Basic has of a TOTP
-                // secret: the one-time password, as its password - where the
-                // secret is not bound to the TLS session, which Basic can not
-                // say. Checked as a one-time password, and held to the group as
-                // one.
-                if (!right && known && login!.HasTOTP && login.TOTP?.TLSChannelBinding != true &&
-                    WebSocketLogins.VerifyTOTP(id, basicAuthentication.Password, false, null))
-                {
-                    right   = true;
-                    method  = AuthMethod.TOTP;
-                }
-
-                if (!known || !login!.Enabled || !right)
-                    return Refuse(Connection, $"'{id}' is no WebSocket login that may sign in, or the password is wrong");
-
-                if (!GroupAllows(login, method, profile, out var why))
-                    return Refuse(Connection, $"the WebSocket login '{id}' {why}");
-
-                return LetIn(id, method == AuthMethod.TOTP ? "a one-time password, as its password" : "a password",
-                             $"security profile {profile}" +
-                             (ocppServerTLS ? "" : ", on an unencrypted port, so what it signed in with crossed the network in the clear"));
-
-            }
-
-            #endregion
-
-            #region A one-time token
-
-            if (Connection.HTTPRequest?.Authorization is HTTPTOTPAuthentication totpAuthentication)
-            {
-
-                var id = totpAuthentication.Login;
-
-                // "Authorization: TOTP" does not say whether its token is bound
-                // to the TLS session: the login says it. A bound one is checked
-                // with keying material of the connection it came over, and only
-                // the TLS of QUIC - a WebSocket over HTTP/3 - exports any: .NET
-                // does not offer it on an SslStream. Over HTTP/1.1 and HTTP/2
-                // such a token cannot be checked at all. Said out loud, because
-                // the alternative is a login whose token is computed correctly
-                // and refused anyway, with nothing in the log to explain it.
-                var known     = WebSocketLogins.TryGet(id, out var login);
-                var bound     = login?.TOTP?.TLSChannelBinding == true;
-                var material  = Connection.TOTPTLSExporterMaterial;
-
-                // Derived before the group is consulted, and always, for the
-                // same reason as the password above.
-                var right = WebSocketLogins.VerifyTOTP(id, totpAuthentication.TOTP, bound, material);
-
-                if (!known || !login!.Enabled || !right)
-                    return Refuse(Connection, WhyNotThisToken(id, login, bound, material, "the one-time token is wrong"));
-
-                if (!GroupAllows(login, AuthMethod.TOTP, profile, out var why))
-                    return Refuse(Connection, $"the WebSocket login '{id}' {why}");
-
-                return LetIn(id, $"a one-time token{(bound ? " bound to its connection" : "")}",
-                             $"security profile {profile}" +
-                             (ocppServerTLS ? "" : ", on an unencrypted port, so the token is replayable while it stands"));
-
-            }
-
-            #endregion
-
-            #region A one-time token in a header of its own, under the name of its path
-
-            // What says nothing of who sends it: the login is the one the path
-            // names, and the header says whether the token is bound to the TLS
-            // session - which has to be what the login says.
-            if (Connection.HTTPRequest?.Authorization is null &&
-                Connection.HTTPRequest?.TOTP is TOTPHTTPHeader header &&
-                StationOfPath(Connection.HTTPRequest) is String byPath)
-            {
-
-                var known     = WebSocketLogins.TryGet(byPath, out var login);
-                var bound     = header.Type == TOTPHTTPHeaderType.TLSChannelBinding;
-                var material  = Connection.TOTPTLSExporterMaterial;
-
-                var right     = WebSocketLogins.VerifyTOTP(byPath, header.Value, bound, material);
-
-                if (!known || !login!.Enabled || !right)
-                    return Refuse(Connection, WhyNotThisToken(byPath, login, bound, material, "the one-time token is wrong"));
-
-                if (!GroupAllows(login, AuthMethod.TOTP, profile, out var why))
-                    return Refuse(Connection, $"the WebSocket login '{byPath}' {why}");
-
-                return LetIn(byPath, $"a one-time password{(bound ? " bound to its TLS session" : "")}",
-                             $"security profile {profile}" +
-                             (ocppServerTLS ? "" : ", on an unencrypted port, so the token is replayable while it stands"));
-
-            }
-
-            #endregion
-
-            return Refuse(Connection, "it sent no credentials");
-
-
-            #region (local) WhyNotThisToken(Id, Login, Bound, Material, Otherwise)
-
-            // Why a one-time token was refused, said out loud where the binding
-            // is the reason: the alternative is a token that is computed right
-            // and refused all the same, with nothing in the log to say why.
-            String WhyNotThisToken(String           Id,
-                                   WebSocketLogin?  Login,
-                                   Boolean          Bound,
-                                   Byte[]?          Material,
-                                   String           Otherwise)
-            {
-
-                var bindingAsked = Login?.TOTP?.TLSChannelBinding == true;
-
-                if (Login is { Enabled: true } && bindingAsked && Material is not { Length: > 0 })
-                    return $"'{Id}' has a one-time token bound to the TLS session of its connection, and came over a connection whose TLS exports nothing to check it with: " +
-                            "that is checked over HTTP/3 only. It has to open its WebSocket over HTTP/3";
-
-                // "Authorization: TOTP" does not say whether its token is bound,
-                // so a raw one is told from a wrong one by nothing: both are not
-                // the token bound to this connection.
-                if (Login is { Enabled: true } && bindingAsked)
-                    return $"'{Id}' has a one-time token bound to the TLS session of its connection, and " +
-                           (Bound ? "what it sent is not the one bound to this connection" : "sent one that is not bound") +
-                            ": it has to open its WebSocket over HTTP/3 and bind its one-time password";
-
-                return $"'{Id}' is no WebSocket login that may sign in, or {Otherwise}";
-
-            }
-
-            #endregion
-
-            #region (local) LetIn(LoginId, How, Detail, ByCertificate)
-
-            // Let in under the given WebSocket login: as the back end whose
-            // connection the other end makes comes under its name, or as a
-            // charging station. The name decides which: what comes under the
-            // name of a connection the other end makes is let in as that or not
-            // at all - only on its own path, and while it is switched on - and
-            // nothing else where this node serves no charging stations.
-            Task<HTTPResponse?> LetIn(String             LoginId,
-                                      String             How,
-                                      String             Detail,
-                                      X509Certificate2?  ByCertificate = null)
-            {
-
-                var path     = StationOfPath(Connection.HTTPRequest);
-                var backEnd  = InboundConnectionOf(version, LoginId) ??
-                               (path is not null ? InboundConnectionOf(version, path) : null);
-
-                if (backEnd is not null)
-                {
-
-                    if (backEnd.InboundName != LoginId)
-                        return Refuse(Connection, $"'{path}' is the name '{backEnd.Description.FirstText()}' comes under, and it signed in as '{LoginId}'");
-
-                    if (path != LoginId)
-                        return Refuse(Connection, $"'{LoginId}' is a back end that dials this {NodeNoun}, and asked to connect as " +
-                                                  (path is null ? "nobody in particular" : $"'{path}'"));
-
-                    if (!backEnd.AutoConnect)
-                        return Refuse(Connection, $"'{LoginId}' is the name '{backEnd.Description.FirstText()}' comes under, a connection that is switched off");
-
-                    LetInAsInbound(Connection, backEnd);
-
-                    if (ocppServerSettings.Logging?.Authentication != false)
-                        Log.Info($"The back end '{LoginId}' dialled this {NodeNoun} from {from} and signed in with {How} ({Detail}).",
-                                 "ocpp", "csms", "auth");
-
-                    return Task.FromResult<HTTPResponse?>(null);
-
-                }
-
-                if (ocppServerSettings.Logging?.Authentication != false)
-                    Log.Info($"The charging station '{LoginId}' signed in from {from} with {How} ({Detail}).",
-                             "ocpp", "station", "auth");
-
-                Connection.TryAddCustomData(StationIdKey, LoginId);
-
-                // What it signed in with is what runs out - and what a kind of
-                // node may ask it to renew before it does.
-                if (ByCertificate is not null &&
-                    ByCertificate.GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType.SimpleName, false) is String named &&
-                    !named.IsNullOrEmpty())
-                {
-                    StationSignedInWithCertificate(named, ByCertificate);
-                }
-
-                return Task.FromResult<HTTPResponse?>(null);
-
-            }
-
-            #endregion
-
-            #region (local) GroupAllows(Login, Method, Profile, out Why)
-
-            // Whether the group of this login lets it in this way, on this
-            // security profile.
-            Boolean GroupAllows(WebSocketLogin  Login,
-                                AuthMethod            Method,
-                                Byte                  Profile,
-                                out String            Why)
-            {
-
-                Why = "";
-
-                var group = WebSocketLogins.GroupOf(Login);
-
-                // A login whose group has gone missing is refused rather than
-                // waved through: the group is what decides about it, and a
-                // decision that cannot be found is not a yes.
-                if (group is null)
-                {
-                    Why = $"belongs to the login group '{Login.GroupId}', which this {NodeNoun} does not have";
-                    return false;
-                }
-
-                if (!group.Enabled)
-                {
-                    Why = $"is in the login group '{group.Id}', which is switched off";
-                    return false;
-                }
-
-                if (!group.Allows(Method))
-                {
-                    Why = $"is in the login group '{group.Id}', which does not accept {Method.AsText()}";
-                    return false;
-                }
-
-                if (!group.Allows(ClientAuthenticationProfiles.OfProfile(Profile)))
-                {
-                    Why = $"is in the login group '{group.Id}', which does not accept {ClientAuthenticationProfiles.OfProfile(Profile).ToText()} (security profile {Profile})";
-                    return false;
-                }
-
-                return true;
-
-            }
-
-            #endregion
-
-
-            Task<HTTPResponse?> Refuse(WebSocketServerConnection Connection, String Because)
-            {
-
-                // A guess, where it came with something: counted against its
-                // address, by the node's sign-in brake.
-                if (Connection.HTTPRequest is { Authorization: not null } or { TOTP: not null })
-                    SignInBrake.CountFailed(Connection.RemoteSocket.IPAddress.ToString());
-
-                if (ocppServerSettings.Logging?.Authentication != false)
-                    Log.Warning($"A charging station or a back end at {Connection.RemoteSocket} was turned away: {Because}.",
-                                "ocpp", "station", "auth");
-
-                // Hermod sets the request on the connection before it asks any
-                // validator, so this is never null in practice. If it ever is,
-                // the answer is still no: returning null here would mean "let
-                // them in", and a refusal that cannot be written is a refusal
-                // all the same.
-                if (Connection.HTTPRequest is null)
-                    throw new InvalidOperationException(
-                              "A charging station connection reached the validator without an HTTP request; refusing it."
-                          );
-
-                var refusal = new HTTPResponse.Builder(Connection.HTTPRequest) {
-                                  HTTPStatusCode  = HTTPStatusCode.Unauthorized,
-                                  Server          = Server.HTTPServiceName,
-                                  Connection      = org.GraphDefined.Vanaheimr.Hermod.HTTP.ConnectionType.Close
-                              };
-
-                // What this server takes on this port, and nothing about who
-                // asked: the schemes its enabled login groups allow for the
-                // security profile a credential here would be. A port that
-                // takes certificates and nothing else challenges with nothing.
-                var asProfile = (Byte) (ocppServerTLS ? 2 : 1);
-
-                var taken     = profiles.Contains(asProfile)
-                                    ? WebSocketLogins.Groups.
-                                          Where     (group => group.Allows(ClientAuthenticationProfiles.OfProfile(asProfile))).
-                                          SelectMany(group => group.AuthMethods).
-                                          ToHashSet ()
-                                    : [];
-
-                var basic     = taken.Contains(AuthMethod.Basic) ? WWWAuthenticate.Basic("OCPP") : null;
-                var totp      = taken.Contains(AuthMethod.TOTP)  ? WWWAuthenticate.TOTP ("OCPP") : null;
-
-                if ((basic is not null && totp is not null ? basic.And(totp) : basic ?? totp) is WWWAuthenticate challenge)
-                    refusal.WWWAuthenticate = challenge;
-
-                return Task.FromResult<HTTPResponse?>(refusal.AsImmutable);
-
-            }
+            return null;
 
         }
 
@@ -1832,195 +1501,51 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected override Boolean InboundLoginLetsIn(ConnectionEntry Connection)
 
             => Connection.InboundName is String name &&
-               (!WebSocketLogins.TryGet(name, out var login) || login.Enabled);
+               StationSignIns.LoginLetsIn(name);
 
         /// <summary>
         /// Why the other end of a connection it makes can not sign in, as its
         /// WebSocket login and the station port are now - or null.
         /// </summary>
-        protected override String? WhyInboundCanNotSignIn(ConnectionEntry      Connection,
-                                                          cloud.charging.open.protocols.WWCP.WebSockets.WWCPWebSocketServer  Server)
+        protected override String? WhyInboundCanNotSignIn(ConnectionEntry                                                Connection,
+                                                          cloud.charging.open.protocols.WWCP.NetworkingNode.IWWCPServer  Server)
         {
 
             var name = Connection.InboundName ?? "";
 
-            // Without a login, nothing but a certificate issued to its name
-            // lets it in: one of a chain the station port accepts, over TLS.
-            if (!WebSocketLogins.TryGet(name, out var login))
-                return ocppServerStarted && ocppServerTLS && ClientTrust.EnabledCount > 0
-                           ? null
-                           : $"there is no WebSocket login '{name}' it could sign in with" +
-                             (ocppServerStarted && !ocppServerTLS
-                                  ? ", and without TLS no certificate either"
-                                  : ", and no accepted chain a certificate issued to its name could lead to") +
-                             ". Add one under WebSocket logins, with what it signs in with.";
-
-            if (!login.Enabled)
-                return $"its WebSocket login '{name}' is switched off.";
-
-            if (WebSocketLogins.GroupOf(login) is not { } group)
-                return $"its WebSocket login '{name}' belongs to the login group '{login.GroupId}', which this {NodeNoun} does not have.";
-
-            if (!group.Enabled)
-                return $"its WebSocket login '{name}' is in the login group '{group.Id}', which is switched off.";
-
-            // Bound to the TLS session: checked with keying material only the
-            // TLS of HTTP/3 exports.
-            if (!login.HasPassword && login.TOTP?.TLSChannelBinding == true && !Server.AcceptHTTP3)
-                return "its one-time password is bound to its TLS session, which is checked over HTTP/3 only, and the station port takes no WebSockets over HTTP/3.";
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (private) TooManyGuesses(Connection)
-
-        /// <summary>
-        /// "Too Many Requests", to an address that signed in wrong too often
-        /// within a minute.
-        /// </summary>
-        private Task<HTTPResponse?> TooManyGuesses(WebSocketServerConnection Connection)
-        {
-
-            // Hermod sets the request before it asks: without one the answer
-            // is still no, and null would be yes.
-            if (Connection.HTTPRequest is not HTTPRequest request)
-                throw new InvalidOperationException("A connection reached the door of the station port without an HTTP request; refusing it.");
-
-            Log.Warning($"{Connection.RemoteSocket} is told to wait at the station port: it signed in wrong {SignInBrake.MaxFailedPerMinute} times within a minute.",
-                        "ocpp", "station", "auth");
-
-            return Task.FromResult<HTTPResponse?>(
-                       new HTTPResponse.Builder(request) {
-                           HTTPStatusCode  = HTTPStatusCode.TooManyRequests,
-                           Server          = ocppWebSocketServer?.HTTPServiceName,
-                           Connection      = org.GraphDefined.Vanaheimr.Hermod.HTTP.ConnectionType.Close
-                       }.AsImmutable
-                   );
-
-        }
-
-        #endregion
-
-        #region (private) ValidateStationCertificate(...)
-
-        /// <summary>
-        /// Whether the certificate a charging station presented during the TLS
-        /// handshake leads to a chain this local controller accepts.
-        /// </summary>
-        /// <remarks>
-        /// A station that presents no certificate is let through here and
-        /// judged by <see cref="ValidateStation"/>, which knows whether a
-        /// password would do instead.
-        ///
-        /// A station that presents one this controller does not accept is
-        /// turned away here rather than allowed to fall back to a password: a
-        /// station sends a certificate because it was configured for security
-        /// profile 3, so it has no password to fall back to, and a certificate
-        /// that does not check out is worth a line in the log rather than a
-        /// quiet second attempt.
-        ///
-        /// <b>Or by its key pin.</b> A certificate whose key pin is listed for
-        /// a charging station that is switched on is let through by that pin
-        /// alone, and its chain, name and dates are not looked at - that is what
-        /// a station without a certificate authority behind it relies on. Which
-        /// station it is, and whether it may come in as the one it asks to be,
-        /// is decided in <see cref="ValidateStation"/>. Every other certificate
-        /// is held against the accepted chains as before; a key pin of a station
-        /// that is switched off opens nothing here.
-        /// </remarks>
-        private TLSValidationResult ValidateStationCertificate(Object                                                             Sender,
-                                                               System.Security.Cryptography.X509Certificates.X509Certificate2?    Certificate,
-                                                               System.Security.Cryptography.X509Certificates.X509Chain?           Chain,
-                                                               org.GraphDefined.Vanaheimr.Hermod.TCP.ITCPServer                   Server,
-                                                               System.Net.Security.SslPolicyErrors                                PolicyErrors)
-        {
-
-            if (Certificate is null)
-                return new TLSValidationResult(IsValid: true, Errors: null, Warnings: null);
-
-            #region By its key pin
-
-            if (WebSocketLogins.FindKeyPin(KeyPin.FromCertificate(Certificate)) is WebSocketLogin pinned &&
-                pinned.Enabled)
+            // Over SSH: the SSH server lets in what signs in with the WebSocket
+            // login of its name - with its password, its one-time password or
+            // its SSH key - and nothing without one.
+            if (Connection.IsSSH)
             {
 
-                // Hermod's validator rather than a comparison here: it also
-                // refuses a key that cannot be one - a malformed key, an
-                // unknown algorithm, a point that is not on its curve - before
-                // any pin is compared (EVQI Transport, key pins, 10.7).
-                var validation = KeyPinValidator.Validate(
-                                     new KeyPinPolicy(pinned.Pins.Select(keyPin => keyPin.Pin)),
-                                     Certificate
-                                 );
+                if (!SSHEnabled)
+                    return $"the SSH server of this {NodeNoun} is off. Switch SSH on under Configuration.";
 
-                if (ocppServerSettings.Logging?.Authentication != false)
-                    Log.Log(
-                        validation.IsAccepted ? LogLevel.Debug : LogLevel.Warning,
-                        validation.IsAccepted
-                            ? $"The certificate of '{Certificate.Subject}' was accepted by its key pin {validation.Pin}, which is the charging station '{pinned.Id}''s."
-                            : $"The certificate of '{Certificate.Subject}' was refused: {validation.Reason}",
-                        "ocpp", "station", "tls"
-                    );
+                if (!WebSocketLogins.TryGet(WebSocketLogins.LoginOf(name), out var sshLogin))
+                    return $"there is no WebSocket login '{name}' it could sign in to the SSH server with. Add one under WebSocket logins, " +
+                            "with its password, its one-time password or its SSH key.";
 
-                return validation.IsAccepted
-                           ? TLSValidationResult.Success()
-                           : TLSValidationResult.Failed(validation.Reason ?? "The key was refused.");
+                if (!sshLogin.Enabled)
+                    return $"its WebSocket login '{name}' is switched off.";
+
+                if (WebSocketLogins.GroupOf(sshLogin) is not { } sshGroup)
+                    return $"its WebSocket login '{name}' belongs to the login group '{sshLogin.GroupId}', which this {NodeNoun} does not have.";
+
+                if (!sshGroup.Enabled)
+                    return $"its WebSocket login '{name}' is in the login group '{sshGroup.Id}', which is switched off.";
+
+                return null;
 
             }
 
-            #endregion
-
-            var result = ClientTrust.Validate(
-                             Certificate,
-                             Chain,
-                             ocppServerSettings.CheckCertificateRevocation == true
-                         );
-
-            if (ocppServerSettings.Logging?.Authentication != false)
-                Log.Log(
-                    result.Accepted ? LogLevel.Debug : LogLevel.Warning,
-                    result.Accepted
-                        ? $"The certificate of '{result.Subject}' was {result.Reason}."
-                        : $"The certificate of '{result.Subject}' was refused: {result.Reason}.",
-                    "ocpp", "station", "tls"
-                );
-
-            return new TLSValidationResult(
-                       IsValid:   result.Accepted,
-                       Errors:    result.Accepted ? null : [ Error.Create(result.Reason) ],
-                       Warnings:  null
-                   );
+            return StationSignIns.WhyCanNotSignIn(name, ocppServerStarted, Server);
 
         }
 
         #endregion
 
-        #region (private) ApplyStationLogins(Server) / WireOCPPServerLogging(Server)
-
-        /// <summary>
-        /// Put the charging station logins into the server, and take out the
-        /// ones that are no longer there.
-        /// </summary>
-        /// <remarks>
-        /// Removed and not only added: a station whose password was taken away
-        /// must stop being able to use it now, and a dictionary that is only
-        /// ever added to would let it in until the next start.
-        /// </remarks>
-        private void ApplyStationLogins(AWebSocketServer Server)
-        {
-
-            var wanted = WebSocketLogins.SecurePasswords();
-
-            foreach (var gone in Server.ClientLogins.Keys.Where(id => !wanted.ContainsKey(id)).ToArray())
-                Server.ClientLogins.TryRemove(gone, out _);
-
-            foreach (var login in wanted)
-                Server.ClientLogins[login.Key] = login.Value;
-
-        }
+        #region (private) WireOCPPServerLogging(Server)
 
         /// <summary>
         /// What of this server ends up in the event log, and what does not.
@@ -2119,7 +1644,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region (private) WireOCPPOverSSHLogging(Server)
 
         /// <summary>
-        /// What of OCPP over SSH ends up in the event log: the same switches as
+        /// What of OCPP-over-SSH ends up in the event log: the same switches as
         /// the WebSocket port's, read inside the handlers for the same reason.
         /// </summary>
         /// <remarks>
@@ -2191,7 +1716,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// Whether a connection of the station port was let in as a back end
-        /// that dials this controller, and not as a charging station.
+        /// that connects to this controller, and not as a charging station.
         /// </summary>
         private static Boolean IsABackEnd(WebSocketServerConnection Connection)
 
@@ -2199,34 +1724,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// What a connection of the station port is called in the log: the
-        /// charging station, or the back end that dialled.
+        /// charging station, or the back end that connected.
         /// </summary>
         private static String WhoIsOn(WebSocketServerConnection Connection)
 
             => $"The {(IsABackEnd(Connection) ? "back end" : "charging station")} '{StationOn(Connection)}'";
-
-        /// <summary>
-        /// The charging station the URL of an upgrade names: its last segment,
-        /// percent-decoded, as OCPP 2.1 Part 4, 3.1.1 has it - or null where it
-        /// names none.
-        /// </summary>
-        /// <remarks>
-        /// Read the way the WebSocket server reads it when it registers the
-        /// connection, so that the station this controller let in and the one
-        /// the connection is registered as cannot be two.
-        /// </remarks>
-        private static String? StationOfPath(HTTPRequest? Request)
-        {
-
-            if (Request is null)
-                return null;
-
-            var path     = Request.Path.ToString();
-            var station  = path[(path.LastIndexOf('/') + 1)..];
-
-            return station.Length > 0 ? station : null;
-
-        }
 
         /// <summary>
         /// Which charging station a connection over SSH is: the networking
@@ -2381,7 +1883,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             );
 
             // What a kind of node says of its server beside this - a CSMS how
-            // many of the nodes below it it dials.
+            // many of the nodes below it it connects to.
             OCPPServerStateJSON((JObject) json["state"]!);
 
             return json;
@@ -2412,9 +1914,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// A charging station whose login was removed: what a kind of node
         /// forgets of it beside - a CSMS, the certificates it knows of it.
         /// </summary>
-        /// <param name="StationId">The charging station.</param>
+        /// <param name="Login">The login of the charging station.</param>
         /// <returns>What was forgotten beside, said as the end of a sentence (", and ..."), or nothing.</returns>
-        protected internal virtual String StationLoginRemoved(String StationId)
+        protected internal virtual String StationLoginRemoved(User_Id Login)
             => "";
 
         #endregion
@@ -2422,7 +1924,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region (private) TakeEffectAfter(Answered, SwitchedOnOrOff, SSHOnOrOff, HTTP3OnOrOff)
 
         /// <summary>
-        /// Switch the server, OCPP over SSH and HTTP/3 on or off as the settings
+        /// Switch the server, OCPP-over-SSH and HTTP/3 on or off as the settings
         /// say by then, once the given task is done: what a change that came
         /// over a connection of this server waits for, so that its answer is
         /// out before the connection may go.
@@ -2434,7 +1936,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </remarks>
         /// <param name="Answered">What it waits for.</param>
         /// <param name="SwitchedOnOrOff">Whether the change switched the server on or off.</param>
-        /// <param name="SSHOnOrOff">Whether it switched OCPP over SSH on or off.</param>
+        /// <param name="SSHOnOrOff">Whether it switched OCPP-over-SSH on or off.</param>
         /// <param name="HTTP3OnOrOff">Whether it switched HTTP/3 on or off.</param>
         private async Task TakeEffectAfter(Task     Answered,
                                            Boolean  SwitchedOnOrOff,
@@ -2538,7 +2040,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// the configuration file's rather than the change's.
         /// </summary>
         /// <param name="NotSaved">True where the configuration file could not be read or written: nothing about the change was wrong, and nothing was changed.</param>
-        /// <param name="TakesEffectAfter">What switching the server, HTTP/3 or OCPP over SSH on or off waits for - the response to the request that asked for it, which a connection dropped before would take with it; at once where null. Everything else is written and in effect when this returns.</param>
+        /// <param name="TakesEffectAfter">What switching the server, HTTP/3 or OCPP-over-SSH on or off waits for - the response to the request that asked for it, which a connection dropped before would take with it; at once where null. Everything else is written and in effect when this returns.</param>
         public Boolean TryUpdateOCPPServerConfiguration(JObject                           JSON,
                                                         [NotNullWhen(false)] out String?  Error,
                                                         out Boolean                       NotSaved,
@@ -2618,7 +2120,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 }
 
-                // OCPP over SSH on and off while the station server runs: the
+                // OCPP-over-SSH on and off while the station server runs: the
                 // subsystem comes and goes, and its sessions end with it.
                 else if (ocppServerStarted &&
                          before.SSH?.Enabled != ocppServerSettings.SSH?.Enabled)

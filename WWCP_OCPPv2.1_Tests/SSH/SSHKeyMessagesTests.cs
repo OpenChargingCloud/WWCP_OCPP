@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
 {
 
     /// <summary>
-    /// The messages of the white paper "OCPP over SSH" (section 9.3): SignSSHKey and SSHKeySigned between a
+    /// The messages of the white paper "OCPP-over-SSH" (section 9.3): SignSSHKey and SSHKeySigned between a
     /// charging station and its CSMS, InstallSSHKey, DeleteSSHKey and GetInstalledSSHKeys from a CSMS to a
     /// Local Controller - as JSON, and over a connection. And the request gate of a node, which keeps a
     /// request from being processed and says why.
@@ -123,8 +123,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
                       );
 
             var result = await station.ConnectOCPPClient(URL.Parse($"ssh://{Id}@127.0.0.1:{listener!.LocalEndPoint.Port}"),
-                                                         Ssh: new SshClientOptions {
-                                                                  Username          = Id,
+                                                         Ssh: new SSHClientOptions {
+                                                                  Username          = User_Id.Parse(Id),
                                                                   VerifyHostKey     = blob => blob.AsSpan().SequenceEqual(hostKey.PublicKeyBlob),
                                                                   Credentials       = [ stationKey ],
                                                                   RequireStrictKex  = true
@@ -531,7 +531,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
                 Assert.That(SSHKeyPurposeExtensions.TryParse("ocpp"),     Is.Null);
                 Assert.That(SSHKeyPurposeExtensions.TryParse("NTS"),      Is.EqualTo(SSHKeyPurpose.NTS));
                 Assert.That(SSHKeyPurposeExtensions.TryParse("SFTP"),     Is.EqualTo(SSHKeyPurpose.SFTP));
-                // The key for name servers over SSH (white paper "DNS over SSH", section 7.3).
+                // The key for name servers over SSH (white paper "DNS-over-SSH", section 7.3).
                 Assert.That(SSHKeyPurposeExtensions.TryParse("DNS"),      Is.EqualTo(SSHKeyPurpose.DNS));
                 Assert.That(SSHKeyPurposeExtensions.TryParse("dns"),      Is.Null);
                 Assert.That(SSHKeyPurpose.DNS.AsText(),                   Is.EqualTo("DNS"));

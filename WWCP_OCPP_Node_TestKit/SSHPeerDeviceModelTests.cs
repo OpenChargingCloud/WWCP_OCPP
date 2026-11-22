@@ -21,6 +21,8 @@ using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -38,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
     /// then holds - in its file, among its peers, and in its Device Model.
     /// </summary>
     /// <remarks>
-    /// The node is built and not started, and nothing is dialled: a peer's
+    /// The node is built and not started, and nothing is connected to: a peer's
     /// connection is made when something first needs it.
     /// </remarks>
     public abstract class SSHPeerDeviceModelTests : ABridgeTests
@@ -171,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(JToken.DeepEquals(onDisk[1], JObject.Parse($$"""{ "id": "time", "address": "10.10.0.7", "user": "cs001", "port": 2222, "hostKeyPins": [ "{{PinB}}" ], "onMismatch": "record" }""")),
                             Is.True, onDisk.ToString());
 
-                Assert.That(station!.Node.SSHPeerTo(DomainName.Parse("10.10.0.7"))?.Port, Is.EqualTo(2222));
+                Assert.That(station!.Node.SSHPeerTo(DomainName.Parse("10.10.0.7"))?.Port, Is.EqualTo(IPPort.Parse(2222)));
                 Assert.That(ShownPeers(),                                    Is.EqualTo(new[] { "lc", "time" }));
 
             });
@@ -291,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                             String.Join(" | ", changed.Select(result => result.AttributeStatusInfo?.AdditionalInfo)));
                 Assert.That((port, user, cas, pins),                         Is.EqualTo(("2222", "station-7", PinB, "")));
                 Assert.That(now,                                             Is.Not.Null.And.Not.SameAs(was), "a peer that changed kept the connection of before");
-                Assert.That(now?.Port,                                       Is.EqualTo(2222));
+                Assert.That(now?.Port,                                       Is.EqualTo(IPPort.Parse(2222)));
 
                 Assert.That(StatusesOf(readOnly),                            Is.All.EqualTo(OCPP21.SetVariableStatus.Rejected));
                 Assert.That(StatusesOf(nothing),                             Is.All.EqualTo(OCPP21.SetVariableStatus.Rejected), "a peer was left with nothing to hold it to");
@@ -418,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
             Assert.That(Shown("FileTransferKeyStates"),   Is.EqualTo("cs001=Unconfirmed,cs001-fw=Unconfirmed"));
 
-            Assert.That(station.Node.ConfirmFileTransferKey("lc", "cs001", keys[0]), Is.Null);
+            Assert.That(station.Node.ConfirmFileTransferKey("lc", User_Id.Parse("cs001"), keys[0]), Is.Null);
 
             Assert.That(Shown("FileTransferKeyStates"),   Is.EqualTo("cs001=Confirmed,cs001-fw=Unconfirmed"));
 

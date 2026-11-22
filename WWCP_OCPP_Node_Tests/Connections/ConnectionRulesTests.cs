@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
     /// What a node writes down as a connection: one rule for every kind of
     /// node - any kind of node at the other end, a back end spoken to as
     /// that, a node named spoken to by its name, a charging station only by
-    /// its name - and rules narrowed for a node, as for one that dials
+    /// its name - and rules narrowed for a node, as for one that connects
     /// downwards alone.
     /// </summary>
     /// <remarks>
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         /// <summary>
         /// What a CSMS says of its connections.
         /// </summary>
-        private static ConnectionRules DiallingDownwards
+        private static ConnectionRules ConnectingDownwards
 
             => new () {
                    Types                  = ConnectionRules.NodesBelow,
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         }
 
         [Test]
-        public void AChargingStationItDialsHasToBeNamed()
+        public void AChargingStationItConnectsToHasToBeNamed()
         {
 
             Assert.That(store.TryAddConnection(I18NString.Create("A station"), URL.Parse("wss://station.example.org/cs001"), "ChargingStation", true, null, null,
@@ -159,13 +159,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         #endregion
 
-        #region A node narrowed to dialling downwards
+        #region A node narrowed to connecting downwards
 
         [Test]
         public void ItOffersWhatIsBelowIt()
         {
 
-            store.Rules = DiallingDownwards;
+            store.Rules = ConnectingDownwards;
 
             var json = store.ToJSON();
 
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AConnectionIsRoutedUnderTheNameOfTheNodeItLeadsTo()
         {
 
-            store.Rules = DiallingDownwards;
+            store.Rules = ConnectingDownwards;
 
             Assert.That(store.TryAddConnection(I18NString.Create("Station 7"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                out var id, out var error,
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             });
 
             // And read back as it was written.
-            var again = new ConnectionStore(store.Path) { Rules = DiallingDownwards };
+            var again = new ConnectionStore(store.Path) { Rules = ConnectingDownwards };
 
             Assert.That(again.Connections.Single(one => one.Id == id).RemoteNodeId, Is.EqualTo("cs007"));
 
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AConnectionThatNamesNoNodeIsNotWrittenDown()
         {
 
-            store.Rules = DiallingDownwards;
+            store.Rules = ConnectingDownwards;
 
             Assert.That(store.TryAddConnection(I18NString.Create("Station 7"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                out _, out var error),
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ANameAnOCPPNodeKeepsForItselfIsNoNodeBelow(String Name)
         {
 
-            store.Rules = DiallingDownwards;
+            store.Rules = ConnectingDownwards;
 
             Assert.That(store.TryAddConnection(I18NString.Create("Station 7"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                out _, out var error,
@@ -240,10 +240,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         }
 
         [Test]
-        public void ItDialsNoBackEndNoSSHAndNoOCPP16AndIsNotDialled()
+        public void ItConnectsToNoBackEndNoSSHAndNoOCPP16AndIsNotConnected()
         {
 
-            store.Rules = DiallingDownwards;
+            store.Rules = ConnectingDownwards;
 
             Assert.Multiple(() => {
 
@@ -262,10 +262,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                             Is.False);
                 Assert.That(old, Does.Contain("OCPP 1.6"));
 
-                Assert.That(store.TryAddConnection(I18NString.Create("Dialled"), URL.Parse("wss://csms.example.org:9443/cs007"), "ChargingStation", true, null, null,
-                                                   out _, out var dialled, Inbound: true),
+                Assert.That(store.TryAddConnection(I18NString.Create("Inbound"), URL.Parse("wss://csms.example.org:9443/cs007"), "ChargingStation", true, null, null,
+                                                   out _, out var inbound, Inbound: true),
                             Is.False);
-                Assert.That(dialled, Does.Contain("is one it dials"));
+                Assert.That(inbound, Does.Contain("is one it makes"));
 
             });
 
@@ -277,14 +277,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AChangeKeepsTheNodeUnlessItSaysAnother()
         {
 
-            store.Rules = DiallingDownwards;
+            store.Rules = ConnectingDownwards;
 
             Assert.That(store.TryAddConnection(I18NString.Create("Station 7"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                out var id, out var error,
                                                RemoteNodeId: "cs007"),
                         Is.True, error);
 
-            var revision = store.DialRevisionOf(id!);
+            var revision = store.ConnectionRevisionOf(id!);
 
             // Nothing said of it: kept.
             Assert.That(store.TryUpdateConnection(id, I18NString.Create("Station seven"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
@@ -292,16 +292,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                         Is.True, error);
 
             Assert.That(store.Connections.Single().RemoteNodeId, Is.EqualTo("cs007"));
-            Assert.That(store.DialRevisionOf(id!),               Is.EqualTo(revision));
+            Assert.That(store.ConnectionRevisionOf(id!),               Is.EqualTo(revision));
 
-            // Another one: dialled again, under the other name.
+            // Another one: connected to again, under the other name.
             Assert.That(store.TryUpdateConnection(id, I18NString.Create("Station seven"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                   out error,
                                                   RemoteNodeId: "cs008"),
                         Is.True, error);
 
             Assert.That(store.Connections.Single().RemoteNodeId, Is.EqualTo("cs008"));
-            Assert.That(store.DialRevisionOf(id!),               Is.GreaterThan(revision));
+            Assert.That(store.ConnectionRevisionOf(id!),               Is.GreaterThan(revision));
 
             // None at all: not for a node that routes by it.
             Assert.That(store.TryUpdateConnection(id, I18NString.Create("Station seven"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
@@ -319,9 +319,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         /// <summary>
         /// A gateway is what a charging station, a local controller or another
-        /// gateway dials as its back end, and what a CSMS dials downwards:
-        /// "Gateway" is written down by a node that dials its back end and by
-        /// one that dials downwards, named after the node it leads to, and
+        /// gateway connects to as its back end, and what a CSMS connects to downwards:
+        /// "Gateway" is written down by a node that connects to its back end and by
+        /// one that connects downwards, named after the node it leads to, and
         /// read back as itself - not as the charging station a connection that
         /// says nothing is there.
         /// </summary>
@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.That(store.Connections.Single(connection => connection.Id == up).ConnectionType, Is.EqualTo(ConnectionType.Gateway));
 
-            store.Rules = DiallingDownwards;
+            store.Rules = ConnectingDownwards;
 
             Assert.That(store.TryAddConnection(I18NString.Create("A gateway below"), URL.Parse("wss://gateway7.example.org:9443/csms-01"), "Gateway", true, null, null,
                                                out var down, out error,

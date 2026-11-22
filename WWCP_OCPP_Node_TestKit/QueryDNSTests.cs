@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         private String         directory   = "";
         private DNSServer      nameServer  = default!;
-        private UInt16         port;
+        private IPPort         port;
         private IBridgedNode?  station;
 
         #endregion
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
             await nameServer.Start();
 
-            port               = nameServer.ActiveTCPUnicastSocket!.Value.Port.ToUInt16();
+            port               = nameServer.ActiveTCPUnicastSocket!.Value.Port;
             directory          = TestNodes.TemporaryDirectory("query-dns");
 
             var configuration  = TestNodes.Offline;

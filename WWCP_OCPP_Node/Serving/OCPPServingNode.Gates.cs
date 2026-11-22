@@ -218,10 +218,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                            ? (false, onProbation)
                            : null;
 
-            // A line the CSMS dialled itself: this node accepted it, and it is
+            // A line the CSMS made itself: this node accepted it, and it is
             // the CSMS's all the same - let in by what a connection of this node
             // names, and never on probation, which is for a key this node
-            // learned of a server it dialled.
+            // learned of a server it connected to.
             if (IsInbound(Connection))
                 return null;
 
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             }
 
             // Reached over this node's own servers, and not the CSMS that
-            // dialled in over one of them: another station.
+            // connected over one of them: another station.
             if (Node.Routing.LookupNetworkingNode(Destination.Next, out var reachability) &&
                 reachability.Client is null &&
                 !LeadsToInbound(Destination.Next))
@@ -286,8 +286,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// Why a request addressed to this node itself is not processed: where it is one of the
         /// <see cref="CSMSOnlyActions"/> and came over a connection this node accepted rather than over
-        /// the one it dialled - or null. A connection the CSMS dialled itself, written down as a
-        /// connection of this node, is its line up as much as one the node dialled - and a commissioning
+        /// the one it made - or null. A connection the CSMS made itself, written down as a
+        /// connection of this node, is its line up as much as one the node made - and a commissioning
         /// tool's, an account let in to speak to this node as its CSMS would (see
         /// OCPPServingNode.Commissioning.cs).
         /// </summary>

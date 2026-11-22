@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// </para>
     /// </remarks>
     /// <param name="Node">The node whose store keeps them.</param>
-    /// <param name="NamesToKeepResolving">The names the CSMS connections are dialled by.</param>
+    /// <param name="NamesToKeepResolving">The names the CSMS connections are made by.</param>
     /// <param name="LegalTimeNames">The names of the NTS-KE servers of the legal time.</param>
     /// <param name="ResolveWithout">How names are resolved with the store as it is (no root given) or without the given root; as the node's WWCPNode.ResolveWithAsync does it where none is given.</param>
     public sealed class DNSRootCertificates(WWCPNode                                                              Node,

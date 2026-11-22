@@ -1009,7 +1009,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         ///// <param name="DNSClient">An optional DNS client to use.</param>
         ///// <param name="AutoStart">Start the server immediately.</param>
         //public CentralSystemWSServer AttachWebSocketService(String       HTTPServerName               = CentralSystemWSServer.DefaultHTTPServiceName,
-        //                                                    IIPAddress?  IPAddress                    = null,
+        //                                                    IPAddress?  IPAddress                    = null,
         //                                                    IPPort?      TCPPort                      = null,
         //                                                    I18NString?  Description                  = null,
 

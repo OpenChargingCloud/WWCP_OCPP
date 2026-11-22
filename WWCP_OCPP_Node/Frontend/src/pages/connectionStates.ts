@@ -9,8 +9,8 @@ import { nodeNoun } from '../settings';
  * is on its back end, and it is believed. So what is said here is what the
  * station said, and nothing it did not - "since" and "next" are counted on the
  * station's clock, which the browser's need not agree with, and a connection
- * changed on the page is said to be dialled as it was, which it is for the
- * moment it takes the station to hang it up and dial it as it is now.
+ * changed on the page is said to be connected as it was, which it is for the
+ * moment it takes the station to hang it up and connect to it as it is now.
  */
 
 
@@ -55,11 +55,11 @@ export function between(from: string, to: string): string {
 
 /**
  * Where a connection stands, or null where there is nothing to say: one that
- * is only written down was never meant to be dialled, and the page says that
+ * is only written down was never meant to be connected to, and the page says that
  * already.
  *
  * @param entry  the connection as it is written down now.
- * @param state  what the station says became of it, if it dialled it.
+ * @param state  what the station says became of it, if it connected to it.
  * @param now    the station's clock when it said so.
  */
 export function stateLine(entry:  Pick<StationConnection, 'url' | 'ocppVersion' | 'autoConnect'> & Pick<Partial<StationConnection>, 'inbound'>,
@@ -104,12 +104,12 @@ export function stateLine(entry:  Pick<StationConnection, 'url' | 'ocppVersion' 
     const notes: string[] = [];
 
     if (entry.inbound === true) {
-        // Nothing of it is dialled here: what is said of it is all there is to say.
+        // Nothing of it is connected to from here: what is said of it is all there is to say.
     }
 
     else if (state.url !== entry.url || state.ocppVersion !== entry.ocppVersion)
-        notes.push(`Dialled as ${state.url} (${state.ocppVersion}). ` +
-                   `It is hung up and dialled as written here now, as soon as this ${nodeNoun()} has taken the change.`);
+        notes.push(`Connected to ${state.url} (${state.ocppVersion}). ` +
+                   `It is hung up and reconnected as written here now, as soon as this ${nodeNoun()} has taken the change.`);
 
     if (entry.inbound !== true && !entry.autoConnect && (state.status === 'connected' || state.status === 'lost' || state.status === 'trying'))
         notes.push(`No longer set to connect by itself. It is hung up as soon as this ${nodeNoun()} has taken the change.`);
@@ -120,14 +120,14 @@ export function stateLine(entry:  Pick<StationConnection, 'url' | 'ocppVersion' 
 
 
 /**
- * The connections this station dialled that are no longer written down.
+ * The connections this station made that are no longer written down.
  *
  * A connection removed on the page is hung up at once, but not in the same
  * moment, so for the time in between the station may still be on a back end
  * that the page no longer mentions. They are listed rather than left out.
  *
  * @param connections  what is written down now.
- * @param states       what the station says of what it dialled.
+ * @param states       what the station says of what it connected to.
  */
 export function noLongerWrittenDown(connections:  Pick<StationConnection, 'id'>[],
                                     states:       Record<string, ConnectionState>): [ string, ConnectionState ][] {

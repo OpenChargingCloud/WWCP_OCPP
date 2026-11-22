@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 lock (loginComponentsLock)
                 {
 
-                    var stations  = WebSocketLogins.Logins.Select(login => login.Id).ToHashSet(StringComparer.Ordinal);
+                    var stations  = WebSocketLogins.Logins.Select(login => login.Login.ToString()).ToHashSet(StringComparer.OrdinalIgnoreCase);
                     var groups    = WebSocketLogins.Groups.Select(group => group.Id).ToHashSet(StringComparer.Ordinal);
 
                     var shownStations = Node.GetComponentConfigs(nameof(OCPPv2_1.StationLoginController)).     OfType<OCPPv2_1.StationLoginController>().     ToArray();
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             #region IStationLoginsSource
 
             public IEnumerable<String> Stations
-                => [.. Logins.Logins.Select(login => login.Id)];
+                => [.. Logins.Logins.Select(login => login.Login.ToString())];
 
             public IEnumerable<String> Groups
                 => [.. Logins.Groups.Select(group => group.Id)];
@@ -174,8 +174,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public String? StationValue(String Station, String Variable)
             {
 
-                if (!Logins.TryGet(Station, out var login))
+                if (User_Id.TryParse(Station) is not User_Id stationLogin ||
+                    !Logins.TryGet(stationLogin, out var login))
+                {
                     return null;
+                }
 
                 return Variable switch {
                            "Group"               => login.GroupId,
@@ -245,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                  ToArray();
 
                 if (String.Equals(Component.Name, nameof(OCPPv2_1.StationLoginController), StringComparison.OrdinalIgnoreCase))
-                    return !Logins.TryGet(instance, out _) &&
+                    return !(User_Id.TryParse(instance) is User_Id instanceLogin && Logins.TryGet(instanceLogin, out _)) &&
                            named.Any(entry => OCPPv2_1.StationLoginController.FirstWaysIn.Contains(entry.Variable.Name, StringComparer.OrdinalIgnoreCase) &&
                                               !String.IsNullOrWhiteSpace(entry.AttributeValue))
                                ? OCPPv2_1.StationLoginController.NewInstance(this, instance)
@@ -433,6 +436,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 void SetStation(String Station, IReadOnlyList<Int32> Indices)
                 {
 
+                    // The instance of a component of OCPP is a name: the login it is.
+                    var stationLogin = User_Id.Parse(Station);
+
                     var taken = Taken(Indices, (variable, value) => (OCPPv2_1.StationLoginController.TryCheck(Station, variable, value, out var refusal), refusal));
 
                     if (taken.Count == 0)
@@ -445,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     if (taken.TryGetValue("Listed", out var listed) && !Boolean.Parse(listed.Value))
                     {
 
-                        var removed = Logins.TryRemove(Station, out var removeError, out var removeNotSaved);
+                        var removed = Logins.TryRemove(stationLogin, out var removeError, out var removeNotSaved);
 
                         Done(listed.Index, removed, removeError, removeNotSaved);
 
@@ -467,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     var group = taken.TryGetValue("Group", out var groupEntry) ? groupEntry.Value : null;
 
                     String? GroupWhileNew()
-                        => Logins.TryGet(Station, out _) ? null : group;
+                        => Logins.TryGet(stationLogin, out _) ? null : group;
 
                     #region The password
 
@@ -477,9 +483,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         String? error; Boolean notSaved; Boolean done;
 
                         if (password.Value.Length == 0)
-                            done = Logins.TryClearPassword(Station, out error, out notSaved);
+                            done = Logins.TryClearPassword(stationLogin, out error, out notSaved);
                         else
-                            done = Logins.TrySetPasswordAuthentication(Station, password.Value, GroupWhileNew(), null, out error, out notSaved);
+                            done = Logins.TrySetPasswordAuthentication(stationLogin, password.Value, GroupWhileNew(), null, out error, out notSaved);
 
                         Done(password.Index, done, error, notSaved);
                         if (done) said.Add(password.Value.Length == 0 ? "its password taken away" : "a password");
@@ -499,7 +505,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                       ? Enum.Parse<TOTPHashAlgorithm>(algorithm.Value, ignoreCase: true)
                                                       : null;
 
-                        var done = Logins.TrySetTOTPAuthentication(Station,
+                        var done = Logins.TrySetTOTPAuthentication(stationLogin,
                                                      secret.Value,
                                                      taken.TryGetValue("TOTPValidity", out var validity) ? TimeSpan.FromSeconds(Int64.Parse(validity.Value, CultureInfo.InvariantCulture)) : null,
                                                      taken.TryGetValue("TOTPLength",   out var length)   ? UInt32.Parse(length.Value, CultureInfo.InvariantCulture)                     : null,
@@ -524,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                         if (taken.TryGetValue("TOTPSecret", out var cleared))
                         {
-                            var done = Logins.TryClearTOTP(Station, out var error, out var notSaved);
+                            var done = Logins.TryClearTOTP(stationLogin, out var error, out var notSaved);
                             Done(cleared.Index, done, error, notSaved);
                             if (done) said.Add("its one-time token taken away");
                         }
@@ -539,7 +545,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     if (taken.TryGetValue("TOTPChannelBinding", out var binding))
                     {
-                        var done = Logins.TrySetTOTPBinding(Station, Boolean.Parse(binding.Value), out var error, out var notSaved);
+                        var done = Logins.TrySetTOTPBinding(stationLogin, Boolean.Parse(binding.Value), out var error, out var notSaved);
                         Done(binding.Index, done, error, notSaved);
                         if (done) said.Add($"its one-time token {(Boolean.Parse(binding.Value) ? "bound" : "not bound")} to its connection");
                     }
@@ -550,14 +556,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     if (taken.TryGetValue("SSHKeyAdd", out var keyToAdd))
                     {
-                        var done = Node.TryAddStationSSHKey(Station, keyToAdd.Value, null, GroupWhileNew(), null, "OCPP", out var key, out var error, out var notSaved);
+                        var done = Node.TryAddStationSSHKey(stationLogin, keyToAdd.Value, null, GroupWhileNew(), null, "OCPP", out var key, out var error, out var notSaved);
                         Done(keyToAdd.Index, done, error, notSaved);
                         if (done) said.Add($"the SSH key {key!.Fingerprint}");
                     }
 
                     if (taken.TryGetValue("SSHKeyRemove", out var keyToRemove))
                     {
-                        var done = Logins.TryRemoveSSHKey(Station, keyToRemove.Value.Trim(), out var error, out var notSaved);
+                        var done = Logins.TryRemoveSSHKey(stationLogin, keyToRemove.Value.Trim(), out var error, out var notSaved);
                         Done(keyToRemove.Index, done, error, notSaved);
                         if (done) said.Add($"the SSH key {keyToRemove.Value.Trim()} taken away");
                     }
@@ -589,7 +595,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         else
                         {
 
-                            var held     = Logins.TryGet(Station, out var login) ? login.Pins.Select(pin => pin.Pin).ToArray() : [];
+                            var held     = Logins.TryGet(stationLogin, out var login) ? login.Pins.Select(pin => pin.Pin).ToArray() : [];
                             var done     = true;
                             String? error = null;
                             var notSaved = false;
@@ -598,11 +604,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                             // replaced keeps a way in throughout.
                             foreach (var pin in wanted.Where(pin => !held.Contains(pin)))
                                 if (done)
-                                    done = Logins.TryAddKeyPin(Station, pin.ToHex(), null, GroupWhileNew(), null, "OCPP", out _, out error, out notSaved);
+                                    done = Logins.TryAddKeyPin(stationLogin, pin.ToHex(), null, GroupWhileNew(), null, "OCPP", out _, out error, out notSaved);
 
                             foreach (var pin in held.Where(pin => !wanted.Contains(pin)))
                                 if (done)
-                                    done = Logins.TryRemoveKeyPin(Station, pin.ToHex(), out error, out notSaved);
+                                    done = Logins.TryRemoveKeyPin(stationLogin, pin.ToHex(), out error, out notSaved);
 
                             Done(pins.Index, done, error, notSaved);
                             if (done) said.Add("its key pins");
@@ -618,7 +624,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     if (groupEntry.Value is not null && results[groupEntry.Index] is null)
                     {
 
-                        var login = Logins.TryGet(Station, out var listedLogin) ? listedLogin : null;
+                        var login = Logins.TryGet(stationLogin, out var listedLogin) ? listedLogin : null;
 
                         // Put into it already when it was listed by this request.
                         if (login is not null && String.Equals(login.GroupId, group, StringComparison.OrdinalIgnoreCase))
@@ -626,7 +632,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                         else
                         {
-                            var done = Logins.TrySetGroup(Station, group, out var error, out var notSaved);
+                            var done = Logins.TrySetGroup(stationLogin, group, out var error, out var notSaved);
                             Done(groupEntry.Index, done, error, notSaved);
                             if (done) said.Add($"the group '{group}'");
                         }
@@ -635,14 +641,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     if (taken.TryGetValue("Enabled", out var enabled))
                     {
-                        var done = Logins.TrySetEnabled(Station, Boolean.Parse(enabled.Value), out var error, out var notSaved);
+                        var done = Logins.TrySetEnabled(stationLogin, Boolean.Parse(enabled.Value), out var error, out var notSaved);
                         Done(enabled.Index, done, error, notSaved);
                         if (done) said.Add(Boolean.Parse(enabled.Value) ? "let in" : "shut out");
                     }
 
                     if (taken.TryGetValue("Listed", out var stays))
                     {
-                        var isListed = Logins.TryGet(Station, out _);
+                        var isListed = Logins.TryGet(stationLogin, out _);
                         if (isListed)
                             Result(stays.Index, OCPPv2_1.SetVariableStatus.Accepted);
                         else

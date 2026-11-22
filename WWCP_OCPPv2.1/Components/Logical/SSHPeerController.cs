@@ -91,8 +91,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// An SSH peer is a host the node keeps one SSH connection to. OCPP, the
     /// key exchange of a time server and name resolution are channels of that
     /// connection where they say SSHConnection Shared, and none of them owns
-    /// it (white papers "OCPP over SSH", section 7.2; "NTS Key Establishment
-    /// over SSH", section 7; "DNS over SSH", section 6.3).
+    /// it (white papers "OCPP-over-SSH", section 7.2; "NTS Key Establishment
+    /// over SSH", section 7; "DNS-over-SSH", section 6.3).
     /// </para>
     /// <para>
     /// Peers come and go through Peers of the instance without a name, as name

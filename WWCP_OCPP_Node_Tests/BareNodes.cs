@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
                 File.WriteAllText(configFile, Configuration.ToString());
 
             var node = new WWCPNode(
-                       HTTPPort:          IPPort.Parse(TestPorts.Free()),
+                       HTTPPort:          TestPorts.Free(),
                        AccountsPath:      Path.Combine(Directory, "accounts"),
                        ConfigFile:        new WWCPConfigFile(configFile),
                        DNSClient:         new DNSClient([
@@ -132,8 +132,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
         #region Data
 
-        private readonly List<(String Host, String Version)>  dialled  = [];
-        private readonly List<AWWCPNetworkingNode>             made     = [];
+        private readonly List<(String Host, String Version)>  connections  = [];
+        private readonly List<AWWCPNetworkingNode>             made         = [];
         private          OCPPv2_1.CS.TestChargingStationNode   chargingStation;
         private          OCPPv1_6.TestChargePointNode          chargePoint;
 
@@ -169,8 +169,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
             this.Bridge  = new DeviceModelBridge(Node,
                                                  NamesToKeepResolving,
-                                                 DialsOCPP2_1: () => Dials("2.1"),
-                                                 DialsOCPP1_6: () => Dials("1.6"));
+                                                 ConnectsOCPP2_1: () => Connects("2.1"),
+                                                 ConnectsOCPP1_6: () => Connects("1.6"));
 
             (chargePoint, chargingStation) = Built();
 
@@ -179,10 +179,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
         #endregion
 
 
-        #region TryDial(URL, OCPPVersion, out Error)
+        #region TryConnect(URL, OCPPVersion, out Error)
 
         /// <inheritdoc/>
-        public Boolean TryDial(String       URL,
+        public Boolean TryConnect(String       URL,
                                String       OCPPVersion,
                                out String?  Error)
         {
@@ -199,8 +199,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
                 return false;
             }
 
-            lock (dialled)
-                dialled.Add((uri.Host, OCPPVersion));
+            lock (connections)
+                connections.Add((uri.Host, OCPPVersion));
 
             Error = null;
             return true;
@@ -293,22 +293,22 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
         #endregion
 
-        #region (private) Dials(Version) / NamesToKeepResolving()
+        #region (private) Connects(Version) / NamesToKeepResolving()
 
-        private Boolean Dials(String Version)
+        private Boolean Connects(String Version)
         {
-            lock (dialled)
-                return dialled.Any(connection => connection.Version == Version);
+            lock (connections)
+                return connections.Any(connection => connection.Version == Version);
         }
 
         /// <summary>
-        /// The names the CSMS connections are dialled by, leaving out those
-        /// dialled by an address.
+        /// The names the CSMS connections are made by, leaving out those
+        /// made by an address.
         /// </summary>
         private IEnumerable<String> NamesToKeepResolving()
         {
-            lock (dialled)
-                return [.. dialled.Select  (connection => connection.Host).
+            lock (connections)
+                return [.. connections.Select  (connection => connection.Host).
                                    Where   (host       => !System.Net.IPAddress.TryParse(host.Trim('[', ']'), out _)).
                                    Distinct(StringComparer.OrdinalIgnoreCase)];
         }

@@ -1,5 +1,5 @@
 // What the pages of the connections need beyond what every node shows alike:
-// the rows of short fields in their forms, the keys a node dials with, and
+// the rows of short fields in their forms, the keys a node connects with, and
 // where a connection stands. In the colours of the kind of node that uses
 // it, after its own "@use '@node/styles/node' as * with (...)":
 //
@@ -44,7 +44,7 @@
 
 }
 
-// The certificate this station is dialling with, marked where somebody is
+// The certificate this station is connecting with, marked where somebody is
 // looking for it rather than only in a chip.
 .card.in-use {
     border-color: $color-accent;
@@ -74,7 +74,7 @@
 
 }
 
-// A connection removed on the page and still dialled until the next start.
+// A connection removed on the page and still connected until the next start.
 .removed-state {
 
     margin-top:  0.5rem;

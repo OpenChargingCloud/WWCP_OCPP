@@ -122,8 +122,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.SSH
             var result = await chargePoint.ConnectOCPPClient(
                                    URL.Parse($"ssh://{Id}@127.0.0.1:{listener!.LocalEndPoint.Port}"),
                                    Subprotocols: Offered,
-                                   Ssh: new SshClientOptions {
-                                            Username       = Id,
+                                   Ssh: new SSHClientOptions {
+                                            Username       = User_Id.Parse(Id),
                                             VerifyHostKey  = blob => blob.AsSpan().SequenceEqual(hostKey.PublicKeyBlob),
                                             Credentials    = [ chargerKey ]
                                         }

@@ -43,17 +43,17 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// </summary>
     /// <remarks>
     /// WWCP_OCPP_Node's TLSClientControllerSource, given the station's key pins (WWCPNode.KeyPins.cs),
-    /// the key pins of its client certificates, and the signature check of OCPPDialling.SSHClient.cs:
+    /// the key pins of its client certificates, and the signature check of OCPPConnecting.SSHClient.cs:
     /// the same signers, without a time window for a pin set, whose version keeps an older one from
     /// coming back.
     /// </remarks>
-    public partial class OCPPDialling
+    public partial class OCPPConnecting
     {
 
         #region Data
 
         // When the response to a SetVariables request is out: what a signed pin
-        // set or a change of trust ends - a connection dropped, or dialled
+        // set or a change of trust ends - a connection dropped, or made
         // again - waits for it, since it is the connection the answer goes over.
         internal  readonly ResponsesSent            responsesSent  = new ();
 
@@ -92,8 +92,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// connection over TLS there is now, and none for one there is not.
         /// </summary>
         /// <remarks>
-        /// Told by the store after every change it wrote, before the station dials what changed, so that a
-        /// connection dialled again has its instance by then.
+        /// Told by the store after every change it wrote, before the station connects to what changed, so that a
+        /// connection made again has its instance by then.
         /// </remarks>
         public void FollowTLSClientComponents(OCPPv2_1.IDeviceModelNode? Node)
 
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// certificate for all of them; during a renewal, or with back ends of several operators, it is
         /// more, and a Local Controller must know the one each connection to it shows. So every one is
         /// said, comma separated as ServerKeyPins are, the oldest connection's - the one in charge, where it
-        /// dials by itself - first. A connection that names no certificate, or one whose certificate has
+        /// connects by itself - first. A connection that names no certificate, or one whose certificate has
         /// not come back yet, shows no key, and adds none.
         /// </remarks>
         public virtual IEnumerable<KeyPin> ClientKeyPins()

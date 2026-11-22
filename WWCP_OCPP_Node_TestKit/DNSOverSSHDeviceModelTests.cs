@@ -584,7 +584,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         #region T17_ACSMSDoesNotResolveItsOwnNameThroughItsOwnConnection()
 
         /// <summary>
-        /// T17: the CSMS is dialled at ssh://lc.example:22, and the only name
+        /// T17: the CSMS is connected to at ssh://lc.example:22, and the only name
         /// server would be SSHConnection Shared to lc.example. Rejected,
         /// CSMSUnreachable, although lc.example resolves now: it would not
         /// after the next reconnect, with no connection yet to resolve it
@@ -616,14 +616,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             try
             {
 
-                var port = nameServer.ActiveTCPUnicastSocket!.Value.Port.ToUInt16();
+                var port = nameServer.ActiveTCPUnicastSocket!.Value.Port;
 
                 Assert.That(station!.Node.TryUpdateDNSConfiguration(JObject.Parse($$"""
                                 { "servers": [ { "id": "plain", "address": "127.0.0.1", "port": {{port}}, "transport": "TCP", "queryTimeoutSeconds": 3 } ], "maxRetries": 0, "useCache": false }
                                 """), out var error),
                             Is.True, error);
 
-                Assert.That(station.TryDial("ssh://lc.example:22", "2.1", out error), Is.True, error);
+                Assert.That(station.TryConnect("ssh://lc.example:22", "2.1", out error), Is.True, error);
 
                 // It resolves now.
                 var now      = await station.Node.ResolveWithAsync(new JObject(), [ "lc.example" ], TimeSpan.FromSeconds(10));
@@ -780,7 +780,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         #region WhatAnAttemptOverSSHCameToIsToldAsItsSecurityEvent()
 
         /// <summary>
-        /// The security events of section 7.4, to each version that is dialled:
+        /// The security events of section 7.4, to each version that is connected:
         /// a host key nothing vouches for is InvalidNameServerHostKey whether
         /// it was refused or used all the same, a host key that changed is
         /// NameServerHostKeyChanged, a key that was not taken
@@ -791,8 +791,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         public void WhatAnAttemptOverSSHCameToIsToldAsItsSecurityEvent()
         {
 
-            Assert.That(station!.TryDial("ws://127.0.0.1:9/cs", "2.1", out var error), Is.True, error);
-            Assert.That(station .TryDial("ws://127.0.0.1:9/cs", "1.6", out error),     Is.True, error);
+            Assert.That(station!.TryConnect("ws://127.0.0.1:9/cs", "2.1", out var error), Is.True, error);
+            Assert.That(station .TryConnect("ws://127.0.0.1:9/cs", "1.6", out error),     Is.True, error);
 
             var server  = new DNSServerConfig(IPv4Address.Parse("192.0.2.54"), IPPort.SSH, DNSTransport.SSH);
             var at      = DateTimeOffset.UtcNow;

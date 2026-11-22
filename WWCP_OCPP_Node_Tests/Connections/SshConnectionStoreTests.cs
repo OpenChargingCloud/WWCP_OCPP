@@ -175,10 +175,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ACertificateIsRefusedOverSSH_AndAPasswordOrAOneTimePasswordIsTaken()
         {
 
-            Assert.That(store.TryAddTOTPAuthentication("cs001", "shared-secret-not-the-real-one", I18NString.Create("A TOTP login"), out var totp, out var error),
+            Assert.That(store.TryAddTOTPAuthentication(User_Id.Parse("cs001"), "shared-secret-not-the-real-one", I18NString.Create("A TOTP login"), out var totp, out var error),
                         Is.True, error);
 
-            Assert.That(store.TryAddPasswordAuthentication("cs001", "not-the-real-one", I18NString.Create("A Basic login"), out var basic, out error),
+            Assert.That(store.TryAddPasswordAuthentication(User_Id.Parse("cs001"), "not-the-real-one", I18NString.Create("A Basic login"), out var basic, out error),
                         Is.True, error);
 
             Assert.Multiple(() => {
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AConnectionThatOffersNoKey_NamesNothingBesideThat_AndHasAPassword()
         {
 
-            Assert.That(store.TryAddPasswordAuthentication("cs001", "not-the-real-one", I18NString.Create("A Basic login"), out var basic, out var error),
+            Assert.That(store.TryAddPasswordAuthentication(User_Id.Parse("cs001"), "not-the-real-one", I18NString.Create("A Basic login"), out var basic, out var error),
                         Is.True, error);
 
             store.KnownSshKeyIds = () => [ SshClientKeys.OwnId ];
@@ -332,19 +332,19 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                                                SshTrust: new SshTrustSettings("HostKey", null, 120)),
                         Is.True, error);
 
-            var dialled = URL.Parse(AnSshURL);
+            var connectedTo = URL.Parse(AnSshURL);
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryLearnHostKey(withoutTOFU!, dialled, Fingerprint, out _), Is.False,
+                Assert.That(store.TryLearnHostKey(withoutTOFU!, connectedTo, Fingerprint, out _), Is.False,
                             "A connection that does not trust on first use learned a key.");
 
                 Assert.That(store.TryLearnHostKey(id!, URL.Parse("ssh://cs001@elsewhere.example.org"), Fingerprint, out _), Is.False,
                             "A key shown by where the connection went before was learned for where it goes now.");
 
-                Assert.That(store.TryLearnHostKey(id!, dialled, Fingerprint, out error), Is.True, error);
+                Assert.That(store.TryLearnHostKey(id!, connectedTo, Fingerprint, out error), Is.True, error);
 
-                Assert.That(store.TryLearnHostKey(id!, dialled, "SHA256:another", out _), Is.False,
+                Assert.That(store.TryLearnHostKey(id!, connectedTo, "SHA256:another", out _), Is.False,
                             "A learned key was overwritten.");
 
             });
@@ -526,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             });
 
-            // An MD5 pin from before is kept, so that the connection is not lost, and said not to be dialled.
+            // An MD5 pin from before is kept, so that the connection is not lost, and said not to be connected to.
             var md5Store = TestNodes.TemporaryDirectory("ssh-connections-md5");
 
             try

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Hermod;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
@@ -430,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                                 new JProperty("servers",     new JArray(
                                     Server("ptb-a",    "ptbtime1.example.invalid", Priority: 2),
                                     Server("legal-2",  "ptbtime2.example.invalid"),
-                                    Server("legal-3",  "ptbtime3.example.invalid", NTSKEPort: 4461)
+                                    Server("legal-3",  "ptbtime3.example.invalid", NTSKEPort: IPPort.Parse(4461))
                                 ))
                             ),
                             out var error,
@@ -610,7 +611,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         private static JObject Server(String   Id,
                                       String   Hostname,
                                       Byte     Priority    = 0,
-                                      UInt16?  NTSKEPort   = null)
+                                      IPPort?  NTSKEPort   = null)
         {
 
             var server = new JObject(
@@ -620,7 +621,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                          );
 
             if (NTSKEPort.HasValue)
-                server["ntsKEPort"] = NTSKEPort.Value;
+                server["ntsKEPort"] = NTSKEPort.Value.ToUInt16();
 
             return server;
 

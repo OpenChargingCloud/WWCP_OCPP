@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Hermod;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -149,8 +150,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             return Variable.ToLowerInvariant() switch {
                        "address"             => entry.Address.Trimmed,
-                       "port"                => entry.Port.ToString(CultureInfo.InvariantCulture),
-                       "username"            => entry.User ?? "",
+                       "port"                => entry.Port.ToString(),
+                       "username"            => entry.User?.ToString() ?? "",
                        "hostkeypins"         => String.Join(",", entry.Trust.Pins),
                        "hostcas"             => String.Join(",", entry.Trust.CAs),
                        "onpinmismatch"       => entry.Trust.OnMismatch.ToString(),
@@ -344,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             public String        Id          { get; }      = Id;
             public String        Address     { get; set; } = "";
-            public UInt16?       Port        { get; set; }
+            public IPPort?       Port        { get; set; }
             public String?       User        { get; set; }
             public List<String>  Pins        { get; set; } = [];
             public List<String>  CAs         { get; set; } = [];
@@ -386,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                new JProperty("address",  Address)
                            );
 
-                if (Port is not null)        json.Add("port",         Port.Value);
+                if (Port is not null)        json.Add("port",         Port.Value.ToUInt16());
                 if (User is not null)        json.Add("user",         User);
                 if (Pins.Count > 0)          json.Add("hostKeyPins",  new JArray(Pins));
                 if (CAs. Count > 0)          json.Add("hostCAs",      new JArray(CAs));
@@ -404,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             => [.. Peers.Select(peer => new Row(peer.Id) {
                                              Address     = peer.Address.Trimmed,
                                              Port        = peer.Trust.Port,
-                                             User        = peer.User,
+                                             User        = peer.User.ToString(),
                                              Pins        = [.. peer.Trust.Pins],
                                              CAs         = [.. peer.Trust.CAs],
                                              OnMismatch  = peer.Trust.OnMismatch.AsText(),
@@ -520,7 +521,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     break;
 
                 case "port":
-                    row.Port        = UInt16.Parse(value, CultureInfo.InvariantCulture);
+                    row.Port        = IPPort.Parse(value);
                     break;
 
                 case "username":

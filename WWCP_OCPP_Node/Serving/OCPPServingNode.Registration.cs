@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
     /// <summary>
     /// Registering with the back end: the BootNotification each OCPP node of
-    /// this node sends over a connection - whoever dialled it - and what it may
+    /// this node sends over a connection - whoever made it - and what it may
     /// say before and after. The same for a charging station, a local
     /// controller and a gateway: what is a kind's own is asked of it.
     /// </summary>
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// and never because a connection came up: a BootNotification says the
     /// node was rebooted, and is sent where it can expect a CSMS, or a node
     /// that forwards it to one, at the other end - over a connection it
-    /// dialled or over one the other end made alike. A kind asks for it where
+    /// made or over one the other end made alike. A kind asks for it where
     /// it knows of a reboot - a charging station after a reset; what else is
     /// to ask for it is not decided yet.
     /// </para>
@@ -528,12 +528,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// A connection is up: send what waits where it leads to the primary and
         /// that one accepted this node, and register where its back end did not
-        /// accept it yet.
+        /// accept it yet. Nothing of a connection that carries no OCPP.
         /// </summary>
         protected internal override void ConnectionIsUp(ConnectionEntry Connection)
         {
 
-            if (!RegistersWithABackEnd)
+            if (!RegistersWithABackEnd || Connection.Use != ConnectionUse.OCPP)
                 return;
 
             var node          = NodeOf(Connection);

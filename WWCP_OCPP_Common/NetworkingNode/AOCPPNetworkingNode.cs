@@ -127,8 +127,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// is taken to come from the CSMS, as everything did before.
         ///
         /// A connection this node accepted is told apart where it can be: it is not
-        /// the CSMS while the CSMS is one this node dialled, and where the CSMS
-        /// dialled in itself - the server reaches it under that name as well, see
+        /// the CSMS while the CSMS is one this node connected to, and where the CSMS
+        /// connected itself - the server reaches it under that name as well, see
         /// WWCPWebSocketServer.ReachAs - it is the CSMS where it came under the
         /// name the CSMS came under.
         /// </remarks>
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             if (!Routing.LookupNetworkingNode(DefaultNextHopNetworkingNodeId, out var csms))
                 return true;
 
-            // A connection this node dialled.
+            // A connection this node made.
             if (Connection?.WWCPClientOf() is IWWCPClient client)
                 return csms.Client is null ||
                        ReferenceEquals(csms.Client, client);
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// 
         /// <param name="AutoStart">Start the server immediately.</param>
         public virtual OCPPWebSocketServer AttachWebSocketServer(String?                                                         HTTPServiceName              = null,
-                                                                 IIPAddress?                                                     IPAddress                    = null,
+                                                                 IPAddress?                                                     IPAddress                    = null,
                                                                  IPPort?                                                         TCPPort                      = null,
                                                                  I18NString?                                                     Description                  = null,
 
@@ -495,8 +495,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                                                      RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
                                                                      SslProtocols?                                                   TLSProtocols                 = null,
 
-                                                                     SshClientOptions?                                               Ssh                          = null,
-                                                                     Func<CancellationToken, ValueTask<SshClient>>?                  SshConnection                = null,
+                                                                     SSHClientOptions?                                               Ssh                          = null,
+                                                                     Func<CancellationToken, ValueTask<SSHClient>>?                  SshConnection                = null,
 
                                                                      IDNSClient?                                                     DNSClient                    = null,
                                                                      EventTracking_Id?                                               EventTrackingId              = null,
@@ -605,7 +605,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// <param name="CancellationToken">A cancellation token.</param>
         /// <returns>The connection. A failure is thrown - and, with the node's reconnect policy, tried again in the background.</returns>
         public Task<SshMessageConnection> ConnectOCPPSshClient(URL                              RemoteURL,
-                                                               SshClientOptions                 Ssh,
+                                                               SSHClientOptions                 Ssh,
                                                                NetworkingNode_Id?               NextHopNetworkingNodeId    = null,
                                                                IEnumerable<NetworkingNode_Id>?  RoutingNetworkingNodeIds   = null,
                                                                NetworkingMode?                  NetworkingMode             = null,

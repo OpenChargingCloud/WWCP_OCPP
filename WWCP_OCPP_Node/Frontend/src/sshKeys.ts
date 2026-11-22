@@ -9,7 +9,7 @@ import { html, nothing, repeat, type TemplateResult } from '@node/view';
 
 
 /**
- * The keys a node that dials signs in with over SSH, among what it presents
+ * The keys a node that connects signs in with over SSH, among what it presents
  * on the page of its client identities.
  *
  * They are no certificates and the certificate store does not keep them, and
@@ -35,10 +35,10 @@ import { html, nothing, repeat, type TemplateResult } from '@node/view';
  */
 export function sshKeysSection(context: SectionContext): CertificatesSection {
 
-    /** What the node dials with, as it last said - null where this person may not see the connections. */
+    /** What the node connects with, as it last said - null where this person may not see the connections. */
     let state: StationConnections | null = null;
 
-    /** Making a key is what making one in the certificate store is: who the node is, not where it dials. */
+    /** Making a key is what making one in the certificate store is: who the node is, not where it connects to. */
     const mayMake = auth.can('certificates', 'run') || auth.can('certificates', 'edit');
 
     const place = (selector: string) => context.page.querySelector<HTMLElement>(selector);
@@ -147,7 +147,7 @@ export function sshKeysSection(context: SectionContext): CertificatesSection {
                 ` : html`
                     <p class="hint">
                         Not made yet: it is, the first time an <code>ssh://</code> connection that names no key is written
-                        down, tested or dialled.
+                        down, tested or connected to.
                     </p>
                 `}
 
@@ -196,7 +196,7 @@ export function sshKeysSection(context: SectionContext): CertificatesSection {
                             <h3><i class="fa-solid fa-terminal"></i> SSH keys</h3>
 
                             <p class="hint">
-                                What this ${nodeNoun()} signs in with where it dials over <code>ssh://</code>: its own key,
+                                What this ${nodeNoun()} signs in with where it connects over <code>ssh://</code>: its own key,
                                 which every connection that names none signs in with, and the ones made here - for one
                                 server and not the next, or to follow another at a time its server was told. The line of a
                                 key goes into the <code>authorized_keys</code> of the server; it is no secret, and the
@@ -221,7 +221,7 @@ export function sshKeysSection(context: SectionContext): CertificatesSection {
                         <h3><i class="fa-solid fa-terminal"></i> A new SSH key</h3>
 
                         <p class="hint">
-                            A key this ${nodeNoun()} signs in with where it dials over <code>ssh://</code>, beside its own:
+                            A key this ${nodeNoun()} signs in with where it connects over <code>ssh://</code>, beside its own:
                             made here, and its private half never leaves. No certificate comes back for it - its line
                             goes into the <code>authorized_keys</code> of the server, and a connection is told to sign
                             in with it on the <a href="${toURL('/configuration/connections')}">Connections</a> page.

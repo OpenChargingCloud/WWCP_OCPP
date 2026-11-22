@@ -51,7 +51,7 @@ const signatureFormats: ReadonlyArray<readonly [SignatureFormatsOfAConnection, s
 const noSshKey = 'none';
 
 /**
- * The places this charging station dials.
+ * The places this charging station connects to.
  *
  * A connection names the credentials it uses rather than carrying them: a
  * station that reaches its management system twice - normally and through a
@@ -106,7 +106,7 @@ export const connectionsPage: Page = {
         const page = shell(root, {
             active:    '/configuration/connections',
             title:     'Connections',
-            subtitle:  `Where this ${nodeNounInFull()} dials, and what it proves itself with.`,
+            subtitle:  `Where this ${nodeNounInFull()} connects to, and what it proves itself with.`,
             actions:   reloadButton(() => reload())
         });
 
@@ -271,9 +271,9 @@ export const connectionsPage: Page = {
                           ? Object.keys(states).length === 0
                                 ? html`
                                       <p class="hint">
-                                          Nothing yet. This ${nodeNoun()} dials nowhere and waits to be dialled.
+                                          Nothing yet. This ${nodeNoun()} connects nowhere and waits to be connected to.
                                           ${mayManage ? html`
-                                              Where it is to dial is written down on the tab
+                                              Where it is to connect to is written down on the tab
                                               <a href="#" @click=${(event: Event) => { event.preventDefault(); show('new'); }}>New connection</a>.
                                           ` : nothing}
                                       </p>
@@ -317,7 +317,7 @@ export const connectionsPage: Page = {
                                 saving rather than after. A ${farEnd()} that is not to be asked anything - one that
                                 takes a Heartbeat for a station having come - is tested by asking nothing: then the
                                 test ends with the handshake.
-                                ${nodeTraits().dialsDown ? html`
+                                ${nodeTraits().connectsDown ? html`
                                     A charging station answers a Heartbeat with an error, which is an answer: it
                                     read a request and answered it in OCPP. And it lets in one connection under a
                                     name: a test of a connection that is up takes its place for as long as it lasts.
@@ -340,20 +340,20 @@ export const connectionsPage: Page = {
 
                 <label>What it is
                     <input type="text" name="description" maxlength="${state.maxDescriptionLength}"
-                           placeholder="${nodeTraits().dialsDown ? 'Station 7, car park' : 'CSMS, main'}" value="${textOf(entry?.description) ?? ''}"
+                           placeholder="${nodeTraits().connectsDown ? 'Station 7, car park' : 'CSMS, main'}" value="${textOf(entry?.description) ?? ''}"
                            ?disabled=${!mayManage} />
                 </label>
 
                 <label>Where it goes
                     <input type="text" name="url" class="mono"
-                           placeholder="${nodeTraits().dialsDown ? 'wss://station7.example.org:9443/csms-01' : 'wss://csms.example.org/cs001'}" value="${entry?.url ?? ''}"
+                           placeholder="${nodeTraits().connectsDown ? 'wss://station7.example.org:9443/csms-01' : 'wss://csms.example.org/cs001'}" value="${entry?.url ?? ''}"
                            ?disabled=${!mayManage}
                            @input=${(event: Event) => typedURL(id, entry, (event.target as HTMLInputElement).value)} />
                     <span class="hint">
                         Write the scheme. <code>wss://</code> is encrypted and <code>ws://</code> is not, and
                         this ${nodeNoun()} will not decide that for you - everything below depends on which it is.
                         ${state.rules?.ssh === false ? nothing : html`
-                            <code>ssh://cs001@csms.example.org:2222</code> speaks the same OCPP over SSH, signed in
+                            <code>ssh://cs001@csms.example.org:2222</code> speaks the same OCPP-over-SSH, signed in
                             with this ${nodeNoun()}'s own key.
                         `}
                         ${state.rules?.namesTheNodeItLeadsTo === true ? html`
@@ -371,7 +371,7 @@ export const connectionsPage: Page = {
                         <span class="hint">
                             The name of the charging station, the local controller or the gateway at the other end: what
                             this ${nodeNoun()} speaks to it by, as it would be known by the last part of its
-                            URL had it dialled itself. Nothing in the URL above says it.${state.connectionTypes.includes('CSMS') ? html` Left empty, the
+                            URL had it connected itself. Nothing in the URL above says it.${state.connectionTypes.includes('CSMS') ? html` Left empty, the
                             other end is this ${nodeNoun()}'s back end; a charging station has to be named.` : nothing}
                         </span>
                     </label>
@@ -382,18 +382,18 @@ export const connectionsPage: Page = {
                     <input type="checkbox" name="inbound"
                            ?checked=${entry?.inbound ?? false}
                            ?disabled=${!mayManage} />
-                    The other end dials - it comes to this ${nodeNoun()}'s OCPP server
+                    The other end connects - it comes to this ${nodeNoun()}'s OCPP server
                     <span class="hint">
                         For a CSMS or a local controller this ${nodeNoun()} cannot reach, and that can reach it.
-                        The URL above is then the one the other end dials -
+                        The URL above is then the one the other end connects to -
                         <code>wss://this-${nodeNoun().replace(/\s+/g, '-')}.example.org:9443/csms-01</code> - and its last part the
                         name it comes under. It signs in as whoever else signs in at the station port: with the
                         <a href="${toURL('/configuration/ocpp-server/logins')}">WebSocket login</a> of that name - its password,
                         one-time password or key pin -, or with a certificate issued to that name, of a chain the station
                         port accepts. A TOTP secret bound to the TLS session lets it in over HTTP/3 only. Credentials,
-                        key pins and roots below are what this ${nodeNoun()} holds a server to that it dials, and none of
+                        key pins and roots below are what this ${nodeNoun()} holds a server to that it connects to, and none of
                         them is taken here; host keys, this ${nodeNoun()}'s own client certificates and the version of HTTP
-                        are the dialler's to say. OCPP itself stays as it is - this ${nodeNoun()} says that it started, and is
+                        are the other end's to say. OCPP itself stays as it is - this ${nodeNoun()} says that it started, and is
                         asked.
                     </span>
                 </label>
@@ -414,7 +414,7 @@ export const connectionsPage: Page = {
 
                     <label>Where nothing is pinned
                         <select name="sshTrustOnFirstUse" ?disabled=${!mayManage}>
-                            <option value="None"    ?selected=${(entry?.sshTrustOnFirstUse ?? 'None') === 'None'}>Do not dial</option>
+                            <option value="None"    ?selected=${(entry?.sshTrustOnFirstUse ?? 'None') === 'None'}>Do not connect</option>
                             <option value="HostKey" ?selected=${entry?.sshTrustOnFirstUse === 'HostKey'}>Learn the first key, on probation</option>
                         </select>
                         <span class="hint">
@@ -451,7 +451,7 @@ export const connectionsPage: Page = {
                         SHA-256 over the key of its server, at most four, separated by commas - two while it changes its key.
                         With one, the key is the whole check: no CA, no name and no validity period, so the ${nodeNoun()} needs no
                         clock to believe it. Without one, the certificate is checked by its CA. Testing says which key pin it shows.
-                        Not where the other end dials: the key of its client certificate is pinned on its WebSocket login.
+                        Not where the other end connects: the key of its client certificate is pinned on its WebSocket login.
                     </span>
                 </label>
 
@@ -522,12 +522,12 @@ export const connectionsPage: Page = {
                             `)}
                         </select>
                         <span class="hint">
-                            ${nodeTraits().dialsDown
+                            ${nodeTraits().connectsDown
                                   ? html`What it is: a local controller and a gateway are spoken to in the overlay
                                          network, so that the charging stations behind them are reached through
                                          them; a charging station in the plain frame of OCPP.`
                                   : html`What it is, for whoever reads this page.`}
-                            Every connection is dialled on its own; nothing here waits for anything else.
+                            Every connection is made on its own; nothing here waits for anything else.
                         </span>
                     </label>
 
@@ -541,7 +541,7 @@ export const connectionsPage: Page = {
                         </select>
                         <span class="hint">
                             ${nodeTraits().oneNodePerOCPPVersion
-                                  ? `This ${nodeNoun()} is two nodes and a URL does not say which one should dial, so it is said here.`
+                                  ? `This ${nodeNoun()} is two nodes and a URL does not say which one should connect, so it is said here.`
                                   : 'A URL does not say which OCPP is spoken over it, so it is said here.'}
                         </span>
                     </label>
@@ -605,7 +605,7 @@ export const connectionsPage: Page = {
                     <span class="hint">
                         This is what decides whether the connection is used at all. Off, it stays written
                         down and nothing happens - an address kept ready for the day somebody needs it,
-                        which can still be tried by hand with the button below. Where the other end dials,
+                        which can still be tried by hand with the button below. Where the other end connects,
                         it is what lets it in: off, nothing comes in under its name.
                     </span>
                 </label>
@@ -727,7 +727,7 @@ export const connectionsPage: Page = {
                     <legend>${way === 'new:basic' ? 'A new login and password' : 'A new TOTP secret'}</legend>
                     <label>What they are for
                         <input type="text" name="newDescription" maxlength="${state.maxDescriptionLength}"
-                               placeholder="${nodeTraits().dialsDown ? 'Login at station 7' : 'CSMS login'}" ?disabled=${!mayManage} />
+                               placeholder="${nodeTraits().connectsDown ? 'Login at station 7' : 'CSMS login'}" ?disabled=${!mayManage} />
                         <span class="hint">Left empty, they are called what the connection is.</span>
                     </label>
                     <label>Login
@@ -921,7 +921,7 @@ export const connectionsPage: Page = {
                                     : html`<span class="chip warn">no TLS</span>`}
                         ${entry.keyPinned === true ? html`<span class="chip on">key pin</span>` : nothing}
                         ${entry.inbound === true
-                              ? html`<span class="chip on" data-inbound="${entry.id}">dials in</span>${entry.autoConnect
+                              ? html`<span class="chip on" data-inbound="${entry.id}">connects here</span>${entry.autoConnect
                                     ? html`<span class="chip on">let in</span>`
                                     : html`<span class="chip">not let in</span>`}`
                               : entry.autoConnect
@@ -932,7 +932,7 @@ export const connectionsPage: Page = {
                     <div class="connection-state" data-state="${entry.id}">${stateView(entry)}</div>
 
                     <dl class="kv">
-                        <dt>${entry.inbound === true ? 'It dials' : 'Where'}</dt>   <dd><code>${entry.url}</code></dd>
+                        <dt>${entry.inbound === true ? 'It connects to' : 'Where'}</dt>   <dd><code>${entry.url}</code></dd>
                         <dt>${entry.inbound === true ? 'Signs in with' : 'Proves itself'}</dt>
                         <dd data-proves="${entry.id}">${entry.inbound === true ? signsInWithSaid(entry) : provesSaid(entry, state)}</dd>
                         ${entry.transport === 'ssh' ? html`
@@ -1010,7 +1010,7 @@ export const connectionsPage: Page = {
          * here and not in the form: it is no pin until it is confirmed.
          */
         /**
-         * What the other end of a connection it dials signs in with: the
+         * What the other end of a connection it makes signs in with: the
          * WebSocket login of the name it comes under, or a certificate issued
          * to that name, of a chain the station port accepts.
          */
@@ -1049,7 +1049,7 @@ export const connectionsPage: Page = {
 
         /**
          * The key this station signs in with over SSH: its public half, for the
-         * authorized_keys of the servers it dials. Only where there is one, or
+         * authorized_keys of the servers it connects to. Only where there is one, or
          * an ssh:// connection that will make it.
          */
         function sshKeyView(state: StationConnections): TemplateResult | typeof nothing {
@@ -1067,12 +1067,12 @@ export const connectionsPage: Page = {
                     ${key === null ? html`
                         <p class="hint">
                             None yet. It is made when an <code>ssh://</code> connection is written down, tested or
-                            dialled.
+                            connected.
                         </p>
                     ` : html`
                         <p class="hint">
                             What this ${nodeNoun()} signs in with over <code>ssh://</code>. This line goes into the
-                            <code>authorized_keys</code> of every server it dials that way. It is not a secret: the
+                            <code>authorized_keys</code> of every server it connects to that way. It is not a secret: the
                             private half stays in <code>${key.path}</code>.
                         </p>
                         <textarea id="ssh-public-key" class="mono" rows="3" readonly .defaultValue=${key.publicKey}></textarea>
@@ -1234,7 +1234,7 @@ export const connectionsPage: Page = {
         }
 
         /**
-         * The connections removed here that the station still dials: it hangs
+         * The connections removed here that the station still connects to: it hangs
          * them up as soon as it has taken the change, and until then it may
          * well be on a back end this page no longer mentions.
          */
@@ -1247,7 +1247,7 @@ export const connectionsPage: Page = {
 
             return html`
                 <div class="notice">
-                    Removed here, and dialled as before until this ${nodeNoun()} has hung them up:
+                    Removed here, and connected as before until this ${nodeNoun()} has hung them up:
                     ${left.map(([ , state ]) => {
                         const line = stateLine({ url: state.url, ocppVersion: state.ocppVersion, autoConnect: true }, state, timestamp);
                         return html`
@@ -1393,7 +1393,7 @@ export const connectionsPage: Page = {
                                        ? shownPinsOf(store?.connections.find(one => one.id === id))
                                        : undefined;
 
-            // Where the other end dials, nothing of a server: it signs in with
+            // Where the other end connects, nothing of a server: it signs in with
             // its WebSocket login, which says what its client certificate is.
             const inbound        = form.querySelector<HTMLInputElement>('[name="inbound"]')?.checked ?? false;
 
@@ -1433,7 +1433,7 @@ export const connectionsPage: Page = {
         }
 
 
-        /** What the page showed the server of a connection held to: nothing, where the other end dials. */
+        /** What the page showed the server of a connection held to: nothing, where the other end connects. */
         function shownPinsOf(entry: StationConnection | undefined): PinKeys {
             return (entry?.inbound === true ? undefined : entry?.pins) ?? {};
         }

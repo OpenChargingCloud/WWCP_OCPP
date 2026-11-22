@@ -41,13 +41,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
 {
 
     /// <summary>
-    /// The HTTP API of a node that dials a CSMS, for what it dials: its
+    /// The HTTP API of a node that connects to a CSMS, for what it connects to: its
     /// connections and what they prove themselves with, the keys and
     /// certificates it holds up, the state of each connection, and the test
     /// of one. The same routes for a charging station and for a local
     /// controller, each of which adds what else it has.
     /// </summary>
-    public abstract class OCPPDiallingHTTPAPI : NodeHTTPAPI
+    public abstract class OCPPConnectingHTTPAPI : NodeHTTPAPI
     {
 
         #region Properties
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// The node whose connections these are.
         /// </summary>
-        protected WWCPNode          Dialling               { get; }
+        protected WWCPNode          ConnectingNode               { get; }
 
         /// <summary>
         /// The resource a user needs a right to for reading, changing and
@@ -68,10 +68,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region Constructor(s)
 
         /// <summary>
-        /// The API of a node that dials a CSMS, on the given HTTP server.
+        /// The API of a node that connects to a CSMS, on the given HTTP server.
         /// </summary>
         /// <param name="ConnectionsResource">The resource a user needs a right to for the connections.</param>
-        protected OCPPDiallingHTTPAPI(HTTPServer        HTTPServer,
+        protected OCPPConnectingHTTPAPI(HTTPServer        HTTPServer,
                                       WWCPNode          Node,
                                       HTTPExtAPI        ExtAPI,
                                       EventLog          Log,
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         {
 
-            this.Dialling             = Node;
+            this.ConnectingNode             = Node;
             this.ConnectionsResource  = ConnectionsResource;
 
             RegisterConnectionRoutes();
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// GET /api/v1/status/connections: where each connection this station
-        /// dialled stands.
+        /// made stands.
         /// </summary>
         /// <remarks>
         /// Asked again and again by the Connections page while it is open, so
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, wrongDescription, false));
 
             var kind         = json.Value<String>("kind");
-            var login        = json.Value<String>("login");
+            var login        = User_Id.TryParse(json.Value<String>("login"));
             var secret       = json.Value<String>("secret");
 
             String? id       = null;
@@ -212,10 +212,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var added        = kind?.Trim().ToLowerInvariant() switch {
 
-                                   "basic"  => Dialling.Connections.TryAddBasicAuthentication(login, secret, description,
+                                   "basic"  => ConnectingNode.Connections.TryAddBasicAuthentication(login, secret, description,
                                                                                                out id, out error, out notSaved),
 
-                                   "totp"   => Dialling.Connections.TryAddTOTPAuthentication (login, secret, description,
+                                   "totp"   => ConnectingNode.Connections.TryAddTOTPAuthentication (login, secret, description,
                                                                                                out id, out error, out notSaved,
                                                                                                json.Value<Double?> ("validitySeconds"),
                                                                                                json.Value<UInt32?> ("length"),
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                                                json.Value<String>  ("hashAlgorithm"),
                                                                                                json.Value<Boolean?>("tlsChannelBinding")),
 
-                                   "token"  => Dialling.Connections.TryAddTokenAuthentication(secret, description,
+                                   "token"  => ConnectingNode.Connections.TryAddTokenAuthentication(secret, description,
                                                                                                out id, out error, out notSaved),
 
                                    _        => NotAKind(kind, out error)
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, wrongDescription, false));
 
             var kind         = json.Value<String>("kind");
-            var login        = json.Value<String>("login");
+            var login        = User_Id.TryParse(json.Value<String>("login"));
             var secret       = json.Value<String>("secret");
 
             String? error;
@@ -276,10 +276,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var changed      = kind?.Trim().ToLowerInvariant() switch {
 
-                                   "basic"  => Dialling.Connections.TryUpdateBasicAuthentication(id, login, secret, description,
+                                   "basic"  => ConnectingNode.Connections.TryUpdateBasicAuthentication(id, login, secret, description,
                                                                                                   out error, out notSaved),
 
-                                   "totp"   => Dialling.Connections.TryUpdateTOTPAuthentication (id, login, secret, description,
+                                   "totp"   => ConnectingNode.Connections.TryUpdateTOTPAuthentication (id, login, secret, description,
                                                                                                   out error, out notSaved,
                                                                                                   json.Value<Double?> ("validitySeconds"),
                                                                                                   json.Value<UInt32?> ("length"),
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                                                   json.Value<String>  ("hashAlgorithm"),
                                                                                                   json.Value<Boolean?>("tlsChannelBinding")),
 
-                                   "token"  => Dialling.Connections.TryUpdateTokenAuthentication(id, secret, description,
+                                   "token"  => ConnectingNode.Connections.TryUpdateTokenAuthentication(id, secret, description,
                                                                                                   out error, out notSaved),
 
                                    _        => NotAKind(kind, out error)
@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         /// <remarks>
         /// Refused while a connection is using it, and the refusal names the
-        /// connection: the alternative leaves a station that cannot dial home
+        /// connection: the alternative leaves a station that cannot connect home
         /// and tells nobody why.
         /// </remarks>
         protected Task<HTTPResponse> PostRemoveAuthentication(HTTPRequest Request)
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
-            if (!Dialling.Connections.TryRemoveAuthentication(json.Value<String>("id"), out var error, out var notSaved))
+            if (!ConnectingNode.Connections.TryRemoveAuthentication(json.Value<String>("id"), out var error, out var notSaved))
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
 
             return Task.FromResult(
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// POST /api/v1/configuration/connections with
         /// {"description", "url", "connectionType", ...}: one place this
-        /// station dials.
+        /// station connects to.
         /// </summary>
         protected async Task<HTTPResponse> PostConnection(HTTPRequest Request)
         {
@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!ConnectionFields.TryDescriptionOf(json, out var description, out var wrongDescription))
                 return NotChanged(Request, HTTPStatusCode.BadRequest, wrongDescription, false);
 
-            if (!Dialling.Connections.TryAddConnection(description,
+            if (!ConnectingNode.Connections.TryAddConnection(description,
                                                        url,
                                                        json.Value<String>("connectionType"),
                                                        json.Value<Boolean?>("autoConnect"),
@@ -433,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!ConnectionFields.TryDescriptionOf(json, out var description, out var wrongDescription))
                 return NotChanged(Request, HTTPStatusCode.BadRequest, wrongDescription, false);
 
-            if (!Dialling.Connections.TryUpdateConnection(json.Value<String>("id"),
+            if (!ConnectingNode.Connections.TryUpdateConnection(json.Value<String>("id"),
                                                           description,
                                                           url,
                                                           json.Value<String>("connectionType"),
@@ -482,7 +482,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
-            if (!Dialling.Connections.TryRemoveConnection(json.Value<String>("id"), out var error, out var notSaved))
+            if (!ConnectingNode.Connections.TryRemoveConnection(json.Value<String>("id"), out var error, out var notSaved))
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
 
             return Task.FromResult(
@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             return JSONResponse(
                        Request,
                        HTTPStatusCode.OK,
-                       await Dialling.TestConnection(json, Request.CancellationToken)
+                       await ConnectingNode.TestConnection(json, Request.CancellationToken)
                    );
 
         }
@@ -549,7 +549,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
-            if (!Dialling.Connections.TryAddPinSetSigner(json.Value<String>("publicKey"), json.Value<String>("description"), out var error, out var notSaved))
+            if (!ConnectingNode.Connections.TryAddPinSetSigner(json.Value<String>("publicKey"), json.Value<String>("description"), out var error, out var notSaved))
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
 
             return Task.FromResult(JSONResponse(Request, HTTPStatusCode.Created, ConnectionsJSON()));
@@ -569,7 +569,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
-            if (!Dialling.Connections.TryRemovePinSetSigner(json.Value<String>("publicKey"), out var error, out var notSaved))
+            if (!ConnectingNode.Connections.TryRemovePinSetSigner(json.Value<String>("publicKey"), out var error, out var notSaved))
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
 
             return Task.FromResult(JSONResponse(Request, HTTPStatusCode.OK, ConnectionsJSON()));
@@ -627,7 +627,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             Error  = null;
 
             // What the client certificate of the other end of a connection it
-            // is dialled by was held to, while the connection said it: the
+            // is connected to by was held to, while the connection said it: the
             // other end signs in with its WebSocket login now.
             if (JSON[ConnectionEntry.ClientPinsKey]    is JToken { Type: not JTokenType.Null } ||
                 JSON[ConnectionEntry.ClientKeyPinsKey] is JToken { Type: not JTokenType.Null })
@@ -686,7 +686,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected JObject ConnectionsJSON()
         {
 
-            var json = Dialling.Connections.ToJSON();
+            var json = ConnectingNode.Connections.ToJSON();
 
             // What this station made of the certificate the server of each
             // wss:// connection checked by its CA showed last: what its page
@@ -696,8 +696,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 // Which version of HTTP the WebSocket it has now was opened
                 // over: where the server chose, the entry does not say.
-                if (URL.TryParse(connection.Value<String>("url") ?? "", out var dialled) &&
-                    Dialling.HTTPVersionInUseAt(dialled) is String httpVersionInUse)
+                if (URL.TryParse(connection.Value<String>("url") ?? "", out var connectedTo) &&
+                    ConnectingNode.HTTPVersionInUseAt(connectedTo) is String httpVersionInUse)
                 {
                     connection.Add(new JProperty("httpVersionInUse", httpVersionInUse));
                 }
@@ -706,8 +706,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 // written: where the back end chose, the entry does not say.
                 // Over a WebSocket and over ssh:// alike.
                 if (connection.Value<String>("id") is String connectionId &&
-                    Dialling.Connections.Connections.FirstOrDefault(entry => entry.Id == connectionId) is ConnectionEntry itsEntry &&
-                    Dialling.SubprotocolInUseOf(itsEntry) is String subprotocolInUse)
+                    ConnectingNode.Connections.Connections.FirstOrDefault(entry => entry.Id == connectionId) is ConnectionEntry itsEntry &&
+                    ConnectingNode.SubprotocolInUseOf(itsEntry) is String subprotocolInUse)
                 {
                     connection.Add(new JProperty("subprotocolInUse", subprotocolInUse));
                 }
@@ -719,7 +719,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     continue;
                 }
 
-                if (Dialling.LastJudgementOf(Dialling.ConnectionsCertificateUsage, url.Host.ToString()) is { } judgement)
+                if (ConnectingNode.LastJudgementOf(ConnectingNode.ConnectionsCertificateUsage, url.Host.ToString()) is { } judgement)
                     connection.Add(new JProperty("judgement", judgement.ToJSON()));
 
             }
@@ -730,12 +730,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // The key this station signs in with over SSH, for the line that
             // goes into a server's authorized_keys - null until the first
             // ssh:// connection made it.
-            json.Add(new JProperty("sshClientKey", Dialling.SshKey.ToJSON()));
+            json.Add(new JProperty("sshClientKey", ConnectingNode.SshKey.ToJSON()));
 
             // Every key it signs in with over SSH: its own first - named
             // whether it was made yet or not, since a connection that names
             // none signs in with it - and the ones somebody made.
-            json.Add(new JProperty("sshKeys", Dialling.SshKeys.ToJSON()));
+            json.Add(new JProperty("sshKeys", ConnectingNode.SshKeys.ToJSON()));
 
             // Who this node is as a client: the identities of its
             // certificate store, which is where they are looked after - one
@@ -744,7 +744,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             json.Add(
                 new JProperty("certificates",
                     new JArray(
-                        Dialling.Certificates.ByKind(CertificateKind.TLSIdentity).Select(entry =>
+                        ConnectingNode.Certificates.ByKind(CertificateKind.TLSIdentity).Select(entry =>
                             new JObject(
                                 new JProperty("id",              entry.Id),
                                 new JProperty("label",           entry.Label),
@@ -765,7 +765,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// Where each connection this station dialled stands, by
+        /// Where each connection this station made stands, by
         /// identification, and what time it is here.
         /// </summary>
         /// <remarks>
@@ -776,9 +776,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected JObject ConnectionStatesJSON()
 
             => new (
-                   new JProperty("timestamp",  Dialling.TimeProvider.GetUtcNow().UtcDateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")),
+                   new JProperty("timestamp",  ConnectingNode.TimeProvider.GetUtcNow().UtcDateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")),
                    new JProperty("states",     new JObject(
-                       Dialling.ConnectionStates.Select(entry => new JProperty(entry.Key, entry.Value.ToJSON()))
+                       ConnectingNode.ConnectionStates.Select(entry => new JProperty(entry.Key, entry.Value.ToJSON()))
                    ))
                );
 
@@ -801,7 +801,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return errorResponse;
 
-            var (entry, error) = await Dialling.SshKeys.MakeAsync(json.Value<String>("label"), Request.CancellationToken);
+            var (entry, error) = await ConnectingNode.SshKeys.MakeAsync(json.Value<String>("label"), Request.CancellationToken);
 
             if (entry is null)
                 return ErrorJSON(Request, HTTPStatusCode.BadRequest, error ?? "The key could not be made.");
@@ -835,7 +835,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var id      = ConnectionEntry.Named(json.Value<String>("id")) ?? "";
 
-            var naming  = Dialling.Connections.Connections.
+            var naming  = ConnectingNode.Connections.Connections.
                               Where (connection => connection.IsSSH && connection.Identities.Any(identity => identity.Id == id)).
                               Select(connection => $"'{connection.Description.FirstText()}'").
                               ToArray();
@@ -847,7 +847,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                       : $"{naming.Length} connections sign in with it ({String.Join(", ", naming)})") +
                                                  ". Choose another key for it on the Connections page first."));
 
-            if (!Dialling.SshKeys.TryRemove(id, out var error))
+            if (!ConnectingNode.SshKeys.TryRemove(id, out var error))
                 return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, error));
 
             Log.Info($"'{user.Id}' removed the SSH key '{id}'.", "ocpp", "connections", "ssh", "web");
@@ -866,18 +866,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         /// <remarks>
         /// A key that cannot be made does not undo what was written down: the
-        /// connection stands, and says why when it is dialled.
+        /// connection stands, and says why when it is made.
         /// </remarks>
         protected async Task SshKeyIfNeeded(String? ConnectionId, CancellationToken CancellationToken)
         {
 
-            if (Dialling.SshKey.Key is not null ||
-                !Dialling.Connections.Connections.Any(entry => entry.Id == ConnectionId && entry.IsSSH))
+            if (ConnectingNode.SshKey.Key is not null ||
+                !ConnectingNode.Connections.Connections.Any(entry => entry.Id == ConnectionId && entry.IsSSH))
                 return;
 
             try
             {
-                await Dialling.SshKey.MakeIfNeeded(CancellationToken);
+                await ConnectingNode.SshKey.MakeIfNeeded(CancellationToken);
             }
             catch (Exception e)
             {

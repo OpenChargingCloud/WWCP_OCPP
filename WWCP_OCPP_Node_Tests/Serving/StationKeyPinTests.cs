@@ -100,14 +100,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             var pin = APin();
 
-            Assert.That(logins.TryAddKeyPin("cs001", pin.ToHex(), "bay 1", null, I18NString.Create("Ladepunkt 1"), "admin", out var added, out var error),
+            Assert.That(logins.TryAddKeyPin(User_Id.Parse("cs001"), pin.ToHex(), "bay 1", null, I18NString.Create("Ladepunkt 1"), "admin", out var added, out var error),
                         Is.True, error);
 
             var restarted = new WebSocketLogins(Path.Combine(directory, "websocket-logins.json"), clock);
 
             Assert.That(restarted.TryLoad(out var loadError), Is.True, loadError);
 
-            Assert.That(restarted.TryGet("cs001", out var login), Is.True, "the station was not listed");
+            Assert.That(restarted.TryGet(User_Id.Parse("cs001"), out var login), Is.True, "the station was not listed");
 
             Assert.Multiple(() => {
                 Assert.That(added!.Pin,                               Is.EqualTo(pin));
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 Assert.That(login.Pins.Single().AddedBy,              Is.EqualTo("admin"));
                 Assert.That(login.Pins.Single().Added,                Is.EqualTo(clock.Now));
                 Assert.That(login.Credentials,                        Does.Contain(AuthMethod.KeyPin));
-                Assert.That(restarted.FindKeyPin(pin)?.Id,            Is.EqualTo("cs001"));
+                Assert.That(restarted.FindKeyPin(pin)?.Login,            Is.EqualTo(User_Id.Parse("cs001")));
                 Assert.That(restarted.WasEverListed(pin),             Is.True);
                 Assert.That(restarted.GroupOf(login)!.Allows(AuthMethod.KeyPin), Is.True, "the default group takes no key pins");
             });
@@ -140,13 +140,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             var pin = APin();
 
-            Assert.That(logins.TryAddKeyPin("cs001", pin.ToCurl(), null, null, null, null, out _, out var error), Is.True, error);
+            Assert.That(logins.TryAddKeyPin(User_Id.Parse("cs001"), pin.ToCurl(), null, null, null, null, out _, out var error), Is.True, error);
 
-            var withColons  = logins.TryAddKeyPin("cs001", pin.ToHexWithColons(),        null, null, null, null, out _, out var twiceColons);
-            var upperCase   = logins.TryAddKeyPin("cs001", pin.ToHex().ToUpperInvariant(), null, null, null, null, out _, out var twiceUpper);
+            var withColons  = logins.TryAddKeyPin(User_Id.Parse("cs001"), pin.ToHexWithColons(),        null, null, null, null, out _, out var twiceColons);
+            var upperCase   = logins.TryAddKeyPin(User_Id.Parse("cs001"), pin.ToHex().ToUpperInvariant(), null, null, null, null, out _, out var twiceUpper);
 
             Assert.Multiple(() => {
-                Assert.That(logins.FindKeyPin(pin)?.Id,  Is.EqualTo("cs001"));
+                Assert.That(logins.FindKeyPin(pin)?.Login,  Is.EqualTo(User_Id.Parse("cs001")));
                 Assert.That(withColons,                  Is.False);
                 Assert.That(twiceColons,                 Does.Contain("has the key pin"));
                 Assert.That(upperCase,                   Is.False);
@@ -171,15 +171,15 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             var pin = APin();
 
-            Assert.That(logins.TryAddKeyPin("cs001", pin.ToHex(), null, null, null, null, out _, out var error), Is.True, error);
+            Assert.That(logins.TryAddKeyPin(User_Id.Parse("cs001"), pin.ToHex(), null, null, null, null, out _, out var error), Is.True, error);
 
-            var forAnother = logins.TryAddKeyPin("cs002", pin.ToHexWithColons(), null, null, null, null, out _, out var refused);
+            var forAnother = logins.TryAddKeyPin(User_Id.Parse("cs002"), pin.ToHexWithColons(), null, null, null, null, out _, out var refused);
 
             Assert.Multiple(() => {
                 Assert.That(forAnother,                     Is.False);
                 Assert.That(refused,                        Does.Contain("already lets the charging station 'cs001' in"));
-                Assert.That(logins.TryGet("cs002", out _),  Is.False, "the station was listed although its pin was refused");
-                Assert.That(logins.FindKeyPin(pin)?.Id,     Is.EqualTo("cs001"));
+                Assert.That(logins.TryGet(User_Id.Parse("cs002"), out _),  Is.False, "the station was listed although its pin was refused");
+                Assert.That(logins.FindKeyPin(pin)?.Login,     Is.EqualTo(User_Id.Parse("cs001")));
             });
 
         }
@@ -197,8 +197,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             File.WriteAllText(path, new JObject(
                 new JProperty("logins", new JArray(
-                    new JObject(new JProperty("id", "cs001"), new JProperty("keyPins", new JArray(new JObject(new JProperty("pin", pin))))),
-                    new JObject(new JProperty("id", "cs002"), new JProperty("keyPins", new JArray(new JObject(new JProperty("pin", pin)))))
+                    new JObject(new JProperty("login", "cs001"), new JProperty("keyPins", new JArray(new JObject(new JProperty("pin", pin))))),
+                    new JObject(new JProperty("login", "cs002"), new JProperty("keyPins", new JArray(new JObject(new JProperty("pin", pin)))))
                 ))
             ).ToString());
 
@@ -220,9 +220,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         {
 
             for (var i = 0; i < WebSocketLogin.MaxKeyPins; i++)
-                Assert.That(logins.TryAddKeyPin("cs001", APin().ToHex(), null, null, null, null, out _, out var error), Is.True, error);
+                Assert.That(logins.TryAddKeyPin(User_Id.Parse("cs001"), APin().ToHex(), null, null, null, null, out _, out var error), Is.True, error);
 
-            var fifth = logins.TryAddKeyPin("cs001", APin().ToHex(), null, null, null, null, out _, out var refused);
+            var fifth = logins.TryAddKeyPin(User_Id.Parse("cs001"), APin().ToHex(), null, null, null, null, out _, out var refused);
 
             Assert.Multiple(() => {
                 Assert.That(fifth,                                      Is.False);
@@ -248,16 +248,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             var pin   = APin();
             var other = APin();
 
-            Assert.That(logins.TryAddKeyPin("cs001", pin.  ToHex(), null, null, null, null, out _, out var error),      Is.True, error);
-            Assert.That(logins.TryAddKeyPin("cs001", other.ToHex(), null, null, null, null, out _, out var otherError), Is.True, otherError);
+            Assert.That(logins.TryAddKeyPin(User_Id.Parse("cs001"), pin.  ToHex(), null, null, null, null, out _, out var error),      Is.True, error);
+            Assert.That(logins.TryAddKeyPin(User_Id.Parse("cs001"), other.ToHex(), null, null, null, null, out _, out var otherError), Is.True, otherError);
 
-            Assert.That(logins.TryRemoveKeyPin("cs001", pin.ToHexWithColons(), out var removeError), Is.True, removeError);
+            Assert.That(logins.TryRemoveKeyPin(User_Id.Parse("cs001"), pin.ToHexWithColons(), out var removeError), Is.True, removeError);
 
-            var again = logins.TryRemoveKeyPin("cs001", pin.ToHex(), out var notThere);
+            var again = logins.TryRemoveKeyPin(User_Id.Parse("cs001"), pin.ToHex(), out var notThere);
 
             Assert.Multiple(() => {
                 Assert.That(logins.FindKeyPin(pin),                      Is.Null);
-                Assert.That(logins.FindKeyPin(other)?.Id,                Is.EqualTo("cs001"));
+                Assert.That(logins.FindKeyPin(other)?.Login,                Is.EqualTo(User_Id.Parse("cs001")));
                 Assert.That(logins.WasEverListed(pin),                   Is.True);
                 Assert.That(logins.WasEverListed(APin()),                Is.False);
                 Assert.That(again,                                       Is.False);
@@ -282,12 +282,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void WhatIsNoPinIsRefused(String NoPin)
         {
 
-            var added = logins.TryAddKeyPin("cs001", NoPin, null, null, null, null, out _, out var error);
+            var added = logins.TryAddKeyPin(User_Id.Parse("cs001"), NoPin, null, null, null, null, out _, out var error);
 
             Assert.Multiple(() => {
                 Assert.That(added,                          Is.False);
                 Assert.That(error,                          Does.Contain("key pin"));
-                Assert.That(logins.TryGet("cs001", out _),  Is.False);
+                Assert.That(logins.TryGet(User_Id.Parse("cs001"), out _),  Is.False);
             });
 
         }

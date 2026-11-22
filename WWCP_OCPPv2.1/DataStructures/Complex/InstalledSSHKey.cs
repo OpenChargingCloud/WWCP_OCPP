@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
     /// <summary>
     /// An SSH key of a charging station a Local Controller holds, as GetInstalledSSHKeys lists it
-    /// (white paper "OCPP over SSH", section 9.3).
+    /// (white paper "OCPP-over-SSH", section 9.3).
     /// </summary>
     /// <param name="NetworkingNodeId">The station's login.</param>
     /// <param name="Purpose">What the key admits.</param>

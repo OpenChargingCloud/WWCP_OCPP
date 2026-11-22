@@ -463,17 +463,17 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
-        #region SwitchedOffWhileTheCSMSIsDialledByNameIsRefused()
+        #region SwitchedOffWhileTheCSMSIsConnectedByNameIsRefused()
 
         /// <summary>
         /// Name resolution is not switched off while a CSMS connection is
-        /// dialled by its name (SecureDNS T19).
+        /// connected to by its name (SecureDNS T19).
         /// </summary>
         [Test]
-        public async Task SwitchedOffWhileTheCSMSIsDialledByNameIsRefused()
+        public async Task SwitchedOffWhileTheCSMSIsConnectedByNameIsRefused()
         {
 
-            Assert.That(station!.TryDial("ws://csms.example.test/cs001", "2.1", out var error),
+            Assert.That(station!.TryConnect("ws://csms.example.test/cs001", "2.1", out var error),
                         Is.True, error);
 
             var results = await Set(null, (null, "Enabled", "false"));
@@ -521,16 +521,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
-        #region ANewServerInClearTextIsRefusedForWhatItIsWhileTheCSMSIsDialledByName()
+        #region ANewServerInClearTextIsRefusedForWhatItIsWhileTheCSMSIsConnectedByName()
 
         /// <summary>
         /// While only encrypted servers are asked, a new one over UDP is
         /// refused as the node refuses it, naming it - and so it is while a
-        /// CSMS is dialled by its name, where the pre-flight says so before it
+        /// CSMS is connected to by its name, where the pre-flight says so before it
         /// would ask anything, and not that the CSMS would be cut off.
         /// </summary>
         [Test]
-        public async Task ANewServerInClearTextIsRefusedForWhatItIsWhileTheCSMSIsDialledByName()
+        public async Task ANewServerInClearTextIsRefusedForWhatItIsWhileTheCSMSIsConnectedByName()
         {
 
             // Quick to give up on the servers nobody answers on: the pre-flight
@@ -539,7 +539,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                         Is.True,
                         error);
 
-            Assert.That(station.TryDial("ws://csms.example.test/cs001", "2.1", out error),
+            Assert.That(station.TryConnect("ws://csms.example.test/cs001", "2.1", out error),
                         Is.True, error);
 
             var results = await Set(OCPP21.DataConsistencyModel.ACID,
@@ -828,7 +828,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         /// <summary>
         /// Switched off, a node resolves nothing: while an NTS-KE server of the
         /// legal time resolves, that is NTSKEUnreachable, even with no CSMS
-        /// dialled by its name.
+        /// connected to by its name.
         /// </summary>
         [Test]
         public async Task NameResolutionIsNotSwitchedOffUnderTheLegalTime()

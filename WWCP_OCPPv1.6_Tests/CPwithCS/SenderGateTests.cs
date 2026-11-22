@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
         #region AChargePointThatNamesAnotherAsTheSender_IsSeenByTheGateAsItIs()
 
         /// <summary>
-        /// A charge point that dials in the overlay network names its sender and its path itself in every
+        /// A charge point that connects in the overlay network names its sender and its path itself in every
         /// frame. The gate is given the node the connection is known by next to the path the frame names,
         /// so a node can tell the two apart - here by the rule a CSMS has: the last hop is the connection's
         /// node, and a connection speaks for itself alone.
@@ -212,16 +212,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
             var asked     = new ConcurrentQueue<String>();
             var received  = new ConcurrentQueue<String>();
 
-            var dialler   = new TestChargePointNode(
-                                ChargeBoxId:        NetworkingNode_Id.Parse("GD-OVERLAY"),
-                                ChargePointVendor:  "GraphDefined OEM #1",
-                                ChargePointModel:   "VCP.1",
-                                Connectors:         [],
-                                DNSClient:          centralSystem!.DNSClient
-                            );
+            var connecting = new TestChargePointNode(
+                                 ChargeBoxId:        NetworkingNode_Id.Parse("GD-OVERLAY"),
+                                 ChargePointVendor:  "GraphDefined OEM #1",
+                                 ChargePointModel:   "VCP.1",
+                                 Connectors:         [],
+                                 DNSClient:          centralSystem!.DNSClient
+                             );
 
-            var upgrade   = await dialler.ConnectOCPPWebSocketClient(
-                                      URL.Parse($"http://127.0.0.1:{centralSystemWSS!.IPPort}/{dialler.Id}"),
+            var upgrade   = await connecting.ConnectOCPPWebSocketClient(
+                                      URL.Parse($"http://127.0.0.1:{centralSystemWSS!.IPPort}/{connecting.Id}"),
                                       SecWebSocketProtocols:  Offered,
                                       NetworkingMode:         NetworkingMode.OverlayNetwork
                                   );
@@ -247,16 +247,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
             {
 
                 var toTheCentralSystem  = SourceRouting.To(NetworkingNode_Id.CentralSystem);
-                var name                = dialler.Id.ToString();
+                var name                = connecting.Id.ToString();
 
                 // In the name of another charge point, as if this one had forwarded it...
-                var forwarded  = await Heartbeat(dialler, NetworkingMode.OverlayNetwork, toTheCentralSystem, NetworkPath.From(other).Append(dialler.Id));
+                var forwarded  = await Heartbeat(connecting, NetworkingMode.OverlayNetwork, toTheCentralSystem, NetworkPath.From(other).Append(connecting.Id));
 
                 // ...in that name alone...
-                var foreign    = await Heartbeat(dialler, NetworkingMode.OverlayNetwork, toTheCentralSystem, NetworkPath.From(other));
+                var foreign    = await Heartbeat(connecting, NetworkingMode.OverlayNetwork, toTheCentralSystem, NetworkPath.From(other));
 
                 // ...and in its own.
-                var own        = await Heartbeat(dialler, NetworkingMode.OverlayNetwork, toTheCentralSystem, NetworkPath.From(dialler.Id));
+                var own        = await Heartbeat(connecting, NetworkingMode.OverlayNetwork, toTheCentralSystem, NetworkPath.From(connecting.Id));
 
                 Assert.Multiple(() => {
                     Assert.That(asked,                    Is.EqualTo(new[] { $"{name} {other},{name} Heartbeat",

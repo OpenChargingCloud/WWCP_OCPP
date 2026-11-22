@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
@@ -142,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// and Address must be an SSH peer of the station. Within a change,
     /// SSHConnection is applied after Transport and before everything else,
     /// whatever its place in the request. And a server on a shared connection
-    /// does not count for resolving the name that connection is dialled by:
+    /// does not count for resolving the name that connection is made by:
     /// the node's pre-flight leaves it out for that name, so a change after
     /// which the CSMS would resolve through its own connection alone is
     /// CSMSUnreachable although the name resolves now.
@@ -180,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// The reason code of a name server over SSH that nothing would
         /// authenticate: neither a pinned host key, nor an SSH CA, nor the SSH
         /// peer whose connection it shares - the reason code of the white paper
-        /// "OCPP over SSH", section 9.2.
+        /// "OCPP-over-SSH", section 9.2.
         /// </summary>
         public const String InvalidSSHHostKeyConfig = "InvalidSSHHostKeyConfig";
 
@@ -263,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="Section">Where the node says how it resolves names, as WWCPNode.DNSConfigurationJSON does: asked anew at every read and at every request.</param>
         /// <param name="Update">How a change is put into the node, as WWCPNode.TryUpdateDNSConfiguration does it.</param>
         /// <param name="Preflight">How names are resolved with a change before it is put into effect, as WWCPNode.ResolveWithAsync does it.</param>
-        /// <param name="NamesToKeepResolving">The names a change must not stop resolving: those the CSMS connections are dialled by.</param>
+        /// <param name="NamesToKeepResolving">The names a change must not stop resolving: those the CSMS connections are made by.</param>
         /// <param name="Log">Where a change is said before it is made.</param>
         /// <param name="LegalTimeNames">The names of the NTS-KE servers of the legal time, of which a change must not stop all resolving.</param>
         public DNSDeviceModel(Func<JObject>                      Section,
@@ -569,7 +570,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // transport, and whether it shares an SSH connection, whatever
             // their places in the request: what a request sets beside them is
             // set for the transport it switches to, and on the connection it
-            // switches to (white paper "DNS over SSH", section 7.2).
+            // switches to (white paper "DNS-over-SSH", section 7.2).
             foreach (var item in Change.OrderBy(item => item.IsAddress                                 ? 0
                                                       : item.Server is not null && item.Is("Transport")     ? 1
                                                       : item.Server is not null && item.Is("SSHConnection") ? 2
@@ -668,7 +669,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         break;
 
                     case "port":
-                        server.Port            = item.Value.Length > 0 ? UInt16.Parse(item.Value, CultureInfo.InvariantCulture) : null;
+                        server.Port            = item.Value.Length > 0 ? IPPort.Parse(item.Value) : null;
                         break;
 
                     // The values of the paper in its own case: UDP, TLS, HTTPS_GET.
@@ -822,7 +823,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (names.Length > 0 && section["enabled"]?.Type == JTokenType.Boolean && !section.Value<Boolean>("enabled"))
             {
                 Refuse(Change, Change, Results, false, "CSMSUnreachable",
-                       $"Name resolution cannot be switched off while the CSMS is dialled by its name: '{String.Join("', '", names)}'!");
+                       $"Name resolution cannot be switched off while the CSMS is connected to by its name: '{String.Join("', '", names)}'!");
                 return;
             }
 
@@ -1156,14 +1157,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// The port a name server is asked on when nothing else is said, by its
         /// transport, as the node's DNS client has it.
         /// </summary>
-        private static UInt16 DefaultPortOf(String Transport)
+        private static IPPort DefaultPortOf(String Transport)
 
             => Transport.ToUpperInvariant() switch {
-                   "TLS"                             => 853,
-                   "SSH"                             => 22,
-                   var http when http.StartsWith("HTTPS", StringComparison.Ordinal) => 443,
-                   var http when http.StartsWith("HTTP",  StringComparison.Ordinal) => 80,
-                   _                                 => 53
+                   "TLS"                             => IPPort.DNS_TLS,
+                   "SSH"                             => IPPort.SSH,
+                   var http when http.StartsWith("HTTPS", StringComparison.Ordinal) => IPPort.HTTPS,
+                   var http when http.StartsWith("HTTP",  StringComparison.Ordinal) => IPPort.HTTP,
+                   _                                 => IPPort.DNS
                };
 
         #endregion
@@ -1229,7 +1230,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             public String        Id               { get; } = Id;
             public String        Address          { get; set; } = Address;
-            public UInt16?       Port             { get; set; }
+            public IPPort?       Port             { get; set; }
             public String        Transport        { get; set; } = "UDP";
             public Decimal?      QueryTimeout     { get; set; }
             public List<String>  CertificatePins  { get; set; } = [];
@@ -1294,7 +1295,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     var ssh    = json["ssh"] as JObject;
 
                     var server = new TableServer(json.Value<String>("id") ?? "", json.Value<String>("address") ?? "") {
-                                     Port             = json["port"]?.Type == JTokenType.Integer ? json.Value<UInt16>("port") : null,
+                                     Port             = json["port"]?.Type == JTokenType.Integer ? IPPort.Parse(json.Value<UInt16>("port")) : null,
                                      Transport        = json.Value<String>("transport") ?? "UDP",
                                      QueryTimeout     = json["queryTimeoutSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? json["queryTimeoutSeconds"]!.AsDecimal() : null,
                                      CertificatePins  = ListOf(PinsOf(json, "certificateFingerprint")),
@@ -1339,7 +1340,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             /// <summary>
             /// Why the given variable cannot be set to the given value on this
             /// server as it is asked by now, or null where it can: the rules of
-            /// section 7.2 of the white paper "DNS over SSH" that are about one
+            /// section 7.2 of the white paper "DNS-over-SSH" that are about one
             /// variable alone.
             /// </summary>
             /// <remarks>
@@ -1443,7 +1444,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                            );
 
                 if (Port.HasValue)
-                    json["port"]                 = Port.Value;
+                    json["port"]                 = Port.Value.ToUInt16();
 
                 if (QueryTimeout.HasValue)
                     json["queryTimeoutSeconds"]  = QueryTimeout.Value;

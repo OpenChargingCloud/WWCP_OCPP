@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The InstallSSHKey request: a CSMS lets a charging station sign in to a Local Controller with an SSH key (white paper "OCPP over SSH", section 9.3).
+    /// The InstallSSHKey request: a CSMS lets a charging station sign in to a Local Controller with an SSH key (white paper "OCPP-over-SSH", section 9.3).
     /// </summary>
     public class InstallSSHKeyRequest : ARequest<InstallSSHKeyRequest>,
                                        IRequest

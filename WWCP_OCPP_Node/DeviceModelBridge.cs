@@ -56,8 +56,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region Data
 
         private readonly  WWCPNode                         node;
-        private readonly  Func<Boolean>                    dialsOCPP2_1;
-        private readonly  Func<Boolean>                    dialsOCPP1_6;
+        private readonly  Func<Boolean>                    connectsOCPP2_1;
+        private readonly  Func<Boolean>                    connectsOCPP1_6;
 
         // The OCPP nodes handed last: the 2.1 one is the one whose components
         // follow the servers and groups, and both are the ones told of events.
@@ -103,18 +103,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// The bridges of the given node, following it from now on.
         /// </summary>
         /// <param name="Node">The node, which stays the only truth.</param>
-        /// <param name="NamesToKeepResolving">The names the node dials its CSMS by - leaving out those dialled by an address - which a change of the name servers must keep resolving.</param>
-        /// <param name="DialsOCPP2_1">Whether a connection of OCPP 2.1 is configured, so that a security event is queued for it.</param>
-        /// <param name="DialsOCPP1_6">The same for OCPP 1.6.</param>
+        /// <param name="NamesToKeepResolving">The names the node connects to its CSMS by - leaving out those connected to by an address - which a change of the name servers must keep resolving.</param>
+        /// <param name="ConnectsOCPP2_1">Whether a connection of OCPP 2.1 is configured, so that a security event is queued for it.</param>
+        /// <param name="ConnectsOCPP1_6">The same for OCPP 1.6.</param>
         public DeviceModelBridge(WWCPNode                   Node,
                                  Func<IEnumerable<String>>  NamesToKeepResolving,
-                                 Func<Boolean>              DialsOCPP2_1,
-                                 Func<Boolean>              DialsOCPP1_6)
+                                 Func<Boolean>              ConnectsOCPP2_1,
+                                 Func<Boolean>              ConnectsOCPP1_6)
         {
 
             this.node          = Node;
-            this.dialsOCPP2_1  = DialsOCPP2_1;
-            this.dialsOCPP1_6  = DialsOCPP1_6;
+            this.connectsOCPP2_1  = ConnectsOCPP2_1;
+            this.connectsOCPP1_6  = ConnectsOCPP1_6;
 
             this.NTS                  = new NTSDeviceModel(Node, sentence => Node.Log.Notice(sentence, "nts", "ocpp"));
             this.NTSRootCertificates  = new NTSRootCertificates(Node);

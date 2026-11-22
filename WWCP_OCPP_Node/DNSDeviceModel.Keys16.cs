@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// What a key of a name server over SSH says beside the variable it
         /// stands for, so that it can be set at all: a key is one change, and a
         /// server over SSH is made, and unmade, by several variables at once
-        /// (white paper "DNS over SSH", section 7.2).
+        /// (white paper "DNS-over-SSH", section 7.2).
         /// </summary>
         /// <remarks>
         /// A host key or a CA pinned on a server that is not asked over SSH

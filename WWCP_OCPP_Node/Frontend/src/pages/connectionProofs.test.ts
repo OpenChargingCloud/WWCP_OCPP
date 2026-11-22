@@ -383,7 +383,7 @@ describe('what a connection proves itself with', () => {
 
     });
 
-    it('writes down a connection the other end makes, and says of one that it dials in', async () => {
+    it('writes down a connection the other end makes, and says of one that it connects here', async () => {
 
         const root = await opened(undefined, () => aStation({
                                       authentications: [ { id: 'l1', description: { en: 'What the CSMS signs in with' }, kind: 'basic', login: 'csms-01',
@@ -393,10 +393,10 @@ describe('what a connection proves itself with', () => {
                                                          aConnection('c2') ]
                                   }));
 
-        // The one that dials in says so, and what it signs in with; the other one does not.
+        // The one that connects here says so, and what it signs in with; the other one does not.
         const card = root.querySelector('[data-inbound="c1"]')!.closest('.card, article, section, li, div.connection') ?? root;
 
-        assert.equal(root.querySelector('[data-inbound="c1"]')!.textContent!.trim(), 'dials in');
+        assert.equal(root.querySelector('[data-inbound="c1"]')!.textContent!.trim(), 'connects here');
         assert.equal(root.querySelector('[data-inbound="c2"]'), null);
         assert.match(card.textContent!.replace(/\s+/g, ' '), /let in/);
         assert.match(root.querySelector('[data-proves="c1"]')!.previousElementSibling!.textContent!, /Signs in with/);
@@ -408,7 +408,7 @@ describe('what a connection proves itself with', () => {
         // A new one, with the box ticked - and one without it.
         const fresh = add(root);
 
-        type(field(root, '#panel-new #add-form', 'description'), 'Another CSMS, dialling in');
+        type(field(root, '#panel-new #add-form', 'description'), 'Another CSMS, connecting here');
         typeURL(fresh, 'wss://station.example.org:9443/csms-01');
         change(fresh.querySelector<HTMLInputElement>('[name="inbound"]')!, true);
         change(fresh.querySelector<HTMLSelectElement>('select[name="proves"]')!, 'auth:l1');
@@ -423,7 +423,7 @@ describe('what a connection proves itself with', () => {
         const again = await opened();
         const plain = add(again);
 
-        type(field(again, '#panel-new #add-form', 'description'), 'A CSMS this station dials');
+        type(field(again, '#panel-new #add-form', 'description'), 'A CSMS this station connects to');
         typeURL(plain, 'wss://csms.example.org/cs001');
 
         submit(again, '#panel-new #add-form');

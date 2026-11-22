@@ -124,17 +124,17 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             Assert.Multiple(() => {
 
-                Assert.That(logins.TrySetPasswordAuthentication("cs001", null, null, I18NString.Create("Ladepunkt 1"), out var none),  Is.False);
+                Assert.That(logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), null, null, I18NString.Create("Ladepunkt 1"), out var none),  Is.False);
                 Assert.That(none,                                                                    Does.Contain("16"));
 
-                Assert.That(logins.TrySetPasswordAuthentication("cs001", "   ", null, I18NString.Create("Ladepunkt 1"), out var blank), Is.False);
+                Assert.That(logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), "   ", null, I18NString.Create("Ladepunkt 1"), out var blank), Is.False);
                 Assert.That(blank,                                                                   Does.Contain("16"));
 
                 Assert.That(logins.Logins,                                                           Is.Empty,
                             "A charging station was added without a password.");
 
-                Assert.That(logins.TrySetPasswordAuthentication("cs001", APassword, null, I18NString.Create("Ladepunkt 1"), out var error), Is.True, error);
-                Assert.That(logins.Verify("cs001", APassword),                                       Is.True);
+                Assert.That(logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, I18NString.Create("Ladepunkt 1"), out var error), Is.True, error);
+                Assert.That(logins.Verify(User_Id.Parse("cs001"), APassword),                                       Is.True);
 
                 // And nowhere else: not in what the page is shown.
                 Assert.That(logins.ToJSON().ToString(),                                              Does.Not.Contain(APassword));
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void TheFileNeverHoldsThePasswordInTheClear()
         {
 
-            logins.TrySetPasswordAuthentication("cs001", APassword, null, null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, null, out _);
 
             var written = File.ReadAllText(Path.Combine(directory, "websocket-logins.json"));
 
@@ -178,13 +178,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             Assert.Multiple(() => {
 
-                Assert.That(logins.TrySetPasswordAuthentication("cs001", "1234", null, null, out var tooShort), Is.False);
+                Assert.That(logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), "1234", null, null, out var tooShort), Is.False);
                 Assert.That(tooShort, Does.Contain("16"));
 
-                Assert.That(logins.TrySetPasswordAuthentication("cs001", new String('x', 65), null, null, out var tooLong), Is.False);
+                Assert.That(logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), new String('x', 65), null, null, out var tooLong), Is.False);
                 Assert.That(tooLong,  Does.Contain("64"));
 
-                Assert.That(logins.TrySetPasswordAuthentication("cs001", new String('x', 20), null, null, out var fine), Is.True, fine);
+                Assert.That(logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), new String('x', 20), null, null, out var fine), Is.True, fine);
 
             });
 
@@ -199,10 +199,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         {
 
             Assert.Multiple(() => {
-                Assert.That(logins.TrySetPasswordAuthentication("",  null, null, null, out var empty), Is.False);
+                Assert.That(logins.TrySetPasswordAuthentication(default(User_Id), null, null, null, out var empty), Is.False);
                 Assert.That(empty, Does.Contain("login"));
 
-                Assert.That(logins.TrySetPasswordAuthentication(new String('c', 49), null, null, null, out var tooLong), Is.False);
+                Assert.That(logins.TrySetPasswordAuthentication(User_Id.Parse(new String('c', 49)), null, null, null, out var tooLong), Is.False);
                 Assert.That(tooLong, Does.Contain("48"));
             });
 
@@ -216,13 +216,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void AWrongPasswordOrAnUnknownStationIsRefused()
         {
 
-            logins.TrySetPasswordAuthentication("cs001", APassword, null, null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, null, out _);
 
             Assert.Multiple(() => {
-                Assert.That(logins.Verify("cs001", APassword),        Is.True);
-                Assert.That(logins.Verify("cs001", "something else"),  Is.False);
-                Assert.That(logins.Verify("cs002", APassword),        Is.False);
-                Assert.That(logins.Verify("",      ""),                Is.False);
+                Assert.That(logins.Verify(User_Id.Parse("cs001"), APassword),        Is.True);
+                Assert.That(logins.Verify(User_Id.Parse("cs001"), "something else"),  Is.False);
+                Assert.That(logins.Verify(User_Id.Parse("cs002"), APassword),        Is.False);
+                Assert.That(logins.Verify(default(User_Id),     ""),                Is.False);
             });
 
         }
@@ -235,21 +235,21 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void AStationSwitchedOffCannotSignInAndKeepsItsPassword()
         {
 
-            logins.TrySetPasswordAuthentication("cs001", APassword, null, null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, null, out _);
 
-            Assert.That(logins.TrySetEnabled("cs001", false, out var error), Is.True, error);
+            Assert.That(logins.TrySetEnabled(User_Id.Parse("cs001"), false, out var error), Is.True, error);
 
             Assert.Multiple(() => {
 
-                Assert.That(logins.Verify("cs001", APassword),  Is.False);
+                Assert.That(logins.Verify(User_Id.Parse("cs001"), APassword),  Is.False);
                 Assert.That(logins.EnabledCount,                 Is.EqualTo(0));
                 Assert.That(logins.Logins.Count,                 Is.EqualTo(1));
 
                 // A switched-off station is not handed to the server at all.
                 Assert.That(logins.SecurePasswords(),            Is.Empty);
 
-                Assert.That(logins.TrySetEnabled("cs001", true, out _), Is.True);
-                Assert.That(logins.Verify("cs001", APassword),  Is.True);
+                Assert.That(logins.TrySetEnabled(User_Id.Parse("cs001"), true, out _), Is.True);
+                Assert.That(logins.Verify(User_Id.Parse("cs001"), APassword),  Is.True);
 
             });
 
@@ -263,10 +263,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void ChangingAPasswordKeepsWhatWasKnownAboutTheStation()
         {
 
-            logins.TrySetPasswordAuthentication("cs001", APassword, null, I18NString.Create("Ladepunkt 1"), out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, I18NString.Create("Ladepunkt 1"), out _);
 
-            logins.TrySetEnabled ("cs001", false, out _);
-            logins.TrySetPasswordAuthentication("cs001", AnotherPassword, null, null, out var error);
+            logins.TrySetEnabled (User_Id.Parse("cs001"), false, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), AnotherPassword, null, null, out var error);
 
             var station = logins.Logins.Single();
 
@@ -274,9 +274,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 Assert.That(error,                            Is.Null);
                 Assert.That(station.Description?.FirstText(),                     Is.EqualTo("Ladepunkt 1"), "The description was lost when the password changed.");
                 Assert.That(station.Enabled,                  Is.False,                  "A switched-off station was switched on by a new password.");
-                Assert.That(logins.TrySetEnabled("cs001", true, out _), Is.True);
-                Assert.That(logins.Verify("cs001", APassword),        Is.False, "The password of before still lets it in.");
-                Assert.That(logins.Verify("cs001", AnotherPassword),  Is.True);
+                Assert.That(logins.TrySetEnabled(User_Id.Parse("cs001"), true, out _), Is.True);
+                Assert.That(logins.Verify(User_Id.Parse("cs001"), APassword),        Is.False, "The password of before still lets it in.");
+                Assert.That(logins.Verify(User_Id.Parse("cs001"), AnotherPassword),  Is.True);
             });
 
         }
@@ -289,14 +289,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void ARemovedStationIsGoneFromTheFileToo()
         {
 
-            logins.TrySetPasswordAuthentication("cs001", APassword, null, null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, null, out _);
 
-            Assert.That(logins.TryRemove("cs001", out var error), Is.True, error);
+            Assert.That(logins.TryRemove(User_Id.Parse("cs001"), out var error), Is.True, error);
 
             Assert.Multiple(() => {
-                Assert.That(logins.Verify("cs001", APassword), Is.False);
+                Assert.That(logins.Verify(User_Id.Parse("cs001"), APassword), Is.False);
                 Assert.That(File.ReadAllText(Path.Combine(directory, "websocket-logins.json")), Does.Not.Contain("cs001"));
-                Assert.That(logins.TryRemove("cs001", out var again), Is.False);
+                Assert.That(logins.TryRemove(User_Id.Parse("cs001"), out var again), Is.False);
                 Assert.That(again, Does.Contain("never heard of"));
             });
 
@@ -310,16 +310,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void EverythingIsStillThereAfterARestart()
         {
 
-            logins.TrySetPasswordAuthentication("cs001", APassword, null, I18NString.Create("Ladepunkt 1"), out _);
-            logins.TrySetPasswordAuthentication("cs002", AnotherPassword, null, null,          out _);
-            logins.TrySetEnabled ("cs002", false, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, I18NString.Create("Ladepunkt 1"), out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs002"), AnotherPassword, null, null,          out _);
+            logins.TrySetEnabled (User_Id.Parse("cs002"), false, out _);
 
             var restarted = new WebSocketLogins(Path.Combine(directory, "websocket-logins.json"), clock);
 
             Assert.That(restarted.TryLoad(out var error), Is.True, error);
 
             Assert.Multiple(() => {
-                Assert.That(restarted.Verify("cs001", APassword), Is.True);
+                Assert.That(restarted.Verify(User_Id.Parse("cs001"), APassword), Is.True);
                 Assert.That(restarted.Logins.Count,                Is.EqualTo(2));
                 Assert.That(restarted.EnabledCount,                Is.EqualTo(1));
                 Assert.That(restarted.Logins.First().Description?.FirstText(),         Is.EqualTo("Ladepunkt 1"));
@@ -344,12 +344,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             logins.OnChanged += () => changes++;
 
-            logins.TrySetPasswordAuthentication("cs001", APassword, null, null, out _);
-            logins.TrySetEnabled ("cs001", false, out _);
-            logins.TryRemove     ("cs001", out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, null, out _);
+            logins.TrySetEnabled (User_Id.Parse("cs001"), false, out _);
+            logins.TryRemove     (User_Id.Parse("cs001"), out _);
 
             // And not for something that changed nothing.
-            logins.TrySetEnabled("cs001", false, out _);
+            logins.TrySetEnabled(User_Id.Parse("cs001"), false, out _);
 
             Assert.That(changes, Is.EqualTo(3));
 
@@ -367,13 +367,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void WhatThePageIsShownNamesNoHashes()
         {
 
-            logins.TrySetPasswordAuthentication("cs001", APassword, null, I18NString.Create("Ladepunkt 1"), out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, I18NString.Create("Ladepunkt 1"), out _);
 
             var shown = logins.ToJSON();
 
             Assert.Multiple(() => {
                 Assert.That(shown.ToString(),                             Does.Not.Contain("$pbkdf2"));
-                Assert.That(shown["logins"]?[0]?.Value<String>("id"),    Is.EqualTo("cs001"));
+                Assert.That(shown["logins"]?[0]?.Value<String>("login"), Is.EqualTo("cs001"));
                 Assert.That(shown["logins"]?[0]?["description"]?.Value<String>("en"),  Is.EqualTo("Ladepunkt 1"));
                 Assert.That(shown["logins"]?[0]?["password"],            Is.Null);
             });
@@ -401,25 +401,25 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 => org.GraphDefined.Vanaheimr.Hermod.TOTPGenerator.GenerateTOTP(Secret, TOTPSettings.DefaultValidityTime, TOTPSettings.DefaultLength, TOTPSettings.DefaultAlphabet,
                                               clock.GetUtcNow(), Material, org.GraphDefined.Vanaheimr.Hermod.TOTPHashAlgorithm.SHA256).Current;
 
-            Assert.That(logins.TrySetTOTPBinding("cs001", true, out var nothingToBind), Is.False, "bound what is not there");
+            Assert.That(logins.TrySetTOTPBinding(User_Id.Parse("cs001"), true, out var nothingToBind), Is.False, "bound what is not there");
 
-            logins.TrySetTOTPAuthentication("cs001", theSecret, null, null, null, null, null, null, out var error);
+            logins.TrySetTOTPAuthentication(User_Id.Parse("cs001"), theSecret, null, null, null, null, null, null, out var error);
 
-            var rawBefore    = logins.VerifyTOTP("cs001", Token(theSecret, null));
+            var rawBefore    = logins.VerifyTOTP(User_Id.Parse("cs001"), Token(theSecret, null));
 
-            var boundNow     = logins.TrySetTOTPBinding("cs001", true, out var bindingError);
+            var boundNow     = logins.TrySetTOTPBinding(User_Id.Parse("cs001"), true, out var bindingError);
 
-            var rawAfter     = logins.VerifyTOTP("cs001", Token(theSecret, null));
-            var boundAfter   = logins.VerifyTOTP("cs001", Token(theSecret, here), true, here);
+            var rawAfter     = logins.VerifyTOTP(User_Id.Parse("cs001"), Token(theSecret, null));
+            var boundAfter   = logins.VerifyTOTP(User_Id.Parse("cs001"), Token(theSecret, here), true, here);
             var shown        = logins.ToJSON();
 
-            logins.TrySetTOTPAuthentication("cs001", theSecret + "-anew", null, null, null, null, null, null, out var errorAnew);
+            logins.TrySetTOTPAuthentication(User_Id.Parse("cs001"), theSecret + "-anew", null, null, null, null, null, null, out var errorAnew);
 
-            var stillBound   = logins.TryGet("cs001", out var anew) && anew.TOTP?.TLSChannelBinding == true;
-            var rawAnew      = logins.VerifyTOTP("cs001", Token(theSecret + "-anew", null));
+            var stillBound   = logins.TryGet(User_Id.Parse("cs001"), out var anew) && anew.TOTP?.TLSChannelBinding == true;
+            var rawAnew      = logins.VerifyTOTP(User_Id.Parse("cs001"), Token(theSecret + "-anew", null));
 
-            var unbound      = logins.TrySetTOTPBinding("cs001", false, out _);
-            var rawAtLast    = logins.VerifyTOTP("cs001", Token(theSecret + "-anew", null));
+            var unbound      = logins.TrySetTOTPBinding(User_Id.Parse("cs001"), false, out _);
+            var rawAtLast    = logins.VerifyTOTP(User_Id.Parse("cs001"), Token(theSecret + "-anew", null));
 
             Assert.Multiple(() => {
                 Assert.That(nothingToBind,  Is.Not.Null);
@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             const String theSecret = "a-shared-secret-long-enough";
 
-            logins.TrySetTOTPAuthentication("cs001", theSecret, null, null, null, null, null, null, out var error);
+            logins.TrySetTOTPAuthentication(User_Id.Parse("cs001"), theSecret, null, null, null, null, null, null, out var error);
 
             var shown = logins.ToJSON();
 
@@ -488,9 +488,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void ALoginMayCarryNoCredentialsAtAll()
         {
 
-            logins.TrySetPasswordAuthentication("cs001", APassword, null, I18NString.Create("Ladepunkt 1"), out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, I18NString.Create("Ladepunkt 1"), out _);
 
-            Assert.That(logins.TryClearPassword("cs001", out var error), Is.True, error);
+            Assert.That(logins.TryClearPassword(User_Id.Parse("cs001"), out var error), Is.True, error);
 
             var again = new WebSocketLogins(logins.Path, clock);
 
@@ -503,7 +503,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 Assert.That(login.HasTOTP,       Is.False);
                 Assert.That(login.Credentials,   Is.Empty);
                 Assert.That(login.Description?.FirstText(),          Is.EqualTo("Ladepunkt 1"));
-                Assert.That(again.Verify("cs001", ""), Is.False);
+                Assert.That(again.Verify(User_Id.Parse("cs001"), ""), Is.False);
             });
 
         }
@@ -516,14 +516,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void TakingAwayACredentialThatIsNotThereSaysSo()
         {
 
-            logins.TrySetPasswordAuthentication("cs001", APassword, null, null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("cs001"), APassword, null, null, out _);
 
             Assert.Multiple(() => {
 
-                Assert.That(logins.TryClearTOTP("cs001", out var noToken),  Is.False);
+                Assert.That(logins.TryClearTOTP(User_Id.Parse("cs001"), out var noToken),  Is.False);
                 Assert.That(noToken, Does.Contain("no TOTP configuration"));
 
-                Assert.That(logins.TryClearTOTP("cs404", out var unknown),  Is.False);
+                Assert.That(logins.TryClearTOTP(User_Id.Parse("cs404"), out var unknown),  Is.False);
                 Assert.That(unknown, Does.Contain("never heard of"));
 
             });
@@ -543,28 +543,28 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void ALoginIsAStationsALocalControllersOrAGatewaysAndSaysSo()
         {
 
-            logins.TrySetPasswordAuthentication("lc001", APassword,       null, null, out _);
-            logins.TrySetPasswordAuthentication("gw001", AnotherPassword, null, null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("lc001"), APassword,       null, null, out _);
+            logins.TrySetPasswordAuthentication(User_Id.Parse("gw001"), AnotherPassword, null, null, out _);
 
             Assert.Multiple(() => {
 
-                Assert.That(logins.SpeaksForOthers("lc001"),                          Is.False, "A login speaks for others before it is marked.");
+                Assert.That(logins.SpeaksForOthers(User_Id.Parse("lc001")),                          Is.False, "A login speaks for others before it is marked.");
 
-                Assert.That(logins.TrySetLocalController("lc001", true, out var lcError), Is.True, lcError);
-                Assert.That(logins.TrySetGateway        ("gw001", true, out var gwError), Is.True, gwError);
+                Assert.That(logins.TrySetLocalController(User_Id.Parse("lc001"), true, out var lcError), Is.True, lcError);
+                Assert.That(logins.TrySetGateway        (User_Id.Parse("gw001"), true, out var gwError), Is.True, gwError);
 
-                Assert.That(logins.IsLocalController("lc001"),                        Is.True);
-                Assert.That(logins.IsGateway        ("gw001"),                        Is.True);
-                Assert.That(logins.SpeaksForOthers  ("lc001"),                        Is.True);
-                Assert.That(logins.SpeaksForOthers  ("gw001"),                        Is.True);
+                Assert.That(logins.IsLocalController(User_Id.Parse("lc001")),                        Is.True);
+                Assert.That(logins.IsGateway        (User_Id.Parse("gw001")),                        Is.True);
+                Assert.That(logins.SpeaksForOthers  (User_Id.Parse("lc001")),                        Is.True);
+                Assert.That(logins.SpeaksForOthers  (User_Id.Parse("gw001")),                        Is.True);
 
                 // The one or the other: marked as a gateway's, it is no local
                 // controller's any more.
-                Assert.That(logins.TrySetGateway("lc001", true, out var bothError),   Is.True, bothError);
-                Assert.That(logins.IsLocalController("lc001"),                        Is.False);
-                Assert.That(logins.IsGateway        ("lc001"),                        Is.True);
+                Assert.That(logins.TrySetGateway(User_Id.Parse("lc001"), true, out var bothError),   Is.True, bothError);
+                Assert.That(logins.IsLocalController(User_Id.Parse("lc001")),                        Is.False);
+                Assert.That(logins.IsGateway        (User_Id.Parse("lc001")),                        Is.True);
 
-                Assert.That(logins.TrySetLocalController("cs404", true, out var unknown), Is.False);
+                Assert.That(logins.TrySetLocalController(User_Id.Parse("cs404"), true, out var unknown), Is.False);
                 Assert.That(unknown,                                                  Does.Contain("never heard of"));
 
             });
@@ -574,10 +574,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             Assert.That(restarted.TryLoad(out var error), Is.True, error);
 
             Assert.Multiple(() => {
-                Assert.That(restarted.IsGateway        ("gw001"),  Is.True,  "Being a gateway's login was not written down.");
-                Assert.That(restarted.IsGateway        ("lc001"),  Is.True);
-                Assert.That(restarted.IsLocalController("lc001"),  Is.False);
-                Assert.That(restarted.Logins.Single(login => login.Id == "gw001").Kind, Is.EqualTo("gateway"));
+                Assert.That(restarted.IsGateway        (User_Id.Parse("gw001")),  Is.True,  "Being a gateway's login was not written down.");
+                Assert.That(restarted.IsGateway        (User_Id.Parse("lc001")),  Is.True);
+                Assert.That(restarted.IsLocalController(User_Id.Parse("lc001")),  Is.False);
+                Assert.That(restarted.Logins.Single(login => login.Login == User_Id.Parse("gw001")).Kind, Is.EqualTo("gateway"));
             });
 
         }

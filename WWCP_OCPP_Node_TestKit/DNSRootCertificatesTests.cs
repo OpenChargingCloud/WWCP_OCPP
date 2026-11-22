@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         /// <summary>
         /// The one root a name server over TLS is believed through, while the
-        /// CSMS is dialled by a name: deleting it would leave the name without
+        /// CSMS is connected to by a name: deleting it would leave the name without
         /// a name server to resolve it, so it fails, and the root is kept
         /// (Secure DNS T21). Another root goes, as the name still resolves
         /// without it.
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         /// <summary>
         /// The one root a name server over TLS is believed through, while the
         /// legal time asks its one NTS-KE server by its name and no CSMS is
-        /// dialled by one: deleting it through the OCPP 2.1 node fails as
+        /// connected to by one: deleting it through the OCPP 2.1 node fails as
         /// NTSKEUnreachable, and the root is kept. The bridge takes the name
         /// from the node's legal group.
         /// </summary>

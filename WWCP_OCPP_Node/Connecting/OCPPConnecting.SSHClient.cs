@@ -46,12 +46,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
 {
 
     /// <summary>
-    /// What the white paper "OCPP over SSH" asks of the station beyond dialling: its SSH client in the
+    /// What the white paper "OCPP-over-SSH" asks of the station beyond connecting: its SSH client in the
     /// Device Model (SSHClientController, section 9.2), pin sets a signer it believes signed (section
     /// 10.4), one key per purpose and their rotation (sections 10.1 and 10.3), and the security events
     /// (section 9.4).
     /// </summary>
-    public partial class OCPPDialling
+    public partial class OCPPConnecting
     {
 
         #region Data
@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// Whether a signer this station believes signed the given SetVariables request for the given
-        /// connection: one of the pin set signers on its Connections page (white paper "OCPP over SSH",
+        /// connection: one of the pin set signers on its Connections page (white paper "OCPP-over-SSH",
         /// section 10.4; "Key Pins and Raw Public Keys", section 5.7, way 1).
         /// </summary>
         /// <remarks>
@@ -240,8 +240,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (WWCPSshClient.ConnectAsFrom(Connection.URL) is NetworkingNode_Id connectsAs)
                     return connectsAs;
 
-                return (Connection.URL.Login ?? login) is String sshLogin
-                           ? NetworkingNode_Id.TryParse(sshLogin)
+                return (Connection.URL.Login ?? login) is User_Id sshLogin
+                           ? NetworkingNode_Id.TryParse(sshLogin.ToString())
                            : null;
 
             }
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             }
 
             return login is not null
-                       ? NetworkingNode_Id.TryParse(login)
+                       ? NetworkingNode_Id.TryParse(login.ToString())
                        : null;
 
         }
@@ -361,12 +361,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 var asked = trigger.Split(':');
 
                 var keys  = asked.Length == 4
-                                ? WWCPNode.FileTransferLogins(asked[2]).Contains(asked[3], StringComparer.Ordinal)
-                                      ? [ (Peer: asked[2], Login: asked[3]) ]
+                                ? User_Id.TryParse(asked[3]) is User_Id askedLogin && WWCPNode.FileTransferLogins(asked[2]).Contains(askedLogin)
+                                      ? [ (Peer: asked[2], Login: askedLogin) ]
                                       : []
                                 : asked.Length == 2
                                       ? [.. WWCPNode.FileServers.SelectMany(fileServer => WWCPNode.FileTransferLogins(fileServer.Id).Select(login => (Peer: fileServer.Id, Login: login)))]
-                                      : Array.Empty<(String Peer, String Login)>();
+                                      : Array.Empty<(String Peer, User_Id Login)>();
 
                 if (asked.Length != 2 || keys.Length > 0)
                 {
@@ -421,9 +421,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// (white paper "SFTP for Logfile Uploads and Firmware Downloads",
         /// section 9.2). The key is made now where there is none yet.
         /// </summary>
-        public async Task<OCPPv2_1.CSMS.SignSSHKeyResponse?> ShowFileTransferKey(String  Peer,
-                                                                                   String  Login,
-                                                                                   String  Why)
+        public async Task<OCPPv2_1.CSMS.SignSSHKeyResponse?> ShowFileTransferKey(String   Peer,
+                                                                                   User_Id  Login,
+                                                                                   String   Why)
         {
 
             if (WWCPNode.FileTransferPublicKey(Peer, Login) is not String line)
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                                                    OCPPv2_1.SSHKeyPurpose.SFTP,
                                                                                                    line,
                                                                                                    Peer,
-                                                                                                   Login));
+                                                                                                   Login.ToString()));
 
                 WWCPNode.Log.Notice($"The key this {WWCPNode.NodeNoun} signs in with as '{Login}' at the file server '{Peer}' was shown to the CSMS in SignSSHKey, as {Why}: " +
                            $"it answered {OCPPv2_1.GenericStatusExtensions.AsText(response.Status)}{(response.StatusInfo is not null ? $" ({response.StatusInfo.ReasonCode})" : "")}.",
@@ -521,7 +521,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region (public) SSHKeySigned(...)
 
         /// <summary>
-        /// The CSMS confirms that a key is enrolled at every server the station dials for its purpose: the
+        /// The CSMS confirms that a key is enrolled at every server the station connects to for its purpose: the
         /// pending one becomes the key, and the old one's private half goes; the current one keeps the
         /// certificate that came with it.
         /// </summary>
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (Request.Purpose == OCPPv2_1.SSHKeyPurpose.SFTP && (Request.Peer is not null || Request.Login is not null))
             {
 
-                if (Request.Peer is not String peer || Request.Login is not String login)
+                if (Request.Peer is not String peer || User_Id.TryParse(Request.Login) is not User_Id login)
                     return new OCPPv2_1.CS.SSHKeySignedResponse(Request, OCPPv2_1.GenericStatus.Rejected,
                                                                 new OCPPv2_1.StatusInfo("InvalidValue", "A key of a file server is named by its peer and its login, both."));
 
@@ -594,7 +594,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// What SSHClientController reads and writes of this station.
         /// </summary>
-        public sealed class SSHClientSource(OCPPDialling Station) : OCPPv2_1.ISSHClientControllerSource,
+        public sealed class SSHClientSource(OCPPConnecting Station) : OCPPv2_1.ISSHClientControllerSource,
                                                                         OCPPv2_1.ISetVariablesSource
         {
 
@@ -639,7 +639,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 // The keys of NTS and DNS are the node's: shown, and neither rotated
                 // nor aged here. Each its own - the one the station signs in with at
                 // its time servers, and the one for its name servers over SSH (white
-                // paper "DNS over SSH", section 7.3) - made at the first read.
+                // paper "DNS-over-SSH", section 7.3) - made at the first read.
                 if (Station.KeyOf(purpose) is not SshClientKey key)
                     return Variable == "ClientPublicKey"
                                ? (purpose == OCPPv2_1.SSHKeyPurpose.DNS

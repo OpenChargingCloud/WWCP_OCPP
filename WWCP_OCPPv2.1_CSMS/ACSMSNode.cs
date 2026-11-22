@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public string HTTPServiceName => throw new NotImplementedException();
 
-        public IIPAddress IPAddress => throw new NotImplementedException();
+        public IPAddress IPAddress => throw new NotImplementedException();
 
         public IPPort IPPort => throw new NotImplementedException();
 

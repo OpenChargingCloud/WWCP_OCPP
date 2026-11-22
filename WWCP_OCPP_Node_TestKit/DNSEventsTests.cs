@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
     /// </summary>
     /// <remarks>
     /// The node has one name server over TLS and is never started, so its
-    /// connections are never dialled and what is told stays in the queues,
+    /// connections are never made and what is told stays in the queues,
     /// where the tests read it. A handshake is the node's judgement of the
     /// certificate a server showed, said to it directly.
     /// </remarks>
@@ -103,20 +103,20 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         #endregion
 
 
-        #region AChangeOnThePageIsToldToEachVersionThatIsDialled()
+        #region AChangeOnThePageIsToldToEachVersionThatIsConnected()
 
         /// <summary>
         /// A change of the name resolution made on the page is a
         /// ReconfigurationOfSecurityParameters for the CSMS, naming what changed
         /// and who changed it - queued at both nodes where both versions are
-        /// dialled, and written into the log among the name servers' lines.
+        /// connected, and written into the log among the name servers' lines.
         /// </summary>
         [Test]
-        public void AChangeOnThePageIsToldToEachVersionThatIsDialled()
+        public void AChangeOnThePageIsToldToEachVersionThatIsConnected()
         {
 
-            Dial("2.1");
-            Dial("1.6");
+            ConfigureConnection("2.1");
+            ConfigureConnection("1.6");
 
             var before = station!.Node.Log.LastId;
 
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         public async Task AChangeThroughOCPPIsNotToldBack()
         {
 
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             var node    = station!.OCPPv2_1Node;
             var results = await OCPP21.DeviceModel.SetVariablesAsync(
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         public void ARefusedNameServerCertificateIsToldOnce()
         {
 
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             Judge();
             Judge();
@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                             """);
 
             TrustForNameServers(certificate);
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             Judge();
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             TrustForNameServers(certificate);
             station!.Node.KnownServers.Observe(CertificateUsages.DNS, Server, Fingerprint(another), null, DateTimeOffset.UtcNow.AddDays(-3));
 
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             Judge();
 
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                             """);
 
             TrustForNameServers(certificate);
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             Judge();
             Judge();
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         public void AMonitorIsToldWhatChangedWithoutTheCSMS()
         {
 
-            Dial("2.1");
+            ConfigureConnection("2.1");
 
             var node = station!.OCPPv2_1Node;
             var set  = node.VariableMonitors.Set([ new OCPP21.SetMonitoringData(0, OCPP21.MonitorType.Delta, OCPP21.Severities.Alert,
@@ -337,14 +337,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         #endregion
 
 
-        #region (private) Dial(Version) / ChangeOnThePage(Settings) / TrustForNameServers(Root) / Judge()
+        #region (private) ConfigureConnection(Version) / ChangeOnThePage(Settings) / TrustForNameServers(Root) / Judge()
 
         /// <summary>
-        /// A connection of the given version, configured and never dialled.
+        /// A connection of the given version, configured and never made.
         /// </summary>
-        private void Dial(String Version)
+        private void ConfigureConnection(String Version)
         {
-            Assert.That(station!.TryDial("ws://127.0.0.1:9/cs", Version, out var error),
+            Assert.That(station!.TryConnect("ws://127.0.0.1:9/cs", Version, out var error),
                         Is.True,
                         error);
         }

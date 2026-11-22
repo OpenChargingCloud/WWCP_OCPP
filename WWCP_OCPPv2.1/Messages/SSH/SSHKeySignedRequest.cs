@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The SSHKeySigned request: a CSMS confirms that an SSH key of a charging station is enrolled at every server it dials for its purpose (white paper "OCPP over SSH", section 9.3).
+    /// The SSHKeySigned request: a CSMS confirms that an SSH key of a charging station is enrolled at every server it connects to for its purpose (white paper "OCPP-over-SSH", section 9.3).
     /// </summary>
     public class SSHKeySignedRequest : ARequest<SSHKeySignedRequest>,
                                       IRequest

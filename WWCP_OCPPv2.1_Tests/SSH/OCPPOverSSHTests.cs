@@ -147,10 +147,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
 
             => URL.Parse($"ssh://{Login}@127.0.0.1:{listener!.LocalEndPoint.Port}{(ConnectAs is not null ? $"/{ConnectAs}" : "")}");
 
-        private SshClientOptions Login(String Username, ISshHostKey? Key = null)
+        private SSHClientOptions Login(String Username, ISshHostKey? Key = null)
 
             => new () {
-                   Username       = Username,
+                   Username       = User_Id.Parse(Username),
                    VerifyHostKey  = blob => blob.AsSpan().SequenceEqual(hostKey.PublicKeyBlob),
                    Credentials    = [ Key ?? stationKey ]
                };
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
                 Assert.That(bootCameOver!.Transport,      Is.EqualTo(MessageTransport.SSH));
                 Assert.That(bootCameOver.Role,            Is.EqualTo(ConnectionRole.Server));
                 Assert.That(bootCameOver.Subprotocol,     Is.EqualTo(AgreedOn));
-                Assert.That(((ISshMessageConnection) bootCameOver).Username, Is.EqualTo("GD-SSH-001"));
+                Assert.That(((ISshMessageConnection) bootCameOver).Username, Is.EqualTo(User_Id.Parse("GD-SSH-001")));
 
                 // The station's route to its CSMS is the SSH client.
                 Assert.That(chargingStation.Routing.LookupNetworkingNode(NetworkingNode_Id.CSMS, out var toCSMS), Is.True);

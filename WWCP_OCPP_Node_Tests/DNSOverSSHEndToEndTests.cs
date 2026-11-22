@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.SSH;
@@ -42,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 {
 
     /// <summary>
-    /// Chapter 7 of the white paper "DNS over SSH", from the CSMS to the name:
+    /// Chapter 7 of the white paper "DNS-over-SSH", from the CSMS to the name:
     /// it reads the key the station signs in with at name servers, has it
     /// entered at the resolver, gives the station that resolver over SSH with
     /// the host key it is pinned to in one SetVariables request - and the next
@@ -56,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
     /// subsystem "dns@open.charging.cloud" to a DNS server without a listener
     /// of its own, addressed by its address: no name to resolve before the
     /// first one. The node is a bare one with its bridges, and a connection of
-    /// OCPP 2.1 that is configured and never dialled: what it tells its CSMS
+    /// OCPP 2.1 that is configured and never made: what it tells its CSMS
     /// waits in the queue.
     /// </remarks>
     [TestFixture]
@@ -104,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
             station    = new BareNodes().New(directory, configuration);
 
-            Assert.That(station.TryDial("ws://127.0.0.1:9/cs", "2.1", out var error), Is.True, error);
+            Assert.That(station.TryConnect("ws://127.0.0.1:9/cs", "2.1", out var error), Is.True, error);
 
             dns        = new DNSServer(
                              new AuthoritativeDNSRequestHandler(
@@ -159,8 +160,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
         /// The resolver behind an SSH server that shows the given host key, and
         /// lets in whoever holds one of the keys entered there so far.
         /// </summary>
-        private async Task<(SshServer SSH, UInt16 Port, CollectingAuditSink Audit)> NameServer(ISshHostKey  HostKey,
-                                                                                                UInt16?      Port   = null)
+        private async Task<(SshServer SSH, IPPort Port, CollectingAuditSink Audit)> NameServer(ISshHostKey  HostKey,
+                                                                                                IPPort?      Port   = null)
         {
 
             var audit = new CollectingAuditSink();
@@ -182,11 +183,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
                                              )
                         });
 
-            await ssh.StartAsync(new IPSocket(IPv4Address.Localhost, Port.HasValue ? IPPort.Parse(Port.Value) : IPPort.Auto));
+            await ssh.StartAsync(new IPSocket(IPv4Address.Localhost, Port.HasValue ? Port.Value : IPPort.Auto));
 
             sshServers.Add(ssh);
 
-            return (ssh, (UInt16) ssh.LocalEndPoint.Port.ToInt32(), audit);
+            return (ssh, ssh.LocalEndPoint.Port, audit);
 
         }
 
@@ -308,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
                 Assert.That(answer,                                          Is.EqualTo(new[] { "192.0.2.102" }));
                 Assert.That(requests,                                        Has.Count.EqualTo(1), "the resolver was not asked over SSH");
                 Assert.That(audit.Events.OfType<AuthenticationSucceededEvent>().Select(login => login.Username),
-                                                                             Is.EqualTo(new[] { station.Node.Kind.Tag }), "the login is the node's own name");
+                                                                             Is.EqualTo(new[] { User_Id.Parse(station.Node.Kind.Tag) }), "the login is the node's own name");
 
                 Assert.That(Value("cpo-1", "SSHStatus"),                     Is.EqualTo("Accepted"));
                 Assert.That(Value("cpo-1", "Problem"),                       Is.EqualTo("false"));

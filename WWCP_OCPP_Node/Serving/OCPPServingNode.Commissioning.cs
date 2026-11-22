@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// The commissioning server of the OCPP 1.6 node, where there is one:
         /// a tool that speaks OCPP 1.6 is handed to it by its HELLO (white
-        /// paper "OCPP over SSH", decision 13).
+        /// paper "OCPP-over-SSH", decision 13).
         /// </summary>
         private OCPPSshServer?  commissioningServer16;
 
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (SSHPrincipalFor(Context.Session).Kind != SSHPrincipal.Account)
                 return SshHelloVerdict.Refuse(WWCPSshServer.RefusalNotPermitted, $"'{Context.Session.Username}' is no account of this {Kind.Name}.");
 
-            if (WhyNoCommissioningToolMayBe(Context.Session.Username, NodeId) is String why)
+            if (WhyNoCommissioningToolMayBe(Context.Session.Username.ToString(), NodeId) is String why)
                 return SshHelloVerdict.Refuse(WWCPSshServer.RefusalNotPermitted, why);
 
             var verdict = Server.Validate(Context.Session.Username, Hello);

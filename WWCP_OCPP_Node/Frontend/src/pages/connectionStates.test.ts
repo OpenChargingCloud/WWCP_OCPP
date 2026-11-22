@@ -4,8 +4,8 @@
  * Run with `npm test`. What is pinned is what the page must not get wrong
  * while somebody relies on it: how long and how soon are counted on the
  * station's clock and not the browser's, a connection changed is said to be
- * dialled as it was until the station has taken the change, one in reserve is
- * said to be, and one removed but still dialled is not left out.
+ * connected as it was until the station has taken the change, one in reserve is
+ * said to be, and one removed but still connected is not left out.
  */
 
 import { strict as assert }  from 'node:assert';
@@ -15,17 +15,17 @@ import type { ConnectionState } from '../api/connections';
 import { between, noLongerWrittenDown, stateLine } from './connectionStates.ts';
 
 
-const dialled = { url: 'ws://csms.example.org/cs001', ocppVersion: 'OCPP2.1', autoConnect: true };
+const connectedTo = { url: 'ws://csms.example.org/cs001', ocppVersion: 'OCPP2.1', autoConnect: true };
 
-/** A state as the station sends one, dialled as above, since midnight 2020. */
+/** A state as the station sends one, connected to as above, since midnight 2020. */
 const state = (status: ConnectionState['status'], more: Partial<ConnectionState> = {}): ConnectionState =>
     ({
         status,
         since:        '2020-01-01T00:00:00.000Z',
         said:         `What the station said when it became ${status}.`,
         description:  { en: 'CSMS' },
-        url:          dialled.url,
-        ocppVersion:  dialled.ocppVersion,
+        url:          connectedTo.url,
+        ocppVersion:  connectedTo.ocppVersion,
         ...more
     });
 
@@ -55,7 +55,7 @@ describe('where a connection stands', () => {
     it('is counted on the station\'s clock, which is the one that was sent along', () => {
 
         // Years before the browser's own clock: counted on that, it would say so.
-        const line = stateLine(dialled, state('connected'), '2020-01-01T00:05:00.000Z');
+        const line = stateLine(connectedTo, state('connected'), '2020-01-01T00:05:00.000Z');
 
         assert.equal(line?.chip, 'connected');
         assert.equal(line?.tone, 'on');
@@ -65,7 +65,7 @@ describe('where a connection stands', () => {
 
     it('lost: waited out, and when the next attempt is', () => {
 
-        const line = stateLine(dialled,
+        const line = stateLine(connectedTo,
                                state('lost', { attempt: 3, nextAttemptAt: '2020-01-01T00:05:08.000Z' }),
                                '2020-01-01T00:05:00.000Z');
 
@@ -77,7 +77,7 @@ describe('where a connection stands', () => {
 
     it('an attempt that is due is not said to be in the past', () => {
 
-        const line = stateLine(dialled,
+        const line = stateLine(connectedTo,
                                state('trying', { attempt: 2, nextAttemptAt: '2020-01-01T00:04:59.000Z' }),
                                '2020-01-01T00:05:00.000Z');
 
@@ -88,7 +88,7 @@ describe('where a connection stands', () => {
 
     it('refused: not tried again, which asks something else of whoever is looking', () => {
 
-        const line = stateLine(dialled, state('refused'), '2020-01-01T00:00:30.000Z');
+        const line = stateLine(connectedTo, state('refused'), '2020-01-01T00:00:30.000Z');
 
         assert.equal(line?.chip, 'refused');
         assert.equal(line?.tone, 'bad');
@@ -99,13 +99,13 @@ describe('where a connection stands', () => {
 
     it('one that is only written down gets no line at all', () => {
 
-        assert.equal(stateLine({ ...dialled, autoConnect: false }, undefined, '2020-01-01T00:00:00.000Z'), null);
+        assert.equal(stateLine({ ...connectedTo, autoConnect: false }, undefined, '2020-01-01T00:00:00.000Z'), null);
 
     });
 
     it('one set to connect by itself that was not connected yet is said to be connected when the change is taken', () => {
 
-        const line = stateLine(dialled, undefined, '2020-01-01T00:00:00.000Z');
+        const line = stateLine(connectedTo, undefined, '2020-01-01T00:00:00.000Z');
 
         assert.equal(line?.chip, 'not connected yet');
         assert.match(line?.said ?? '', /as soon as this station has taken the change/);
@@ -115,7 +115,7 @@ describe('where a connection stands', () => {
 
     it('an endpoint waiting in reserve is said to, and nothing is wrong with it', () => {
 
-        const line = stateLine(dialled, state('standby'), '2020-01-01T00:01:00.000Z');
+        const line = stateLine(connectedTo, state('standby'), '2020-01-01T00:01:00.000Z');
 
         assert.equal(line?.chip, 'in reserve');
         assert.equal(line?.tone, '');
@@ -129,21 +129,21 @@ describe('where a connection stands', () => {
 
 describe('a connection changed on the page', () => {
 
-    it('is said to be dialled as it was, until the station has taken the change', () => {
+    it('is said to be connected as it was, until the station has taken the change', () => {
 
-        const line = stateLine({ ...dialled, url: 'ws://elsewhere.example.org/cs001' },
+        const line = stateLine({ ...connectedTo, url: 'ws://elsewhere.example.org/cs001' },
                                state('connected'),
                                '2020-01-01T00:00:10.000Z');
 
         assert.equal(line?.notes.length, 1);
-        assert.match(line!.notes[0]!, /Dialled as ws:\/\/csms\.example\.org\/cs001 \(OCPP2\.1\)\. It is hung up and dialled as written here now/);
+        assert.match(line!.notes[0]!, /Connected to ws:\/\/csms\.example\.org\/cs001 \(OCPP2\.1\)\. It is hung up and reconnected as written here now/);
         assert.doesNotMatch(line!.notes[0]!, /next start/);
 
     });
 
     it('and so is the other node', () => {
 
-        const line = stateLine({ ...dialled, ocppVersion: 'OCPP1.6' }, state('connected'), '2020-01-01T00:00:10.000Z');
+        const line = stateLine({ ...connectedTo, ocppVersion: 'OCPP1.6' }, state('connected'), '2020-01-01T00:00:10.000Z');
 
         assert.equal(line?.notes.length, 1);
 
@@ -151,7 +151,7 @@ describe('a connection changed on the page', () => {
 
     it('switched off, it is on until the station has hung it up', () => {
 
-        const line = stateLine({ ...dialled, autoConnect: false }, state('lost'), '2020-01-01T00:00:10.000Z');
+        const line = stateLine({ ...connectedTo, autoConnect: false }, state('lost'), '2020-01-01T00:00:10.000Z');
 
         assert.deepEqual(line?.notes, [ 'No longer set to connect by itself. It is hung up as soon as this station ' +
                                         'has taken the change.' ]);
@@ -160,7 +160,7 @@ describe('a connection changed on the page', () => {
 
     it('and one that is left as it was needs no note', () => {
 
-        assert.deepEqual(stateLine(dialled, state('connected'), '2020-01-01T00:00:10.000Z')?.notes, []);
+        assert.deepEqual(stateLine(connectedTo, state('connected'), '2020-01-01T00:00:10.000Z')?.notes, []);
 
     });
 
@@ -169,7 +169,7 @@ describe('a connection changed on the page', () => {
 
 describe('a connection removed since the start', () => {
 
-    it('is listed while the station still dials it', () => {
+    it('is listed while the station still connects to it', () => {
 
         const orphans = noLongerWrittenDown([ { id: 'kept' } ],
                                             { kept: state('connected'), removed: state('lost') });
@@ -178,11 +178,11 @@ describe('a connection removed since the start', () => {
 
     });
 
-    it('a connection the other end makes is waited for, and nothing of it is said to be dialled', () => {
+    it('a connection the other end makes is waited for, and nothing of it is said to be connected to', () => {
 
-        const inbound = { ...dialled, inbound: true };
+        const inbound = { ...connectedTo, inbound: true };
 
-        assert.equal(stateLine(inbound, undefined, '2020-01-01T00:00:00.000Z'), null, 'not connected yet, of something nobody dials');
+        assert.equal(stateLine(inbound, undefined, '2020-01-01T00:00:00.000Z'), null, 'not connected yet, of something nobody connects to');
 
         const line = stateLine({ ...inbound, url: 'wss://elsewhere.example.org/csms-01', autoConnect: false },
                                state('waiting'), '2020-01-01T00:01:00.000Z');
@@ -190,7 +190,7 @@ describe('a connection removed since the start', () => {
         assert.equal(line?.chip, 'waiting');
         assert.equal(line?.tone, '');
         assert.equal(line?.when, 'for 1 min');
-        assert.deepEqual(line?.notes, [], 'it is said to be hung up and dialled again');
+        assert.deepEqual(line?.notes, [], 'it is said to be hung up and reconnected');
 
     });
 
