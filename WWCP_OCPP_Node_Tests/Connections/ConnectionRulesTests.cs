@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
                 Assert.That(json["connectionTypes"]!.Select(type => type.Value<String>()),
-                            Is.EqualTo(new[] { "CSMS", "CSMSBackup", "LocalController", "Gateway", "ChargingStation" }));
+                            Is.EqualTo(new[] { "CSMS", "CSMSBackup", "LocalController", "Gateway", "ChargingStation", "EnergyMeter" }));
                 Assert.That(json["ocppVersions"]!.Select(version => version.Value<String>()),
                             Is.EqualTo(new[] { "OCPP2.1", "OCPP1.6" }));
                 Assert.That(json["rules"]!.Value<Boolean>("inbound"),                Is.True);
