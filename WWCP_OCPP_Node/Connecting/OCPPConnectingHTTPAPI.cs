@@ -387,7 +387,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                        json.Value<String>(ConnectionEntry.SignatureFormatsKey),
                                                        json["identities"] is null ? null : identities,
                                                        json.Value<Boolean?>(ConnectionEntry.InboundKey),
-                                                       json.Value<String>(ConnectionEntry.RemoteNodeIdKey)))
+                                                       json.Value<String>(ConnectionEntry.RemoteNodeIdKey),
+                                                       OpenADRBinding:  json.Value<String>(ConnectionEntry.OpenADRBindingKey),
+                                                       VEN:             json.Value<String>(ConnectionEntry.VENKey)))
             {
                 return NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved);
             }
@@ -455,7 +457,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                           json.Value<String>(ConnectionEntry.SignatureFormatsKey),
                                                           json["identities"] is null ? null : identities,
                                                           json.Value<Boolean?>(ConnectionEntry.InboundKey),
-                                                          json.Value<String>(ConnectionEntry.RemoteNodeIdKey)))
+                                                          json.Value<String>(ConnectionEntry.RemoteNodeIdKey),
+                                                          OpenADRBinding:  json.Value<String>(ConnectionEntry.OpenADRBindingKey),
+                                                          VEN:             json.Value<String>(ConnectionEntry.VENKey)))
             {
                 return NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved);
             }
