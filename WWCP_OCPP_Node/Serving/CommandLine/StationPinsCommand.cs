@@ -65,8 +65,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
     /// be run by neither.
     /// </para>
     /// </remarks>
-    public class StationPinsCommand : ACLICommand<NodeCLI>,
-                                      ICLICommand
+    /// <remarks>
+    /// What every node's key pins of its logins have is
+    /// <see cref="LoginPinsCommand"/> in WWCP_Node; this is the charging
+    /// stations', in their words.
+    /// </remarks>
+    public class StationPinsCommand : LoginPinsCommand
     {
 
         #region Data
@@ -89,7 +93,15 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
         /// The resource read to list the key pins and changed to give or take
         /// one.
         /// </summary>
-        public String  StationsResource    { get; }
+        public String  StationsResource
+            => Resource;
+
+        protected override WebSocketLogins        Logins                     => node.WebSocketLogins;
+        protected override String                 LoginNoun                  => "charging station";
+        protected override String                 LoginWord                  => "station";
+        protected override String                 PinsAreFor                 => "on the station port";
+        protected override String                 TLSClientCertificateWords  => "a TLS client certificate (security profile 3)";
+        protected override IReadOnlyList<String>  LogTags                    => [ "ocpp", "station" ];
 
         #endregion
 
@@ -104,226 +116,24 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
         public StationPinsCommand(NodeCLI  CLI,
                                   String   StationsResource)
 
-            : base(CLI)
+            : base(CLI, CommandName, StationsResource)
 
         {
 
-            this.node              = CLI.Node as OCPPServingNode
-                                         ?? throw new ArgumentException($"The {CLI.Node.Kind.Name} of this command line serves no charging stations.", nameof(CLI));
-
-            this.StationsResource  = StationsResource;
+            this.node = CLI.Node as OCPPServingNode
+                            ?? throw new ArgumentException($"The {CLI.Node.Kind.Name} of this command line serves no charging stations.", nameof(CLI));
 
         }
 
         #endregion
 
 
-        #region Suggest(Arguments)
-
-        public override IEnumerable<SuggestionResponse> Suggest(String[] Arguments)
-        {
-
-            if (Arguments.Length == 1)
-                return CommandName.StartsWith(Arguments[0], StringComparison.OrdinalIgnoreCase)
-                           ? [ SuggestionResponse.CommandCompleted(CommandName) ]
-                           : [];
-
-            return [];
-
-        }
-
-        #endregion
-
-        #region Execute(Arguments, CancellationToken)
-
-        public override Task<String[]> Execute(String[]           Arguments,
-                                               CancellationToken  CancellationToken)
-        {
-
-            var rest  = Arguments.Skip(1).ToArray();
-            var verb  = rest.Length < 2 ? "list" : rest[1].ToLowerInvariant();
-
-            var needs = verb == "list"
-                            ? Permission.Read(StationsResource)
-                            : Permission.Edit(StationsResource);
-
-            if (!cli.MayDo(needs, CommandName, out var refused))
-                return Task.FromResult<String[]>([ refused ]);
-
-            return Task.FromResult(
-                       rest.Length switch {
-                           0 => EveryStationsPins(),
-                           1 => Listed(User_Id.Parse(rest[0])),
-                           _ => verb switch {
-                                    "add"    when rest.Length >= 3  => Add   (User_Id.Parse(rest[0]), rest[2], rest.Length > 3 ? String.Join(" ", rest[3..]) : null),
-                                    "remove" when rest.Length == 3  => Remove(User_Id.Parse(rest[0]), rest[2]),
-                                    _                               => [ $"Usage: {Help()}" ]
-                                }
-                       }
-                   );
-
-        }
-
-        #endregion
-
-        #region Help()
-
-        public override String Help()
-
-            => $"{CommandName} [<station> [add <key pin> [<label>] | remove <key pin>]] - the key pins charging stations are let in by on the station port";
-
-        #endregion
-
-
-        #region (private) EveryStationsPins() / Listed(Login)
-
-        private String[] EveryStationsPins()
-        {
-
-            var lines = new List<String>();
-
-            foreach (var login in node.WebSocketLogins.Logins.Where(login => login.HasKeyPin).OrderBy(login => login.Login))
-            {
-                lines.Add($"{login.Login}:");
-                lines.AddRange(login.Pins.Select(pin => "  " + Line(pin)));
-                lines.AddRange(WhyNoPinLetsIn(login).Select(why => "  " + why));
-            }
-
-            if (lines.Count == 0)
-                lines.Add($"No charging station of this {node.Kind.Name} has a key pin.");
-
-            lines.AddRange(WhyNoStationSignsIn());
-
-            return [ .. lines ];
-
-        }
-
-        private String[] Listed(User_Id Login)
-        {
-
-            if (!node.WebSocketLogins.TryGet(Login, out var login))
-                return [ $"'{Login}' is no charging station of this {node.Kind.Name}." ];
-
-            if (!login.HasKeyPin)
-                return [ $"'{login.Login}' has no key pin." ];
-
-            return [ .. login.Pins.Select(Line),
-                     .. WhyNoPinLetsIn(login),
-                     .. WhyNoStationSignsIn() ];
-
-        }
-
-        /// <summary>
-        /// One key pin, as a line: the pin, when and by whom it was given, and
-        /// what it is called.
-        /// </summary>
-        private static String Line(LoginKeyPin Pin)
-
-            => $"{Pin.Pin}  {Pin.Added.ToLocalTime():yyyy-MM-dd HH:mm}" +
-               (Pin.AddedBy is not null ? $" by {Pin.AddedBy}" : "") +
-               (Pin.Label   is not null ? $"  {Pin.Label}"     : "");
-
-        #endregion
-
-        #region (private) Add(Login, Pin, Label)
-
-        private String[] Add(User_Id  Login,
-                             String   Pin,
-                             String?  Label)
-        {
-
-            var listed = node.WebSocketLogins.TryGet(Login, out _);
-
-            if (!node.WebSocketLogins.TryAddKeyPin(Login,
-                                                 Pin,
-                                                 Label,
-                                                 GroupId:      null,
-                                                 Description:  null,
-                                                 AddedBy:      cli.Caller.Account?.Id.ToString() ?? "the console",
-                                                 out var keyPin,
-                                                 out var error,
-                                                 out _))
-            {
-                return [ $"The key pin was not given: {error}" ];
-            }
-
-            node.Log.Notice(
-                $"{cli.Caller.Asker} gave the charging station '{Login}' the key pin {keyPin.Pin}.",
-                cli.Caller.Tags("ocpp", "station", "auth", "tls")
-            );
-
-            node.WebSocketLogins.TryGet(Login, out var login);
-
-            return [ listed
-                         ? $"'{Login}' is let in by the key pin {keyPin.Pin} now."
-                         : $"'{Login}' is a charging station of this {node.Kind.Name} now, in the group '{login?.GroupId}', and is let in by the key pin {keyPin.Pin}.",
-                     .. login is not null ? WhyNoPinLetsIn(login) : [],
-                     .. WhyNoStationSignsIn() ];
-
-        }
-
-        #endregion
-
-        #region (private) Remove(Login, Pin)
-
-        private String[] Remove(User_Id Login,
-                                String  Pin)
-        {
-
-            if (!node.WebSocketLogins.TryGet(Login, out var login))
-                return [ $"'{Login}' is no charging station of this {node.Kind.Name}." ];
-
-            if (!org.GraphDefined.Vanaheimr.Hermod.KeyPin.TryParse(Pin, out var pin) ||
-                login.FindKeyPin(pin) is null)
-                return [ $"'{login.Login}' has no key pin {Pin}." ];
-
-            if (!node.WebSocketLogins.TryRemoveKeyPin(login.Login, pin.ToHex(), out var error, out _))
-                return [ $"The key pin was not taken away: {error}" ];
-
-            node.Log.Notice(
-                $"{cli.Caller.Asker} took the key pin {pin} of the charging station '{login.Login}' away.",
-                cli.Caller.Tags("ocpp", "station", "auth", "tls")
-            );
-
-            return [ $"The key pin {pin} lets '{login.Login}' in no more." ];
-
-        }
-
-        #endregion
-
-
-        #region (private) WhyNoPinLetsIn(Station) / WhyNoStationSignsIn()
-
-        /// <summary>
-        /// What keeps this station out whatever pin it has - the station, or its
-        /// group.
-        /// </summary>
-        private IEnumerable<String> WhyNoPinLetsIn(WebSocketLogin Station)
-        {
-
-            if (!Station.Enabled)
-                yield return $"'{Station.Login}' is switched off: no key pin lets it in.";
-
-            var group = node.WebSocketLogins.GroupOf(Station);
-
-            if (group is null)
-                yield return $"The group '{Station.GroupId}' of '{Station.Login}' is gone: no key pin lets it in.";
-
-            else if (!group.Enabled)
-                yield return $"The group '{group.Id}' of '{Station.Login}' is switched off: no key pin lets it in.";
-
-            else if (!group.Allows(AuthMethod.KeyPin))
-                yield return $"The group '{group.Id}' of '{Station.Login}' does not accept key pins: no key pin lets it in.";
-
-            else if (!group.Allows(WebSocketClientAuthentication.TLSClientCertificate))
-                yield return $"The group '{group.Id}' of '{Station.Login}' does not accept a TLS client certificate (security profile 3), which a client key is: no key pin lets it in.";
-
-        }
+        #region (protected override) WhyNoLoginSignsIn()
 
         /// <summary>
         /// What keeps every station out - the station port.
         /// </summary>
-        private IEnumerable<String> WhyNoStationSignsIn()
+        protected override IEnumerable<String> WhyNoLoginSignsIn()
         {
 
             var profiles = ClientAuthenticationProfiles.SecurityProfiles(node.OCPPServerSettings.ClientAuthentication);
