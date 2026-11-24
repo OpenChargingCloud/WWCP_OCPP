@@ -32,7 +32,6 @@ using cloud.charging.open.protocols.WWCP.Node.Web;
 using cloud.charging.open.protocols.WWCP.Node.SecureShell;
 
 using cloud.charging.open.protocols.OCPP.SSH;
-using cloud.charging.open.protocols.OCPP.Node.Serving;
 using cloud.charging.open.protocols.WWCP.Node.Logins;
 
 using OCPPWebSockets = cloud.charging.open.protocols.OCPP.WebSockets;
@@ -199,11 +198,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // Its connections speak OCPP, made by the OCPP nodes it has
             // at the time - asked for whenever they are needed.
             Connecting = NewOCPPConnecting();
-
-            http3Restarts = new RestartsOneAtATime(
-                                RestartHTTP3ToShowAgainAsync,
-                                e => this.Log.Exception(e, "HTTP/3 of the charging station port could not be started again with its new certificate.", "ocpp", "station", "tls")
-                            );
 
         }
 

@@ -171,19 +171,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
         public const String StationListener = "ocpp";
 
         /// <summary>
-        /// The restarts of HTTP/3 for another certificate - see
-        /// <see cref="ShowOverHTTP3Again"/> - one at a time, and once more
-        /// after one that runs where the port was shown another meanwhile.
-        /// </summary>
-        private readonly RestartsOneAtATime                http3Restarts;
-
-        /// <summary>
-        /// What the station port was last said to show, for the next restart
-        /// of HTTP/3 to name.
-        /// </summary>
-        private CertificateEntry?                          http3Shown;
-
-        /// <summary>
         /// Where a connection keeps which charging station this controller let
         /// in on it.
         /// </summary>
@@ -452,13 +439,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
             Certificates.OnServerKeySwitched += (listener, before, after) => {
                 if (listener == StationListener)
                     ServerKeySwitched(before, after);
-            };
-
-            // HTTP/3 takes its certificate once, when it starts: shown another,
-            // it is started again with it.
-            ListenerCertificates.OnShownChanged += (listener, before, after) => {
-                if (listener == StationListener)
-                    ShowOverHTTP3Again(after);
             };
 
             #endregion
@@ -1023,69 +1003,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 );
 
             #endregion
-
-        }
-
-        /// <summary>
-        /// Start HTTP/3 again where the station port takes it, so that it shows
-        /// what the port shows now: QUIC is handed its certificate once, when it
-        /// starts, and goes on showing that one otherwise.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Asked whenever the station port shows another certificate - a server
-        /// key switched to, one issued for it put in, one that became valid or
-        /// ran out - see ListenerCertificates.OnShownChanged. A station over
-        /// HTTP/3 connected at the time is dropped and connects again; one over
-        /// TCP is not touched, as TCP asks at every handshake.
-        /// </para>
-        /// <para>
-        /// Restarted by Hermod, which binds the UDP port again only once the old
-        /// QUIC listener has let go of it, and asks the selector of the port for
-        /// its certificate when it starts again.
-        /// </para>
-        /// </remarks>
-        /// <param name="Shown">What the station port shows now, or null.</param>
-        private void ShowOverHTTP3Again(CertificateEntry? Shown)
-        {
-
-            if (ocppWebSocketServer is not { } server || !ocppServerStarted || !server.AcceptHTTP3)
-                return;
-
-            Volatile.Write(ref http3Shown, Shown);
-
-            // One restart at a time; a change that comes while one runs is
-            // shown by one more after it, not left out.
-            http3Restarts.Ask();
-
-        }
-
-        /// <summary>
-        /// Start HTTP/3 of the station port again, so that it shows what the
-        /// port shows now - see <see cref="ShowOverHTTP3Again"/>.
-        /// </summary>
-        private async Task RestartHTTP3ToShowAgainAsync()
-        {
-
-            if (ocppWebSocketServer is not { } server || !ocppServerStarted || !server.AcceptHTTP3)
-                return;
-
-            var shown = Volatile.Read(ref http3Shown);
-
-            if (await server.RestartHTTP3Async())
-            {
-                Log.Notice($"HTTP/3 of the charging station port was started again, to show {(shown is not null ? $"'{shown.Label}' ({shown.Id})" : "what the port shows now")}.",
-                           "ocpp", "station", "tls");
-                return;
-            }
-
-            // Switched off or stopped meanwhile: nothing to say.
-            if (!ocppServerStarted || !server.AcceptHTTP3)
-                return;
-
-            Log.Warning($"HTTP/3 of the charging station port could not be started again with its new certificate: {server.WhyNoHTTP3 ?? "the UDP port is not free"}. " +
-                         "Over TCP the stations are shown the new one; over HTTP/3 none is taken until the station server is started again.",
-                        "ocpp", "station", "tls");
 
         }
 
