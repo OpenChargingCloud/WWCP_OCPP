@@ -1,0 +1,142 @@
+// The OCPP log: every OCPP message of a node - see pages/ocppLog.ts. In the
+// colours of the kind of node that uses it, after its own
+// "@use '@node/styles/node' as * with (...)":
+//
+//   @use '@ocpp/styles/ocppLog';
+//
+// Built on every node's .log and .line, as a roaming hub's traffic is: a list
+// that fills from a stream, whose lines fold open to the array laid out.
+@use '../../../../../WWCP_Node/Frontend/src/styles/tokens' as *;
+
+
+// A line is a head and, when it is unfolded, a panel under it - so it is a
+// block, and the flex row moves one level down into .ocpp-head.
+.line.ocpp-message {
+
+    display:  block;
+    padding:  0;
+
+    &.failed {
+        border-left-color:  $color-error;
+        background:         rgba($color-error, 0.04);
+    }
+
+    &.open {
+        background:         rgba($color-accent, 0.05);
+        border-left-color:  $color-accent;
+    }
+
+}
+
+.ocpp-head {
+
+    display:      flex;
+    align-items:  baseline;
+    gap:          0.5rem;
+    padding:      0.1rem 0.8rem;
+    cursor:       pointer;
+    min-width:    0;
+
+    &:focus-visible {
+        outline:         2px solid $color-accent;
+        outline-offset:  -2px;
+    }
+
+    time {
+        flex:  0 0 auto;
+    }
+
+    // One width for every node, so that the actions and the arrays stand in
+    // a column down the page, whoever is at the other end.
+    .peer {
+        flex:           0 0 10rem;
+        overflow:       hidden;
+        text-overflow:  ellipsis;
+        white-space:    nowrap;
+        color:          $color-muted;
+    }
+
+    .action {
+        flex:         0 0 auto;
+        min-width:    11rem;
+        font-weight:  600;
+        white-space:  nowrap;
+    }
+
+    // The array as it went over the wire, on one line: cut where the line
+    // ends, and whole when the line is unfolded.
+    .json {
+        flex:           1 1 auto;
+        min-width:      0;
+        overflow:       hidden;
+        text-overflow:  ellipsis;
+        white-space:    nowrap;
+        color:          $color-muted;
+        font-family:    $font-mono;
+        background:     none;
+        padding:        0;
+    }
+
+}
+
+// Which way the message went. Two colours rather than two words, because it
+// is read a thousand times down a page and never on its own.
+.ocpp-log .chip.dir {
+
+    flex:     0 0 auto;
+    padding:  0.05rem 0.4rem;
+
+    &.in  { color: #1d4ed8; border-color: #bfdbfe; background: #eff6ff; }
+    &.out { color: #7c3aed; border-color: #ddd6fe; background: #f5f3ff; }
+
+}
+
+// What the first element of the array says.
+.ocpp-log .chip.kind {
+
+    flex:         0 0 auto;
+    min-width:    4.2rem;
+    text-align:   center;
+    font-family:  $font-stack;
+    font-size:    0.7rem;
+    font-weight:  600;
+    letter-spacing: 0.03em;
+
+    &.requestError,
+    &.responseError { color: $color-error; border-color: rgba($color-error, 0.35); background: rgba($color-error, 0.06); }
+
+}
+
+// The array laid out, when the line is unfolded. Scrollable rather than
+// wrapped: JSON is read by its shape, and a re-wrapped object has none.
+.ocpp-detail {
+
+    padding:      0.4rem 0.8rem 0.8rem 0.8rem;
+    border-top:   1px dashed $color-border;
+    cursor:       auto;
+
+    .ocpp-detail-head {
+        display:          flex;
+        align-items:      center;
+        justify-content:  space-between;
+        gap:              0.6rem;
+        margin-bottom:    0.4rem;
+        font-family:      $font-stack;
+    }
+
+    pre {
+        margin:         0;
+        padding:        0.5rem 0.7rem;
+        max-height:     24rem;
+        overflow:       auto;
+        background:     $color-bg;
+        border:         1px solid $color-border;
+        border-radius:  $radius;
+        font-family:    $font-mono;
+        font-size:      0.78rem;
+        line-height:    1.45;
+        white-space:    pre;
+        user-select:    text;
+    }
+
+}

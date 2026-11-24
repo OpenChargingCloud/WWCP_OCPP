@@ -422,6 +422,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var directory = Path.GetDirectoryName(ConfigFile.Path) ?? ".";
 
+            // Every kind builds its server once its OCPP nodes exist, which is
+            // what the OCPP log needs of them.
+            WatchOCPPMessages();
+
             ocppServerSettings  = (Configuration ?? new WebSocketServerConfiguration()).Effective();
             ocppServerAsBuilt   = ocppServerSettings;
 
