@@ -330,10 +330,15 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
             Assert.That(malformed.Status,                  Is.EqualTo(OCPPv2_1.LogStatus.Rejected));
             Assert.That(malformed.StatusInfo!.ReasonCode,  Is.EqualTo(FileTransfers.InvalidURL));
 
-            // No fallback to something weaker.
+            // No fallback to something weaker: an https:// server the configuration
+            // does not name is refused as an sftp:// one is, and FTP is not spoken.
             var https = await GetLog("https://127.0.0.1/upload/");
             Assert.That(https.Status,                      Is.EqualTo(OCPPv2_1.LogStatus.Rejected));
-            Assert.That(https.StatusInfo!.ReasonCode,      Is.EqualTo(FileTransfers.NotSupported));
+            Assert.That(https.StatusInfo!.ReasonCode,      Is.EqualTo(FileTransfers.FileServerNotPermitted));
+
+            var ftp = await GetLog("ftp://127.0.0.1/upload/");
+            Assert.That(ftp.Status,                        Is.EqualTo(OCPPv2_1.LogStatus.Rejected));
+            Assert.That(ftp.StatusInfo!.ReasonCode,        Is.EqualTo(FileTransfers.NotSupported));
 
             Assert.That(provided,   Is.Zero,  "nobody is asked for a file that will not be sent");
             Assert.That(logStatus,  Is.Empty, "and nothing is told of a transfer that never started");

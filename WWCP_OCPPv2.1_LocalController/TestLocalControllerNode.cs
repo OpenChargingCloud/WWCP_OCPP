@@ -47,7 +47,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
     /// An OCPP Local Controller node for testing.
     /// </summary>
     public partial class TestLocalControllerNode : ALocalControllerNode,
-                                                   ILocalControllerNode
+                                                   ILocalControllerNode,
+                                                   IFileTransferNode
     {
 
         #region Properties
@@ -66,6 +67,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         /// this node adds for itself.
         /// </remarks>
         public OnAuthorizeRequestFilterDelegate?  AuthorizeRequestFilter    { get; set; }
+
+        #endregion
+
+        #region IFileTransferNode
+
+        /// <summary>
+        /// What answers a GetLog request for the controller itself: whoever
+        /// moves the files of the WWCP node it runs in. Without one, a GetLog
+        /// is rejected, as nothing would be uploaded.
+        /// </summary>
+        public OnGetLogDelegate?          GetLogProcessor            { get; set; }
+
+        /// <summary>
+        /// What answers an UpdateFirmware request for the controller itself:
+        /// whoever moves the files of the WWCP node it runs in. Without one, an
+        /// UpdateFirmware is rejected, as nothing would be fetched.
+        /// </summary>
+        public OnUpdateFirmwareDelegate?  UpdateFirmwareProcessor    { get; set; }
+
+        /// <summary>
+        /// Tell the CSMS how the upload of a log goes.
+        /// </summary>
+        public Task SendLogStatus(UploadLogStatus    Status,
+                                  Int32?             LogRequestId,
+                                  CancellationToken  CancellationToken   = default)
+
+            => OCPP.OUT.LogStatusNotification(
+                   new CS.LogStatusNotificationRequest(
+                       SourceRouting.CSMS,
+                       Status,
+                       LogRequestId,
+                       RequestId:          OCPP.NextRequestId,
+                       RequestTimestamp:   Now,
+                       RequestTimeout:     OCPP.DefaultRequestTimeout,
+                       EventTrackingId:    EventTracking_Id.New,
+                       NetworkPath:        NetworkPath.From(Id),
+                       CancellationToken:  CancellationToken
+                   )
+               );
+
+        /// <summary>
+        /// Tell the CSMS how the download of a firmware image goes.
+        /// </summary>
+        public Task SendFirmwareStatus(FirmwareStatus     Status,
+                                       Int32?             UpdateFirmwareRequestId,
+                                       CancellationToken  CancellationToken   = default)
+
+            => this.SendFirmwareStatusNotification(Status, UpdateFirmwareRequestId, CancellationToken: CancellationToken);
 
         #endregion
 
@@ -725,6 +774,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
             // CSMS -> CS
+
+            #region OnGetLog / OnUpdateFirmware
+
+            // For the controller itself; what is for a station is forwarded.
+            OCPP.IN.OnGetLog += (timestamp,
+                                 sender,
+                                 connection,
+                                 request,
+                                 ct) =>
+
+                GetLogProcessor is OnGetLogDelegate processor
+
+                    ? processor(timestamp, sender, connection, request, ct)
+
+                    : Task.FromResult(
+                          new CS.GetLogResponse(
+                              Request:     request,
+                              Status:      LogStatus.Rejected,
+                              StatusInfo:  new StatusInfo("NotSupported", "This local controller uploads no logs.")
+                          )
+                      );
+
+            OCPP.IN.OnUpdateFirmware += (timestamp,
+                                         sender,
+                                         connection,
+                                         request,
+                                         ct) =>
+
+                UpdateFirmwareProcessor is OnUpdateFirmwareDelegate processor
+
+                    ? processor(timestamp, sender, connection, request, ct)
+
+                    : Task.FromResult(
+                          new CS.UpdateFirmwareResponse(
+                              Request:     request,
+                              Status:      UpdateFirmwareStatus.Rejected,
+                              StatusInfo:  new StatusInfo("NotSupported", "This local controller fetches no firmware.")
+                          )
+                      );
+
+            #endregion
 
             #region OnReset
 

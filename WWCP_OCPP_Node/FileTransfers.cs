@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private static FileTransferAnswer Refused(FileTransferJudgement Judgement)
 
             => Judgement.Refusal == FileTransferRefusal.InvalidURL
-                   ? new (false, ReasonCode: InvalidURL,             Info: $"The location is no sftp:// URL this node takes: {Judgement.Why}.")
+                   ? new (false, ReasonCode: InvalidURL,             Info: $"The location is no URL this node takes: {Judgement.Why}.")
                    : new (false, ReasonCode: FileServerNotPermitted, Info: "The location is no file server, login or path this node is configured for.");
 
         private static Boolean IsSftp(String? URL)
@@ -275,11 +275,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                           CancellationToken         CancellationToken   = default)
         {
 
-            if (!IsSftp(URL))
-                return new (false, ReasonCode: NotSupported, Info: "Files are uploaded to sftp:// locations only.");
+            var overHTTP = WWCPNode.IsHTTPFileTransfer(URL);
+
+            if (!IsSftp(URL) && !overHTTP)
+                return new (false, ReasonCode: NotSupported, Info: "Files are uploaded to sftp://, https:// and http:// locations only.");
 
             // Everything that needs no network, before the answer.
-            var judgement = node.JudgeFileTransfer(URL, FileTransferDirections.Upload);
+            var judgement = overHTTP
+                                ? node.JudgeHTTPFileTransfer(URL)
+                                : node.JudgeFileTransfer(URL, FileTransferDirections.Upload);
 
             if (!judgement.IsAllowed)
                 return Refused(judgement);
@@ -353,7 +357,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 for (var attempt = 0; ; attempt++)
                 {
 
-                    var result = await node.UploadFileAsync(URL, File.Content, File.FileName, CancellationToken: Mine.Token).ConfigureAwait(false);
+                    var result = WWCPNode.IsHTTPFileTransfer(URL)
+                                     ? await node.UploadFileOverHTTPAsync(URL, File.Content, File.FileName, CancellationToken: Mine.Token).ConfigureAwait(false)
+                                     : await node.UploadFileAsync        (URL, File.Content, File.FileName, CancellationToken: Mine.Token).ConfigureAwait(false);
 
                     state = result.Outcome switch {
                                 FileTransferOutcome.Done              => UploadState.Uploaded,
@@ -362,6 +368,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                 FileTransferOutcome.PermissionDenied  => UploadState.PermissionDenied,
                                 FileTransferOutcome.NoSuchFile        => UploadState.PermissionDenied,
                                 FileTransferOutcome.NoSftp            => UploadState.NotSupportedOperation,
+                                FileTransferOutcome.MethodNotAllowed  => UploadState.NotSupportedOperation,
                                 _                                     => UploadState.UploadFailure
                             };
 

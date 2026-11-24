@@ -57,6 +57,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
         public const String  InvalidFileServerHostKey   = "InvalidFileServerHostKey";
 
         /// <summary>
+        /// An HTTP file server showed a TLS certificate the node does not
+        /// believe.
+        /// </summary>
+        public const String  InvalidFileServerCertificate  = "InvalidFileServerCertificate";
+
+        /// <summary>
         /// What the log and a monitor file these events under.
         /// </summary>
         public const String  FileTransferService        = "filetransfer";
@@ -94,6 +100,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     node.OnFileServerHostKeyRefused += (server, shown) =>
                         TellCSMS(InvalidFileServerHostKey,
                                  $"The file server '{server.Id}' ({server.Host}:{server.Port}) showed the SSH host key {shown}, which neither a pin nor a CA of it vouches for: refused.",
+                                 FileTransferService);
+
+                    node.OnHTTPFileServerCertificateRefused += (server, why) =>
+                        TellCSMS(InvalidFileServerCertificate,
+                                 $"The HTTP file server '{server.Id}' ({server.URL.GetLeftPart(UriPartial.Authority)}) showed a TLS certificate that is not believed: refused.",
                                  FileTransferService);
 
                     return fileTransfers;
