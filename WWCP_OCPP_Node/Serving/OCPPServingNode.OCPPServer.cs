@@ -1174,7 +1174,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             if (written > 0)
                 Log.Notice($"{written} connection{(written == 1 ? "" : "s")} of this {NodeNoun} {(written == 1 ? "is" : "are")} made by the other end: " +
-                           $"a CSMS connects to {OCPPServerURL}<its name>, the port of the charging stations.",
+                           $"a CSMS connects to {OCPPServerURL}/<its name>, the port of the charging stations.",
                            "ocpp", "csms");
 
         }

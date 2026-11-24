@@ -30,6 +30,7 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using ForwardingDecisions = cloud.charging.open.protocols.OCPP.NetworkingNode.ForwardingDecisions;
 
 #endregion
 
@@ -308,6 +309,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
             // and so cannot reach this node's clock. Until a CSMS says
             // otherwise, the time this node was built is the best guess.
             CSMSTime = Now;
+
+            // A gateway forwards what is not for itself: whatever its stations
+            // send goes up to its CSMS, and whatever its CSMS asks of a station
+            // goes down to it, unless a filter decides otherwise. FORWARD's own
+            // default drops them, and both sides were told "Filtered".
+            OCPP.FORWARD.DefaultForwardingDecision = ForwardingDecisions.FORWARD;
 
             if (VendorName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");
