@@ -28,8 +28,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
 {
 
     /// <summary>
-    /// GetLog and UpdateFirmware of OCPP 2.1 with an "sftp://" location,
-    /// answered by the node's file transfers, and the security events of the
+    /// GetLog and UpdateFirmware of OCPP 2.1 with an "sftp://", "https://" or
+    /// "http://" location, answered by the node's file transfers, and the
+    /// security events of the
     /// white paper "SFTP for Logfile Uploads and Firmware Downloads".
     /// </summary>
     /// <remarks>

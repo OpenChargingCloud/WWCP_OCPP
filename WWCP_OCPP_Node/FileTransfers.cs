@@ -433,15 +433,21 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                 Func<DownloadState, Task>   Tell)
         {
 
-            if (!IsSftp(URL))
-                return new (false, ReasonCode: NotSupported, Info: "Files are downloaded from sftp:// locations only.");
+            var overHTTP = WWCPNode.IsHTTPFileTransfer(URL);
 
-            var judgement = node.JudgeFileTransfer(URL, FileTransferDirections.Download);
+            if (!IsSftp(URL) && !overHTTP)
+                return new (false, ReasonCode: NotSupported, Info: "Files are downloaded from sftp://, https:// and http:// locations only.");
+
+            var judgement = overHTTP
+                                ? node.JudgeHTTPFileTransfer(URL, FileTransferDirections.Download)
+                                : node.JudgeFileTransfer    (URL, FileTransferDirections.Download);
 
             if (!judgement.IsAllowed)
                 return Refused(judgement);
 
-            var name = Path.GetFileName(judgement.Location!.Path);
+            var name = overHTTP
+                           ? WWCPNode.FileNameOf(judgement.HTTPLocation!)
+                           : Path.GetFileName(judgement.Location!.Path);
 
             if (!SFTPLocation.IsFileName(name))
                 return new (false, ReasonCode: InvalidURL, Info: "The location names no file.");
@@ -495,7 +501,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     // Judged again when the connection is made: a peer that is no file
                     // server any more by then is not connected to.
-                    if (!node.JudgeFileTransfer(URL, FileTransferDirections.Download).IsAllowed)
+                    if (!(WWCPNode.IsHTTPFileTransfer(URL)
+                              ? node.JudgeHTTPFileTransfer(URL, FileTransferDirections.Download)
+                              : node.JudgeFileTransfer    (URL, FileTransferDirections.Download)).IsAllowed)
                         return;
 
                 }
@@ -516,7 +524,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     await using (var file = new FileStream(partial, FileMode.Append, FileAccess.Write, FileShare.None))
                     {
                         // What an attempt before brought is not fetched again.
-                        result = await node.DownloadFileAsync(URL, file, Offset: file.Length, MaxSize: MaxDownloadSize, CancellationToken: Mine.Token).ConfigureAwait(false);
+                        result = WWCPNode.IsHTTPFileTransfer(URL)
+                                     ? await node.DownloadFileOverHTTPAsync(URL, file, Offset: file.Length, MaxSize: MaxDownloadSize, CancellationToken: Mine.Token).ConfigureAwait(false)
+                                     : await node.DownloadFileAsync        (URL, file, Offset: file.Length, MaxSize: MaxDownloadSize, CancellationToken: Mine.Token).ConfigureAwait(false);
                     }
 
                     if (result.IsDone)
