@@ -181,23 +181,25 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #endregion
 
 
-        #region (protected) RouteByTarget(Node, Connection, Action, Destination, NetworkPath)
+        #region (protected) RouteByTarget(Node, Version, Connection, Action, Destination, NetworkPath)
 
         /// <summary>
         /// Where what came over the given connection and passed the gates is
         /// forwarded to by the targets: another destination, a refusal, or
         /// neither - it goes where it is addressed to.
         /// </summary>
-        /// <param name="Node">The OCPP 2.1 node of this node.</param>
+        /// <param name="Node">The OCPP node of this node it came to.</param>
+        /// <param name="Version">The version of OCPP that node speaks: a target forwards to the endpoints of that version alone.</param>
         /// <param name="Connection">What it came over.</param>
         /// <param name="Action">What it is.</param>
         /// <param name="Destination">Where it is addressed to.</param>
         /// <param name="NetworkPath">Where it came from.</param>
-        protected (SourceRouting? To, String? Refused) RouteByTarget(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode  Node,
-                                                                    IMessageConnection                           Connection,
-                                                                    String                                       Action,
-                                                                    SourceRouting                                Destination,
-                                                                    NetworkPath                                  NetworkPath)
+        protected (SourceRouting? To, String? Refused) RouteByTarget(AWWCPNetworkingNode  Node,
+                                                                    OCPPVersion          Version,
+                                                                    IMessageConnection   Connection,
+                                                                    String               Action,
+                                                                    SourceRouting        Destination,
+                                                                    NetworkPath          NetworkPath)
         {
 
             // Switched off: nothing is passed on, and whoever sent it is told.
@@ -210,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // Up, from a charging station of the station port: the gates made
             // sure it sends in its own name.
             if (Connection.Role == ConnectionRole.Server && !IsInbound(Connection))
-                return Up(Node, NetworkPath.Source, Action, Destination);
+                return Up(Node, Version, NetworkPath.Source, Action, Destination);
 
             // Down, from a back end: to a station of this node, by its login.
             if (BackEndOf(Connection) is ConnectionEntry backEnd &&
@@ -228,17 +230,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private) Up(Node, Station, Action, Destination)
+        #region (private) Up(Node, Version, Station, Action, Destination)
 
         /// <summary>
         /// What a charging station sends up: to the first connected peer of its
         /// target, or refused where none is - and where it names a back end
         /// outside its target itself.
         /// </summary>
-        private (SourceRouting? To, String? Refused) Up(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode  Node,
-                                                       NetworkingNode_Id                            Station,
-                                                       String                                       Action,
-                                                       SourceRouting                                Destination)
+        private (SourceRouting? To, String? Refused) Up(AWWCPNetworkingNode  Node,
+                                                       OCPPVersion          Version,
+                                                       NetworkingNode_Id    Station,
+                                                       String               Action,
+                                                       SourceRouting        Destination)
         {
 
             if (User_Id.TryParse(Station.ToString()) is not User_Id login ||
@@ -258,14 +261,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (!IsABackEnd(Node, Destination.Next))
                     return (null, null);
 
-                if (EndpointsOf(target).Any(endpoint => NextHopOf(endpoint) == Destination.Next))
+                if (EndpointsOf(target, Version).Any(endpoint => NextHopOf(endpoint) == Destination.Next))
                     return (null, null);
 
                 return (null, $"'{Action}' from the charging station '{Station}' is not sent on to '{Destination.Next}': its target '{target.Id}' does not forward to it.");
 
             }
 
-            if (FirstConnectedOf(target) is ConnectionEntry endpoint)
+            if (FirstConnectedOf(target, Version) is ConnectionEntry endpoint)
                 return (SourceRouting.To(NextHopOf(endpoint)), null);
 
             var why = $"'{Action}' from the charging station '{Station}' is not sent on: none of the back ends of its target '{target.Id}' " +
@@ -405,28 +408,33 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #endregion
 
 
-        #region (protected) FirstConnectedOf(Target)
+        #region (protected) FirstConnectedOf(Target, Version = null)
 
         /// <summary>
         /// The endpoint the given target forwards to now: of its peers in their
         /// order, of each peer's endpoints in theirs, the first that is
         /// connected - or null, where none is.
         /// </summary>
-        protected ConnectionEntry? FirstConnectedOf(ForwardingTarget Target)
+        /// <param name="Target">The forwarding target.</param>
+        /// <param name="Version">The version of OCPP of the station forwarded: an endpoint of another version is passed over, as its node could not send there. Any, where none is given.</param>
+        protected ConnectionEntry? FirstConnectedOf(ForwardingTarget  Target,
+                                                    OCPPVersion?      Version   = null)
         {
 
             var states = ConnectionStates;
 
-            return EndpointsOf(Target).FirstOrDefault(endpoint => states.TryGetValue(endpoint.Id, out var state) &&
+            return EndpointsOf(Target, Version).FirstOrDefault(endpoint => states.TryGetValue(endpoint.Id, out var state) &&
                                                                   state.Status == ConnectionStatus.Connected);
 
         }
 
         /// <summary>
         /// The endpoints of the peers of a target, in the order they are tried.
-        /// A peer that is gone is passed over.
+        /// A peer that is gone is passed over, and an endpoint of another version
+        /// of OCPP than the one given.
         /// </summary>
-        private IEnumerable<ConnectionEntry> EndpointsOf(ForwardingTarget Target)
+        private IEnumerable<ConnectionEntry> EndpointsOf(ForwardingTarget  Target,
+                                                         OCPPVersion?      Version   = null)
         {
 
             var peers        = Connections.Peers;
@@ -436,7 +444,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (peers.FirstOrDefault(peer => peer.Id == peerId) is PeerEntry peer)
                     foreach (var endpointId in peer.EndpointIds)
                         if (connections.FirstOrDefault(connection => connection.Id == endpointId) is ConnectionEntry endpoint &&
-                            endpoint.Use == ConnectionUse.OCPP)
+                            endpoint.Use == ConnectionUse.OCPP &&
+                            (Version is null || endpoint.OCPPVersion == Version))
                         {
                             yield return endpoint;
                         }
@@ -471,8 +480,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// Whether the given name leads to a back end of this node: over a
         /// connection it made, or over one the back end made.
         /// </summary>
-        private Boolean IsABackEnd(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode  Node,
-                                   NetworkingNode_Id                            Name)
+        private Boolean IsABackEnd(AWWCPNetworkingNode  Node,
+                                   NetworkingNode_Id    Name)
 
             => LeadsToInbound(Name) ||
                (Node.Routing.LookupNetworkingNode(Name, out var reachability) && reachability.Client is not null);

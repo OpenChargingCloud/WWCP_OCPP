@@ -284,6 +284,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
             => true;
 
         /// <summary>
+        /// Whether the given OCPP node registers with its back ends: every one
+        /// does, unless the kind says otherwise - but a node that only passes on
+        /// what the charging stations of OCPP 1.6 send (<see cref="Serving.ForwardingNode16"/>),
+        /// which is no charge point of its central system itself. A charging
+        /// station's node of OCPP 1.6 is one, and registers as such.
+        /// </summary>
+        protected virtual Boolean Registers(AWWCPNetworkingNode Node)
+            => Node is not Serving.ForwardingNode16;
+
+        /// <summary>
         /// Whether the given OCPP node sends its heartbeats to the primary by
         /// itself, once it was accepted: no, unless the kind says otherwise -
         /// then they are sent from here, as they are to every other back end.
@@ -398,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!RegistersWithABackEnd)
                 return json;
 
-            if (Node16 is { } node16)
+            if (Node16 is { } node16 && Registers(node16))
                 json.Add(new JProperty("1.6", RegistrationJSON(PrimaryRegistrationOf(node16))));
 
             json.Add(new JProperty("2.1", RegistrationJSON(PrimaryRegistrationOf(Node21))));
@@ -537,6 +547,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return;
 
             var node          = NodeOf(Connection);
+
+            if (!Registers(node))
+                return;
+
             var registration  = RegistrationOf(node, Connection);
 
             switch (registration.State)
@@ -602,7 +616,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             foreach (var node in new AWWCPNetworkingNode?[] { Node16, Node21 })
             {
 
-                if (node is null)
+                if (node is null || !Registers(node))
                     continue;
 
                 var ofNode = RegistrationsOf(node);

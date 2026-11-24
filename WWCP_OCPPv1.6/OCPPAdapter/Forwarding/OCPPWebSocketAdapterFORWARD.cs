@@ -434,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #endregion
 
 
-        #region (private) ForwardUnderAnIdOfItsOwn(RequestId, RequestContext, SourceNodeId, Timeout)
+        #region (private) ForwardUnderAnIdOfItsOwn(RequestId, RequestContext, SourceNodeId, Timeout, CameOver)
 
         /// <summary>
         /// The request identification a request this node forwards is sent on under:
@@ -455,17 +455,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// <param name="RequestContext">The JSON-LD context of the request, where the forwarding decision says one.</param>
         /// <param name="SourceNodeId">The networking node that sent the request.</param>
         /// <param name="Timeout">When an answer is no longer waited for.</param>
-        private Request_Id ForwardUnderAnIdOfItsOwn(Request_Id         RequestId,
-                                                    JSONLDContext?     RequestContext,
-                                                    NetworkingNode_Id  SourceNodeId,
-                                                    DateTimeOffset     Timeout)
+        /// <param name="CameOver">The connection the request came over, which its answer goes back over.</param>
+        private Request_Id ForwardUnderAnIdOfItsOwn(Request_Id          RequestId,
+                                                    JSONLDContext?      RequestContext,
+                                                    NetworkingNode_Id   SourceNodeId,
+                                                    DateTimeOffset      Timeout,
+                                                    IMessageConnection  CameOver)
         {
 
             var responseInfo = new ResponseInfo(
                                    RequestId,
                                    RequestContext ?? JSONLDContext.Parse("willnothappen!"),
                                    SourceNodeId,
-                                   Timeout
+                                   Timeout,
+                                   CameOver
                                );
 
             while (true)
@@ -659,37 +662,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 #endregion
 
-                #region ...or error!
+                #region ...or the default decision
 
+                // No processor of its own: the default decision below says what happens,
+                // as in OCPP 2.1. A refusal used to go first - to nobody, as it named no
+                // destination -, and the request on all the same where the default is FORWARD.
                 else
-                {
-
-                    DebugX.Log($"Undefined '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
-
-                    await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
-                              new OCPP_JSONRequestErrorMessage(
-                                  Now,
-                                  EventTracking_Id.New,
-                                  NetworkingMode.Unknown,
-                                  SourceRouting.Zero,
-                                  NetworkPath.Empty,
-                                  JSONRequestMessage.RequestId,
-                                  ResultCode.ProtocolError,
-                                  $"Received unknown OCPP '{JSONRequestMessage.Action}' JSON request message!",
-                                  new JObject(
-                                      new JProperty("request", JSONRequestMessage.ToJSON())
-                                  )
-                              )
-                          );
-
-                }
+                    DebugX.Log($"Undefined '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}, the default decision {DefaultForwardingDecision} applies!");
 
                 #endregion
 
             }
 
 
-            forwardingDecision ??= new RequestForwardingDecision(DefaultForwardingDecision);
+            // Left to what comes next and nothing came - no processor of its own, or one
+
+
+            // that left it as well -: the default decision. It used to stay NEXT, which none
+
+
+            // of the branches below takes, and the request went nowhere without a word.
+
+
+            if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
+
+
+                forwardingDecision = new RequestForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyJSONRequestFiltered event
@@ -726,7 +724,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                 newJSONRequestMessage.RequestId,
                                                 forwardingDecision.RequestContext,
                                                 newJSONRequestMessage.NetworkPath.Source,
-                                                newJSONRequestMessage.RequestTimeout
+                                                newJSONRequestMessage.RequestTimeout,
+                                                WebSocketConnection
                                             )
                                         );
 
@@ -768,7 +767,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                 newJSONRequestMessage.RequestId,
                                                 forwardingDecision.RequestContext,
                                                 newJSONRequestMessage.NetworkPath.Source,
-                                                newJSONRequestMessage.RequestTimeout
+                                                newJSONRequestMessage.RequestTimeout,
+                                                WebSocketConnection
                                             )
                                         );
 
@@ -804,7 +804,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                   JSONRequestMessage.RequestId,
                                   rejectResponse,
                                   JSONRequestMessage.CancellationToken
-                              )
+                              ),
+                              WebSocketConnection
                           );
 
                 else
@@ -820,7 +821,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                   forwardingDecision.RejectMessage,
                                   forwardingDecision.RejectDetails,
                                   JSONRequestMessage.CancellationToken
-                              )
+                              ),
+                              WebSocketConnection
                           );
 
             }
@@ -907,7 +909,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                       // To whoever asked, whatever the answer names: it is not the answerer's to choose.
                                       SourceRouting.To(responseInfo.SourceNodeId),
                                       JSONResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                                  )
+                                  ),
+                                  responseInfo.CameOver
                               );
 
                     }
@@ -968,7 +971,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                   // To whoever asked, whatever the answer names: it is not the answerer's to choose.
                                   SourceRouting.To(responseInfo.SourceNodeId),
                                   JSONRequestErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                              )
+                              ),
+                              responseInfo.CameOver
                           );
 
                 }
@@ -1120,37 +1124,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 #endregion
 
-                #region ...or error!
+                #region ...or the default decision
 
+                // No processor of its own: the default decision below says what happens,
+                // as in OCPP 2.1. A refusal used to go first - to nobody, as it named no
+                // destination -, and the send on all the same where the default is FORWARD.
                 else
-                {
-
-                    DebugX.Log($"Undefined '{JSONSendMessage.Action}' JSON send message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
-
-                    await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
-                              new OCPP_JSONRequestErrorMessage(
-                                  Now,
-                                  EventTracking_Id.New,
-                                  NetworkingMode.Unknown,
-                                  SourceRouting.Zero,
-                                  NetworkPath.Empty,
-                                  JSONSendMessage.MessageId,
-                                  ResultCode.ProtocolError,
-                                  $"Received unknown OCPP '{JSONSendMessage.Action}' JSON send message!",
-                                  new JObject(
-                                      new JProperty("request", JSONSendMessage.ToJSON())
-                                  )
-                              )
-                          );
-
-                }
+                    DebugX.Log($"Undefined '{JSONSendMessage.Action}' JSON send message handler within {nameof(OCPPWebSocketAdapterFORWARD)}, the default decision {DefaultForwardingDecision} applies!");
 
                 #endregion
 
             }
 
 
-            forwardingDecision ??= new MessageForwardingDecision(DefaultForwardingDecision);
+            // Left to what comes next and nothing came - no processor of its own, or one
+
+
+            // that left it as well -: the default decision. It used to stay NEXT, which none
+
+
+            // of the branches below takes, and the message went nowhere without a word.
+
+
+            if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
+
+
+                forwardingDecision = new MessageForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyJSONSendMessageFiltered event
@@ -1337,37 +1336,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 #endregion
 
-                #region ...or error!
+                #region ...or the default decision
 
+                // No processor of its own: the default decision below says what happens,
+                // as in OCPP 2.1. A refusal used to go first - to nobody, as it named no
+                // destination -, and the request on all the same where the default is FORWARD.
                 else
-                {
-
-                    DebugX.Log($"Undefined '{BinaryRequestMessage.Action}' binary request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
-
-                    await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(
-                              new OCPP_BinaryRequestErrorMessage(
-                                  Now,
-                                  EventTracking_Id.New,
-                                  NetworkingMode.Unknown,
-                                  SourceRouting.Zero,
-                                  NetworkPath.Empty,
-                                  BinaryRequestMessage.RequestId,
-                                  ResultCode.ProtocolError,
-                                  $"Received unknown OCPP '{BinaryRequestMessage.Action}' binary request message!",
-                                  new JObject(
-                                      new JProperty("request", BinaryRequestMessage.ToByteArray().ToBase64())
-                                  )
-                              )
-                          );
-
-                }
+                    DebugX.Log($"Undefined '{BinaryRequestMessage.Action}' binary request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}, the default decision {DefaultForwardingDecision} applies!");
 
                 #endregion
 
             }
 
 
-            forwardingDecision ??= new RequestForwardingDecision(DefaultForwardingDecision);
+            // Left to what comes next and nothing came - no processor of its own, or one
+
+
+            // that left it as well -: the default decision. It used to stay NEXT, which none
+
+
+            // of the branches below takes, and the request went nowhere without a word.
+
+
+            if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
+
+
+                forwardingDecision = new RequestForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyBinaryRequestFiltered event
@@ -1404,7 +1398,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                   newBinaryRequestMessage.RequestId,
                                                   forwardingDecision.RequestContext,
                                                   newBinaryRequestMessage.NetworkPath.Source,
-                                                  newBinaryRequestMessage.RequestTimeout
+                                                  newBinaryRequestMessage.RequestTimeout,
+                                                  WebSocketConnection
                                               )
                                           );
 
@@ -1446,7 +1441,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                   newBinaryRequestMessage.RequestId,
                                                   forwardingDecision.RequestContext,
                                                   newBinaryRequestMessage.NetworkPath.Source,
-                                                  newBinaryRequestMessage.RequestTimeout
+                                                  newBinaryRequestMessage.RequestTimeout,
+                                                  WebSocketConnection
                                               )
                                           );
 
@@ -1479,7 +1475,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                   BinaryRequestMessage.RequestId,
                                   rejectResponse,
                                   BinaryRequestMessage.CancellationToken
-                              )
+                              ),
+                              WebSocketConnection
                           );
 
                 else
@@ -1495,7 +1492,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                   forwardingDecision.RejectMessage,
                                   forwardingDecision.RejectDetails,
                                   BinaryRequestMessage.CancellationToken
-                              )
+                              ),
+                              WebSocketConnection
                           );
 
             }
@@ -1541,7 +1539,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                   // To whoever asked, whatever the answer names: it is not the answerer's to choose.
                                   SourceRouting.To(responseInfo.SourceNodeId),
                                   BinaryResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                              )
+                              ),
+                              responseInfo.CameOver
                           );
 
                 }
@@ -1575,7 +1574,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                   // To whoever asked, whatever the answer names: it is not the answerer's to choose.
                                   SourceRouting.To(responseInfo.SourceNodeId),
                                   BinaryRequestErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                              )
+                              ),
+                              responseInfo.CameOver
                           );
 
                 }
@@ -1713,37 +1713,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 #endregion
 
-                #region ...or error!
+                #region ...or the default decision
 
+                // No processor of its own: the default decision below says what happens,
+                // as in OCPP 2.1. A refusal used to go first - to nobody, as it named no
+                // destination -, and the send on all the same where the default is FORWARD.
                 else
-                {
-
-                    DebugX.Log($"Undefined '{BinarySendMessage.Action}' binary send message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
-
-                    await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(
-                              new OCPP_BinaryRequestErrorMessage(
-                                  Now,
-                                  EventTracking_Id.New,
-                                  NetworkingMode.Unknown,
-                                  SourceRouting.Zero,
-                                  NetworkPath.Empty,
-                                  BinarySendMessage.MessageId,
-                                  ResultCode.ProtocolError,
-                                  $"Received unknown OCPP '{BinarySendMessage.Action}' binary send message!",
-                                  new JObject(
-                                      new JProperty("request", BinarySendMessage.ToByteArray().ToBase64())
-                                  )
-                              )
-                          );
-
-                }
+                    DebugX.Log($"Undefined '{BinarySendMessage.Action}' binary send message handler within {nameof(OCPPWebSocketAdapterFORWARD)}, the default decision {DefaultForwardingDecision} applies!");
 
                 #endregion
 
             }
 
 
-            forwardingDecision ??= new MessageForwardingDecision(DefaultForwardingDecision);
+            // Left to what comes next and nothing came - no processor of its own, or one
+
+
+            // that left it as well -: the default decision. It used to stay NEXT, which none
+
+
+            // of the branches below takes, and the message went nowhere without a word.
+
+
+            if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
+
+
+                forwardingDecision = new MessageForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyBinarySendMessageFiltered event

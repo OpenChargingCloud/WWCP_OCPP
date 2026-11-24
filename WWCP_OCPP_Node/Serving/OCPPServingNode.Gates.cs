@@ -29,9 +29,8 @@ using cloud.charging.open.protocols.OCPP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP.Node.KeyPins;
 using cloud.charging.open.protocols.WWCP.Node.Connections;
 
+using OCPPv1_6                    = cloud.charging.open.protocols.OCPPv1_6;
 using OCPPv2_1                    = cloud.charging.open.protocols.OCPPv2_1;
-using RequestForwardingDecision  = cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.RequestForwardingDecision;
-using MessageForwardingDecision  = cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.MessageForwardingDecision;
 
 #endregion
 
@@ -62,8 +61,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// station may ask of the node - a DataTransfer, say - passes as before.
     /// </para>
     /// <para>
-    /// A kind of node gives its OCPP 2.1 node both gates with <see cref="AttachRequestGate"/> and
-    /// <see cref="AttachForwardingGate"/>, once, after it built it.
+    /// A kind of node gives its OCPP 2.1 node both gates with <see cref="AttachRequestGate(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode)"/>
+    /// and <see cref="AttachForwardingGate(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode)"/>, once, after it built it - and
+    /// its OCPP 1.6 node, where it has one, the same, which holds back what only a central system of
+    /// OCPP 1.6 asks (<see cref="CentralSystemOnlyActions"/>).
     /// </para>
     /// </remarks>
     public abstract partial class OCPPServingNode
@@ -105,28 +106,52 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// The request types of OCPP 2.1 a CSMS sends.
         /// </summary>
         private static IEnumerable<Type> CSMSRequestTypes()
-        {
 
-            var csms = typeof(OCPPv2_1.CSMS.ResetRequest);
+            => RequestTypesBeside(typeof(OCPPv2_1.CSMS.ResetRequest), typeof(OCPPv2_1.ARequest<>));
 
-            return csms.Assembly.GetTypes().
-                       Where(type => type.Namespace == csms.Namespace         &&
-                                     type.IsClass && !type.IsAbstract         &&
-                                     type.Name.EndsWith("Request", StringComparison.Ordinal) &&
-                                     IsARequest(type));
+        /// <summary>
+        /// The request classes of the namespace of the given one, the given request base class
+        /// theirs.
+        /// </summary>
+        private static IEnumerable<Type> RequestTypesBeside(Type  OneOfThem,
+                                                            Type  ARequest)
 
-        }
+            => OneOfThem.Assembly.GetTypes().
+                   Where(type => type.Namespace == OneOfThem.Namespace  &&
+                                 type.IsClass && !type.IsAbstract       &&
+                                 type.Name.EndsWith("Request", StringComparison.Ordinal) &&
+                                 IsARequest(type, ARequest));
 
-        private static Boolean IsARequest(Type Type)
+        private static Boolean IsARequest(Type  Type,
+                                          Type  ARequest)
         {
 
             for (var baseType = Type.BaseType; baseType is not null; baseType = baseType.BaseType)
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(OCPPv2_1.ARequest<>))
+                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == ARequest)
                     return true;
 
             return false;
 
         }
+
+        #endregion
+
+        #region (static) CentralSystemOnlyActions
+
+        /// <summary>
+        /// The actions only a central system of OCPP 1.6 asks of a node it manages: every request of
+        /// OCPP 1.6 that a central system sends - the requests of the namespace OCPPv1_6.CS, Reset,
+        /// ChangeConfiguration, RemoteStartTransaction and all the others, also those added later.
+        /// </summary>
+        /// <remarks>
+        /// Found by the request types, as <see cref="CSMSOnlyActions"/> are. Their own set: OCPP 1.6
+        /// names some of them as OCPP 2.1 does, others not at all.
+        /// </remarks>
+        public static IReadOnlySet<String> CentralSystemOnlyActions { get; }
+
+            = RequestTypesBeside(typeof(OCPPv1_6.CS.ResetRequest), typeof(OCPPv1_6.ARequest<>)).
+                  Select(type => type.Name[..^"Request".Length]).
+                  ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
         #endregion
 
@@ -145,6 +170,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
         {
 
             Node.OCPP.IN.RequestGate = (connection, action, payload) => OnlyTheCSMS(connection, action, payload) ??
+                                                                        GateOnProbation(connection, action, payload);
+
+        }
+
+        /// <summary>
+        /// Give the given OCPP 1.6 node its gate: what only a central system asks comes over the node's
+        /// line up to it - and over a line up on probation, nothing but what may come over it.
+        /// </summary>
+        /// <param name="Node">The OCPP 1.6 node of this node.</param>
+        protected void AttachRequestGate(OCPPv1_6.NetworkingNode.AOCPPNetworkingNode Node)
+        {
+
+            Node.OCPP.IN.RequestGate = (connection, action, payload) => OnlyTheCSMS(connection, action, payload, CentralSystemOnlyActions) ??
                                                                         GateOnProbation(connection, action, payload);
 
         }
@@ -184,20 +222,39 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // The gates first, and what passes them where its target says: one
             // filter, as the forwarding takes the first filter's decision.
             Node.OCPP.FORWARD.OnAnyJSONRequestFilter       += (timestamp, sender, connection, request, cancellationToken) =>
-                Task.FromResult(AsRequestDecision(WhyNotForward(Node, connection, request.Action, request.Destination, request.NetworkPath),
-                                                  () => RouteByTarget(Node, connection, request.Action, request.Destination, request.NetworkPath)));
+                Task.FromResult(AsRequestDecision21(Decided(Node, OCPPVersion.OCPP2_1, connection, request.Action, request.Destination, request.NetworkPath, IsAMessage: false)));
 
             Node.OCPP.FORWARD.OnAnyBinaryRequestFilter     += (timestamp, sender, connection, request, cancellationToken) =>
-                Task.FromResult(AsRequestDecision(WhyNotForward(Node, connection, request.Action, request.Destination, request.NetworkPath),
-                                                  () => RouteByTarget(Node, connection, request.Action, request.Destination, request.NetworkPath)));
+                Task.FromResult(AsRequestDecision21(Decided(Node, OCPPVersion.OCPP2_1, connection, request.Action, request.Destination, request.NetworkPath, IsAMessage: false)));
 
             Node.OCPP.FORWARD.OnAnyJSONSendMessageFilter   += (timestamp, sender, connection, message, cancellationToken) =>
-                Task.FromResult(AsMessageDecision(WhyNotForward(Node, connection, message.Action, message.Destination, message.NetworkPath),
-                                                  () => RouteByTarget(Node, connection, message.Action, message.Destination, message.NetworkPath)));
+                Task.FromResult(AsMessageDecision21(Decided(Node, OCPPVersion.OCPP2_1, connection, message.Action, message.Destination, message.NetworkPath, IsAMessage: true)));
 
             Node.OCPP.FORWARD.OnAnyBinarySendMessageFilter += (timestamp, sender, connection, message, cancellationToken) =>
-                Task.FromResult(AsMessageDecision(WhyNotForward(Node, connection, message.Action, message.Destination, message.NetworkPath),
-                                                  () => RouteByTarget(Node, connection, message.Action, message.Destination, message.NetworkPath)));
+                Task.FromResult(AsMessageDecision21(Decided(Node, OCPPVersion.OCPP2_1, connection, message.Action, message.Destination, message.NetworkPath, IsAMessage: true)));
+
+        }
+
+        /// <summary>
+        /// Give the given OCPP 1.6 node's forwarding its gate, as the one of OCPP 2.1 has it: what a
+        /// charging station of OCPP 1.6 sends on goes up to a central system of OCPP 1.6, under the
+        /// station's own name, to no other station, and where its target says.
+        /// </summary>
+        /// <param name="Node">The OCPP 1.6 node of this node.</param>
+        protected void AttachForwardingGate(OCPPv1_6.NetworkingNode.AOCPPNetworkingNode Node)
+        {
+
+            Node.OCPP.FORWARD.OnAnyJSONRequestFilter       += (timestamp, sender, connection, request, cancellationToken) =>
+                Task.FromResult(AsRequestDecision16(Decided(Node, OCPPVersion.OCPP1_6, connection, request.Action, request.Destination, request.NetworkPath, IsAMessage: false)));
+
+            Node.OCPP.FORWARD.OnAnyBinaryRequestFilter     += (timestamp, sender, connection, request, cancellationToken) =>
+                Task.FromResult(AsRequestDecision16(Decided(Node, OCPPVersion.OCPP1_6, connection, request.Action, request.Destination, request.NetworkPath, IsAMessage: false)));
+
+            Node.OCPP.FORWARD.OnAnyJSONSendMessageFilter   += (timestamp, sender, connection, message, cancellationToken) =>
+                Task.FromResult(AsMessageDecision16(Decided(Node, OCPPVersion.OCPP1_6, connection, message.Action, message.Destination, message.NetworkPath, IsAMessage: true)));
+
+            Node.OCPP.FORWARD.OnAnyBinarySendMessageFilter += (timestamp, sender, connection, message, cancellationToken) =>
+                Task.FromResult(AsMessageDecision16(Decided(Node, OCPPVersion.OCPP1_6, connection, message.Action, message.Destination, message.NetworkPath, IsAMessage: true)));
 
         }
 
@@ -210,11 +267,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// What is wrong with forwarding what came over the given connection - a forged sender, another
         /// station as the destination, or a line up on probation - or nothing.
         /// </summary>
-        protected (Boolean Forged, String Why)? WhyNotForward(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode  Node,
-                                                             IMessageConnection                           Connection,
-                                                             String                                       Action,
-                                                             SourceRouting                                Destination,
-                                                             NetworkPath                                  NetworkPath)
+        protected (Boolean Forged, String Why)? WhyNotForward(AWWCPNetworkingNode  Node,
+                                                             IMessageConnection   Connection,
+                                                             String               Action,
+                                                             SourceRouting        Destination,
+                                                             NetworkPath          NetworkPath)
         {
 
             // Over the node's line to the CSMS: the CSMS's to send - unless the
@@ -255,39 +312,54 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         }
 
-        private static RequestForwardingDecision AsRequestDecision((Boolean Forged, String Why)?            Refusal,
-                                                                   Func<(SourceRouting? To, String? Refused)>  Route)
+        /// <summary>
+        /// What becomes of what came over the given connection: the gates first, and what passes them
+        /// where its target says - forwarded, perhaps elsewhere, refused with why, dropped with why, or
+        /// left to the forwarding's own decision (NEXT). The same for every version of OCPP; only the
+        /// type the forwarding takes it in is its version's.
+        /// </summary>
+        /// <param name="IsAMessage">A message is not answered, so not refused either: dropped.</param>
+        private (ForwardingDecisions Result, String? Why, SourceRouting? To) Decided(AWWCPNetworkingNode  Node,
+                                                                                    OCPPVersion          Version,
+                                                                                    IMessageConnection   Connection,
+                                                                                    String               Action,
+                                                                                    SourceRouting        Destination,
+                                                                                    NetworkPath          NetworkPath,
+                                                                                    Boolean              IsAMessage)
         {
 
-            if (Refusal is { Forged: true } forged)
-                return new RequestForwardingDecision(ForwardingDecisions.DROP,   LogMessage:    forged.Why);
+            var refuse = IsAMessage ? ForwardingDecisions.DROP : ForwardingDecisions.REJECT;
 
-            if (Refusal is { } refusal)
-                return new RequestForwardingDecision(ForwardingDecisions.REJECT, RejectMessage: refusal.Why);
+            if (WhyNotForward(Node, Connection, Action, Destination, NetworkPath) is { } refusal)
+                return (refusal.Forged ? ForwardingDecisions.DROP : refuse, refusal.Why, null);
 
-            return Route() switch {
-                       { Refused: String why } => new RequestForwardingDecision(ForwardingDecisions.REJECT,  RejectMessage:  why),
-                       { To:      { } to     } => new RequestForwardingDecision(ForwardingDecisions.FORWARD, NewDestination: to),
-                       _                       => new RequestForwardingDecision(ForwardingDecisions.NEXT)
+            return RouteByTarget(Node, Version, Connection, Action, Destination, NetworkPath) switch {
+                       { Refused: String why } => (refuse,                      why,  null),
+                       { To:      { } to     } => (ForwardingDecisions.FORWARD, null, to),
+                       _                       => (ForwardingDecisions.NEXT,    null, null)
                    };
 
         }
 
-        private static MessageForwardingDecision AsMessageDecision((Boolean Forged, String Why)?            Refusal,
-                                                                   Func<(SourceRouting? To, String? Refused)>  Route)
-        {
+        private static OCPPv2_1.NetworkingNode.RequestForwardingDecision AsRequestDecision21((ForwardingDecisions Result, String? Why, SourceRouting? To) Decision)
 
-            // A message is not answered, so not refused either: dropped.
-            if (Refusal is { } refusal)
-                return new MessageForwardingDecision(ForwardingDecisions.DROP, LogMessage: refusal.Why);
+            => Decision.Result == ForwardingDecisions.REJECT
+                   ? new (Decision.Result, RejectMessage:  Decision.Why)
+                   : new (Decision.Result, NewDestination: Decision.To, LogMessage: Decision.Why);
 
-            return Route() switch {
-                       { Refused: String why } => new MessageForwardingDecision(ForwardingDecisions.DROP,    LogMessage:     why),
-                       { To:      { } to     } => new MessageForwardingDecision(ForwardingDecisions.FORWARD, NewDestination: to),
-                       _                       => new MessageForwardingDecision(ForwardingDecisions.NEXT)
-                   };
+        private static OCPPv2_1.NetworkingNode.MessageForwardingDecision AsMessageDecision21((ForwardingDecisions Result, String? Why, SourceRouting? To) Decision)
 
-        }
+            => new (Decision.Result, NewDestination: Decision.To, LogMessage: Decision.Why);
+
+        private static OCPPv1_6.NetworkingNode.RequestForwardingDecision AsRequestDecision16((ForwardingDecisions Result, String? Why, SourceRouting? To) Decision)
+
+            => Decision.Result == ForwardingDecisions.REJECT
+                   ? new (Decision.Result, RejectMessage:  Decision.Why)
+                   : new (Decision.Result, NewDestination: Decision.To, LogMessage: Decision.Why);
+
+        private static OCPPv1_6.NetworkingNode.MessageForwardingDecision AsMessageDecision16((ForwardingDecisions Result, String? Why, SourceRouting? To) Decision)
+
+            => new (Decision.Result, NewDestination: Decision.To, LogMessage: Decision.Why);
 
         #endregion
 
@@ -316,14 +388,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// tool's, an account let in to speak to this node as its CSMS would (see
         /// OCPPServingNode.Commissioning.cs).
         /// </summary>
-        protected String? OnlyTheCSMS(IMessageConnection  Connection,
-                                      String              Action,
-                                      JObject?            Payload)
+        /// <param name="Actions">The actions only the back end asks: <see cref="CSMSOnlyActions"/>, unless said otherwise.</param>
+        protected String? OnlyTheCSMS(IMessageConnection     Connection,
+                                      String                 Action,
+                                      JObject?               Payload,
+                                      IReadOnlySet<String>?  Actions   = null)
 
             => Connection.Role == ConnectionRole.Server &&
                !IsInbound(Connection) &&
                !IsACommissioningTool(Connection) &&
-               CSMSOnlyActions.Contains(Action)
+               (Actions ?? CSMSOnlyActions).Contains(Action)
                    ? $"'{Action}' is for this {NodeNoun}'s CSMS to ask, over the {NodeNoun}'s own connection to it - not for a charging station connected to the {NodeNoun}."
                    : null;
 

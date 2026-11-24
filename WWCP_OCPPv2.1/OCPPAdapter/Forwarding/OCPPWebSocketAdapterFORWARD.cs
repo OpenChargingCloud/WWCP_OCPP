@@ -572,7 +572,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            forwardingDecision ??= new RequestForwardingDecision(DefaultForwardingDecision);
+            // Left to what comes next and nothing came - no processor of its own, or one
+
+
+            // that left it as well -: the default decision. It used to stay NEXT, which none
+
+
+            // of the branches below takes, and the request went nowhere without a word.
+
+
+            if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
+
+
+                forwardingDecision = new RequestForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyJSONRequestFiltered event
@@ -1056,7 +1068,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            forwardingDecision ??= new MessageForwardingDecision(DefaultForwardingDecision);
+            // Left to what comes next and nothing came - no processor of its own, or one
+
+
+            // that left it as well -: the default decision. It used to stay NEXT, which none
+
+
+            // of the branches below takes, and the message went nowhere without a word.
+
+
+            if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
+
+
+                forwardingDecision = new MessageForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyJSONSendMessageFiltered event
@@ -1273,7 +1297,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            forwardingDecision ??= new RequestForwardingDecision(DefaultForwardingDecision);
+            // Left to what comes next and nothing came - no processor of its own, or one
+
+
+            // that left it as well -: the default decision. It used to stay NEXT, which none
+
+
+            // of the branches below takes, and the request went nowhere without a word.
+
+
+            if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
+
+
+                forwardingDecision = new RequestForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyBinaryRequestFiltered event
@@ -1662,7 +1698,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             }
 
 
-            forwardingDecision ??= new MessageForwardingDecision(DefaultForwardingDecision);
+            // Left to what comes next and nothing came - no processor of its own, or one
+
+
+            // that left it as well -: the default decision. It used to stay NEXT, which none
+
+
+            // of the branches below takes, and the message went nowhere without a word.
+
+
+            if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
+
+
+                forwardingDecision = new MessageForwardingDecision(DefaultForwardingDecision);
 
 
             #region Send OnAnyBinarySendMessageFiltered event

@@ -1179,6 +1179,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #endregion
 
+        #region (private) AnsweredOver(Over)
+
+        /// <summary>
+        /// The server and its connection an answer goes over, where the request it answers came
+        /// over a connection this node accepted - or null, where it came over a client, which
+        /// <see cref="TransportFor"/> takes, or over CBOR, which is written with the request kept.
+        /// </summary>
+        /// <remarks>
+        /// A server finds the connection of an answer by the name it is addressed to, and two
+        /// central systems that connected to a gateway both call themselves "CentralSystem": the
+        /// answer to the one went to whichever the name leads to, the other one waiting out its
+        /// timeout. The connection a request came over has exactly one far end, and that is
+        /// whoever asked.
+        /// </remarks>
+        private static (OCPPWebSocketServer Server, WebSocketServerConnection Connection)? AnsweredOver(IMessageConnection? Over)
+
+            => Over is WebSocketServerConnection { WebSocketServer: OCPPWebSocketServer server } connection &&
+               !connection.SpeaksCBOR()
+                   ? (server, connection)
+                   : null;
+
+        #endregion
+
         #region Signature formats per connection
 
         private SignatureFormatsPerConnection? signatureFormats;
@@ -1543,7 +1566,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (TransportFor(JSONResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+            // Over a connection this node accepted: that connection, see AnsweredOver.
+            if (AnsweredOver(Over) is (OCPPWebSocketServer server, WebSocketServerConnection over))
+                sentMessageResult = await server.SendJSONResponse(JSONResponseMessage, over);
+
+            else if (TransportFor(JSONResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
                 sentMessageResult = await SendResponse(ocppTransport, JSONResponseMessage, Over);
 
             return sentMessageResult;
@@ -1560,7 +1587,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (TransportFor(JSONRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+            // Over a connection this node accepted: that connection, see AnsweredOver.
+            if (AnsweredOver(Over) is (OCPPWebSocketServer server, WebSocketServerConnection over))
+                sentMessageResult = await server.SendJSONRequestError(JSONRequestErrorMessage, over);
+
+            else if (TransportFor(JSONRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
                 sentMessageResult = await SendRequestError(ocppTransport, JSONRequestErrorMessage, Over);
 
             return sentMessageResult;
@@ -1926,7 +1957,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (TransportFor(BinaryResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+            // Over a connection this node accepted: that connection, see AnsweredOver.
+            if (AnsweredOver(Over) is (OCPPWebSocketServer server, WebSocketServerConnection over))
+                sentMessageResult = await server.SendBinaryResponse(BinaryResponseMessage, over);
+
+            else if (TransportFor(BinaryResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
                 sentMessageResult = await SendResponse(ocppTransport, BinaryResponseMessage, Over);
 
             return sentMessageResult;
@@ -1943,7 +1978,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (TransportFor(BinaryRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+            // Over a connection this node accepted: that connection, see AnsweredOver.
+            if (AnsweredOver(Over) is (OCPPWebSocketServer server, WebSocketServerConnection over))
+                sentMessageResult = await server.SendBinaryRequestError(BinaryRequestErrorMessage, over);
+
+            else if (TransportFor(BinaryRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
                 sentMessageResult = await SendRequestError(ocppTransport, BinaryRequestErrorMessage, Over);
 
             return sentMessageResult;
