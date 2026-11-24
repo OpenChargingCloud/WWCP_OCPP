@@ -181,17 +181,23 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected void AttachForwardingGate(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode Node)
         {
 
+            // The gates first, and what passes them where its target says: one
+            // filter, as the forwarding takes the first filter's decision.
             Node.OCPP.FORWARD.OnAnyJSONRequestFilter       += (timestamp, sender, connection, request, cancellationToken) =>
-                Task.FromResult(AsRequestDecision(WhyNotForward(Node, connection, request.Action, request.Destination, request.NetworkPath)));
+                Task.FromResult(AsRequestDecision(WhyNotForward(Node, connection, request.Action, request.Destination, request.NetworkPath),
+                                                  () => RouteByTarget(Node, connection, request.Action, request.Destination, request.NetworkPath)));
 
             Node.OCPP.FORWARD.OnAnyBinaryRequestFilter     += (timestamp, sender, connection, request, cancellationToken) =>
-                Task.FromResult(AsRequestDecision(WhyNotForward(Node, connection, request.Action, request.Destination, request.NetworkPath)));
+                Task.FromResult(AsRequestDecision(WhyNotForward(Node, connection, request.Action, request.Destination, request.NetworkPath),
+                                                  () => RouteByTarget(Node, connection, request.Action, request.Destination, request.NetworkPath)));
 
             Node.OCPP.FORWARD.OnAnyJSONSendMessageFilter   += (timestamp, sender, connection, message, cancellationToken) =>
-                Task.FromResult(AsMessageDecision(WhyNotForward(Node, connection, message.Action, message.Destination, message.NetworkPath)));
+                Task.FromResult(AsMessageDecision(WhyNotForward(Node, connection, message.Action, message.Destination, message.NetworkPath),
+                                                  () => RouteByTarget(Node, connection, message.Action, message.Destination, message.NetworkPath)));
 
             Node.OCPP.FORWARD.OnAnyBinarySendMessageFilter += (timestamp, sender, connection, message, cancellationToken) =>
-                Task.FromResult(AsMessageDecision(WhyNotForward(Node, connection, message.Action, message.Destination, message.NetworkPath)));
+                Task.FromResult(AsMessageDecision(WhyNotForward(Node, connection, message.Action, message.Destination, message.NetworkPath),
+                                                  () => RouteByTarget(Node, connection, message.Action, message.Destination, message.NetworkPath)));
 
         }
 
@@ -249,20 +255,39 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         }
 
-        private static RequestForwardingDecision AsRequestDecision((Boolean Forged, String Why)? Refusal)
+        private static RequestForwardingDecision AsRequestDecision((Boolean Forged, String Why)?            Refusal,
+                                                                   Func<(SourceRouting? To, String? Refused)>  Route)
+        {
 
-            => Refusal switch {
-                   null                     => new RequestForwardingDecision(ForwardingDecisions.NEXT),
-                   { Forged: true  } forged => new RequestForwardingDecision(ForwardingDecisions.DROP,   LogMessage:    forged.Why),
-                   { } refused              => new RequestForwardingDecision(ForwardingDecisions.REJECT, RejectMessage: refused.Why)
-               };
+            if (Refusal is { Forged: true } forged)
+                return new RequestForwardingDecision(ForwardingDecisions.DROP,   LogMessage:    forged.Why);
 
-        private static MessageForwardingDecision AsMessageDecision((Boolean Forged, String Why)? Refusal)
+            if (Refusal is { } refusal)
+                return new RequestForwardingDecision(ForwardingDecisions.REJECT, RejectMessage: refusal.Why);
+
+            return Route() switch {
+                       { Refused: String why } => new RequestForwardingDecision(ForwardingDecisions.REJECT,  RejectMessage:  why),
+                       { To:      { } to     } => new RequestForwardingDecision(ForwardingDecisions.FORWARD, NewDestination: to),
+                       _                       => new RequestForwardingDecision(ForwardingDecisions.NEXT)
+                   };
+
+        }
+
+        private static MessageForwardingDecision AsMessageDecision((Boolean Forged, String Why)?            Refusal,
+                                                                   Func<(SourceRouting? To, String? Refused)>  Route)
+        {
 
             // A message is not answered, so not refused either: dropped.
-            => Refusal is { } refusal
-                   ? new MessageForwardingDecision(ForwardingDecisions.DROP, LogMessage: refusal.Why)
-                   : new MessageForwardingDecision(ForwardingDecisions.NEXT);
+            if (Refusal is { } refusal)
+                return new MessageForwardingDecision(ForwardingDecisions.DROP, LogMessage: refusal.Why);
+
+            return Route() switch {
+                       { Refused: String why } => new MessageForwardingDecision(ForwardingDecisions.DROP,    LogMessage:     why),
+                       { To:      { } to     } => new MessageForwardingDecision(ForwardingDecisions.FORWARD, NewDestination: to),
+                       _                       => new MessageForwardingDecision(ForwardingDecisions.NEXT)
+                   };
+
+        }
 
         #endregion
 

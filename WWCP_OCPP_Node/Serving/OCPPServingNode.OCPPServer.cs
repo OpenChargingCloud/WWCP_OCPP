@@ -468,6 +468,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             WebSocketLogins.OnNotice += (level, message) => Log.Log(level, message, "ocpp", "station", "auth");
 
+            // A target names peers: asked of the connections, which are built
+            // beside these logins and change while this node runs.
+            WebSocketLogins.KnownPeerIds = () => Connections?.Peers.Select(peer => peer.Id) ?? [];
+
             // A file that is there but unreadable is not papered over with an
             // empty list: that would turn every charging station on the site
             // away while looking like nothing was wrong.
@@ -578,6 +582,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
             AttachCommissioning();
 
             #endregion
+
+            // Whether what is not for this node is passed on at all: every
+            // kind's, read here as the commissioning section is.
+            ReadForwarding();
 
             Log.Info(
                 settings.Enabled == true

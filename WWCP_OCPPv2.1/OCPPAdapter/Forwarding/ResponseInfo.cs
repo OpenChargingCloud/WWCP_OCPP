@@ -17,6 +17,8 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
@@ -34,16 +36,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="RequestContext">The JSON-LD context of the request.</param>
     /// <param name="SourceNodeId">The networking node that sent the request, where its answer goes.</param>
     /// <param name="Timeout">When an answer is no longer waited for.</param>
-    public class ResponseInfo(Request_Id         RequestId,
-                              JSONLDContext      RequestContext,
-                              NetworkingNode_Id  SourceNodeId,
-                              DateTimeOffset     Timeout)
+    /// <param name="CameOver">The connection the request came over, which its answer goes back over: whatever name its sender wrote, which may lead to another connection - two CSMS behind one gateway both call themselves "CSMS".</param>
+    public class ResponseInfo(Request_Id           RequestId,
+                              JSONLDContext        RequestContext,
+                              NetworkingNode_Id    SourceNodeId,
+                              DateTimeOffset       Timeout,
+                              IMessageConnection?  CameOver   = null)
     {
 
         public Request_Id         RequestId         { get; } = RequestId;
         public JSONLDContext      RequestContext    { get; } = RequestContext;
         public NetworkingNode_Id  SourceNodeId      { get; } = SourceNodeId;
         public DateTimeOffset     Timeout           { get; } = Timeout;
+        public IMessageConnection? CameOver         { get; } = CameOver;
 
 
     }

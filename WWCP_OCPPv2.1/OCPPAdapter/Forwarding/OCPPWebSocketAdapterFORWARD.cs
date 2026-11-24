@@ -611,7 +611,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 newJSONRequestMessage.RequestId,
                                                 forwardingDecision.RequestContext,
                                                 newJSONRequestMessage.NetworkPath.Source,
-                                                newJSONRequestMessage.RequestTimeout
+                                                newJSONRequestMessage.RequestTimeout,
+                                                WebSocketConnection
                                             )
                                         );
 
@@ -665,7 +666,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 newJSONRequestMessage.RequestId,
                                                 forwardingDecision.RequestContext,
                                                 newJSONRequestMessage.NetworkPath.Source,
-                                                newJSONRequestMessage.RequestTimeout
+                                                newJSONRequestMessage.RequestTimeout,
+                                                WebSocketConnection
                                             )
                                         );
 
@@ -703,7 +705,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   JSONRequestMessage.RequestId,
                                   rejectResponse,
                                   JSONRequestMessage.CancellationToken
-                              )
+                              ),
+                              WebSocketConnection
                           );
 
                 else
@@ -719,7 +722,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   forwardingDecision.RejectMessage,
                                   forwardingDecision.RejectDetails,
                                   JSONRequestMessage.CancellationToken
-                              )
+                              ),
+                              WebSocketConnection
                           );
 
             }
@@ -807,7 +811,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                       // To whoever asked, whatever the answer names: it is not the answerer's to choose.
                                       SourceRouting.To(responseInfo.SourceNodeId),
                                       JSONResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                                  )
+                                  ),
+                                  responseInfo.CameOver
                               );
 
                     }
@@ -868,7 +873,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   // To whoever asked, whatever the answer names: it is not the answerer's to choose.
                                   SourceRouting.To(responseInfo.SourceNodeId),
                                   JSONRequestErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                              )
+                              ),
+                              responseInfo.CameOver
                           );
 
                 }
@@ -1306,7 +1312,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                   newBinaryRequestMessage.RequestId,
                                                   forwardingDecision.RequestContext,
                                                   newBinaryRequestMessage.NetworkPath.Source,
-                                                  newBinaryRequestMessage.RequestTimeout
+                                                  newBinaryRequestMessage.RequestTimeout,
+                                                  WebSocketConnection
                                               )
                                           );
 
@@ -1350,7 +1357,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                   newBinaryRequestMessage.RequestId,
                                                   forwardingDecision.RequestContext,
                                                   newBinaryRequestMessage.NetworkPath.Source,
-                                                  newBinaryRequestMessage.RequestTimeout
+                                                  newBinaryRequestMessage.RequestTimeout,
+                                                  WebSocketConnection
                                               )
                                           );
 
@@ -1385,7 +1393,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   BinaryRequestMessage.RequestId,
                                   rejectResponse,
                                   BinaryRequestMessage.CancellationToken
-                              )
+                              ),
+                              WebSocketConnection
                           );
 
                 else
@@ -1401,7 +1410,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   forwardingDecision.RejectMessage,
                                   forwardingDecision.RejectDetails,
                                   BinaryRequestMessage.CancellationToken
-                              )
+                              ),
+                              WebSocketConnection
                           );
 
             }
@@ -1448,7 +1458,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   // To whoever asked, whatever the answer names: it is not the answerer's to choose.
                                   SourceRouting.To(responseInfo.SourceNodeId),
                                   BinaryResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                              )
+                              ),
+                              responseInfo.CameOver
                           );
 
                 }
@@ -1482,7 +1493,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                   // To whoever asked, whatever the answer names: it is not the answerer's to choose.
                                   SourceRouting.To(responseInfo.SourceNodeId),
                                   BinaryRequestErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                              )
+                              ),
+                              responseInfo.CameOver
                           );
 
                 }
@@ -1779,17 +1791,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="RequestContext">The JSON-LD context of the request, where the forwarding decision says one.</param>
         /// <param name="SourceNodeId">The networking node that sent the request.</param>
         /// <param name="Timeout">When an answer is no longer waited for.</param>
-        private Request_Id ForwardUnderAnIdOfItsOwn(Request_Id         RequestId,
-                                                    JSONLDContext?     RequestContext,
-                                                    NetworkingNode_Id  SourceNodeId,
-                                                    DateTimeOffset     Timeout)
+        /// <param name="CameOver">The connection the request came over, which its answer goes back over.</param>
+        private Request_Id ForwardUnderAnIdOfItsOwn(Request_Id          RequestId,
+                                                    JSONLDContext?      RequestContext,
+                                                    NetworkingNode_Id   SourceNodeId,
+                                                    DateTimeOffset      Timeout,
+                                                    IMessageConnection  CameOver)
         {
 
             var responseInfo = new ResponseInfo(
                                    RequestId,
                                    RequestContext ?? JSONLDContext.Parse("willnothappen!"),
                                    SourceNodeId,
-                                   Timeout
+                                   Timeout,
+                                   CameOver
                                );
 
             while (true)

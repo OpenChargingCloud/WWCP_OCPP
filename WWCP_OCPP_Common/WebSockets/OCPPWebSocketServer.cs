@@ -205,19 +205,47 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
+        #region (private) ConnectionsFor(Destination, Over)
+
+        /// <summary>
+        /// The connections a message goes over: the given one alone, where one is given and is
+        /// this server's - alive or not, as an answer for the one that asked goes to nobody else -,
+        /// and the connections of its destination otherwise.
+        /// </summary>
+        private IEnumerable<WebSocketServerConnection> ConnectionsFor(NetworkingNode_Id           Destination,
+                                                                      WebSocketServerConnection?  Over)
+
+            => Over is not null && ReferenceEquals(Over.WebSocketServer, this)
+                   ? Over.IsAlive ? [ Over ] : []
+                   : GetConnectionsFor(Destination);
+
+        #endregion
+
         #region SendJSONResponse        (JSONResponseMessage)
 
         /// <summary>
         /// Send (and forget) the given JSON OCPP response message.
         /// </summary>
         /// <param name="JSONResponseMessage">A JSON OCPP response message.</param>
-        public async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        public Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+
+            => SendJSONResponse(JSONResponseMessage, null);
+
+        /// <summary>
+        /// Send (and forget) the given message over the given connection of this server, where
+        /// one is given: the one the request it answers came over - whatever its destination
+        /// names, which may lead to another connection of this server.
+        /// </summary>
+        /// <param name="JSONResponseMessage">The message.</param>
+        /// <param name="Over">The connection the request it answers came over, or null for the connections of its destination.</param>
+        public async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage  JSONResponseMessage,
+                                                         WebSocketServerConnection?  Over)
         {
 
             try
             {
 
-                foreach (var webSocketConnection in GetConnectionsFor(JSONResponseMessage.Destination.Next))
+                foreach (var webSocketConnection in ConnectionsFor(JSONResponseMessage.Destination.Next, Over))
                 {
 
                     // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
@@ -260,13 +288,25 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// Send (and forget) the given JSON OCPP error message.
         /// </summary>
         /// <param name="JSONRequestErrorMessage">A JSON OCPP error message.</param>
-        public async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
+        public Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
+
+            => SendJSONRequestError(JSONRequestErrorMessage, null);
+
+        /// <summary>
+        /// Send (and forget) the given message over the given connection of this server, where
+        /// one is given: the one the request it answers came over - whatever its destination
+        /// names, which may lead to another connection of this server.
+        /// </summary>
+        /// <param name="JSONRequestErrorMessage">The message.</param>
+        /// <param name="Over">The connection the request it answers came over, or null for the connections of its destination.</param>
+        public async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
+                                                         WebSocketServerConnection?  Over)
         {
 
             try
             {
 
-                foreach (var webSocketConnection in GetConnectionsFor(JSONRequestErrorMessage.Destination.Next))
+                foreach (var webSocketConnection in ConnectionsFor(JSONRequestErrorMessage.Destination.Next, Over))
                 {
 
                     // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
@@ -457,13 +497,25 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// Send (and forget) the given binary OCPP response message.
         /// </summary>
         /// <param name="BinaryResponseMessage">A binary OCPP response message.</param>
-        public async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+
+            => SendBinaryResponse(BinaryResponseMessage, null);
+
+        /// <summary>
+        /// Send (and forget) the given message over the given connection of this server, where
+        /// one is given: the one the request it answers came over - whatever its destination
+        /// names, which may lead to another connection of this server.
+        /// </summary>
+        /// <param name="BinaryResponseMessage">The message.</param>
+        /// <param name="Over">The connection the request it answers came over, or null for the connections of its destination.</param>
+        public async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage  BinaryResponseMessage,
+                                                         WebSocketServerConnection?  Over)
         {
 
             try
             {
 
-                foreach (var webSocketConnection in GetConnectionsFor(BinaryResponseMessage.Destination.Next))
+                foreach (var webSocketConnection in ConnectionsFor(BinaryResponseMessage.Destination.Next, Over))
                 {
 
                     // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
@@ -506,13 +558,25 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// Send (and forget) the given binary OCPP error message.
         /// </summary>
         /// <param name="BinaryRequestErrorMessage">A binary OCPP error message.</param>
-        public async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+        public Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+
+            => SendBinaryRequestError(BinaryRequestErrorMessage, null);
+
+        /// <summary>
+        /// Send (and forget) the given message over the given connection of this server, where
+        /// one is given: the one the request it answers came over - whatever its destination
+        /// names, which may lead to another connection of this server.
+        /// </summary>
+        /// <param name="BinaryRequestErrorMessage">The message.</param>
+        /// <param name="Over">The connection the request it answers came over, or null for the connections of its destination.</param>
+        public async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,
+                                                         WebSocketServerConnection?  Over)
         {
 
             try
             {
 
-                foreach (var webSocketConnection in GetConnectionsFor(BinaryRequestErrorMessage.Destination.Next))
+                foreach (var webSocketConnection in ConnectionsFor(BinaryRequestErrorMessage.Destination.Next, Over))
                 {
 
                     // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.

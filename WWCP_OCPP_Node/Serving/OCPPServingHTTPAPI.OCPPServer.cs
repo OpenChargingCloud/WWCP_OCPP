@@ -87,9 +87,55 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     [
                         WebSocketLoginMark.LocalController,
                         WebSocketLoginMark.Gateway
-                    ]
+                    ],
+                    Targets: true
                 )
             );
+
+            // Whether what is not for this node is forwarded at all - see
+            // OCPPServingNode.Targets.cs. A day's work on a site, as the
+            // logins and their targets are.
+            AddHandler(HTTPPath.Root + "v1/configuration/forwarding",  GetForwarding,  HTTPMethod.GET);
+            AddHandler(HTTPPath.Root + "v1/configuration/forwarding",  PutForwarding,  HTTPMethod.PUT);
+
+        }
+
+        #endregion
+
+        #region (private) GetForwarding(Request) / PutForwarding(Request)
+
+        /// <summary>
+        /// GET /api/v1/configuration/forwarding: whether this node forwards.
+        /// </summary>
+        private Task<HTTPResponse> GetForwarding(HTTPRequest Request)
+        {
+
+            if (!TryAuthorize(Request, Permission.Read(StationsResource), false, out _, out var refused))
+                return Task.FromResult(refused);
+
+            return Task.FromResult(JSONResponse(Request, HTTPStatusCode.OK, Serving.ForwardingJSON()));
+
+        }
+
+        /// <summary>
+        /// PUT /api/v1/configuration/forwarding with {"enabled"}: switch forwarding on or off - or,
+        /// with nothing said, back to what this kind of node does.
+        /// </summary>
+        private Task<HTTPResponse> PutForwarding(HTTPRequest Request)
+        {
+
+            if (!TryAuthorize(Request, Permission.Edit(StationsResource), true, out var user, out var refused))
+                return Task.FromResult(refused);
+
+            if (!TryParseJSONObject(Request, out var json, out var errorResponse))
+                return Task.FromResult(errorResponse);
+
+            if (!Serving.TryUpdateForwardingConfiguration(json, out var error, out var notSaved))
+                return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
+
+            Log.Notice($"'{user.Id}' switched forwarding {(Serving.Forwards ? "on" : "off")}.", "ocpp", "forwarding", "config", "web");
+
+            return Task.FromResult(JSONResponse(Request, HTTPStatusCode.OK, Serving.ForwardingJSON()));
 
         }
 
