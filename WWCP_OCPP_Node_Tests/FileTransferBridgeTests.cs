@@ -767,6 +767,51 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
         #endregion
 
+        #region TheMaxDownloadSize_IsItsConfigurations_OrElseTheNodes()
+
+        /// <summary>
+        /// "maxDownloadSize" of the configuration file goes before what the node
+        /// sets, read anew each time; a value that is not a whole number of
+        /// bytes above zero is left out, and the log says so.
+        /// </summary>
+        [Test]
+        public void TheMaxDownloadSize_IsItsConfigurations_OrElseTheNodes()
+        {
+
+            station = new BareNodes().New(Path.Combine(directory, "station"),
+                                          JObject.Parse("""{ "nts": { "groups": { "legal": { "enabled": false } } }, "ssh": { "enabled": false } }"""));
+
+            Assert.That(Transfers.TheMaxDownloadSize, Is.Null, "nothing set, nothing configured: as much as the server says");
+
+            Transfers.MaxDownloadSize = 1_000;
+
+            Assert.That(Transfers.TheMaxDownloadSize, Is.EqualTo(1_000), "the node's own, where its configuration says nothing");
+
+            void Configured(JToken Value)
+                => Assert.That(station.Node.ConfigFile.TryReplaceSection(FileTransfers.MaxDownloadSizeKey, Value, out var error), Is.True, error);
+
+            Configured(new JValue(5_000_000_000));
+            Assert.That(Transfers.TheMaxDownloadSize, Is.EqualTo(5_000_000_000), "the configuration's, larger than an Int32");
+
+            Configured(new JValue(0));
+            Assert.That(Transfers.TheMaxDownloadSize, Is.EqualTo(1_000), "zero is left out");
+
+            Configured(new JValue(-1));
+            Assert.That(Transfers.TheMaxDownloadSize, Is.EqualTo(1_000), "a negative number is left out");
+
+            Configured(new JValue("256 MiB"));
+            Assert.That(Transfers.TheMaxDownloadSize, Is.EqualTo(1_000), "a string is left out");
+
+            Configured(new JValue(1.5));
+            Assert.That(Transfers.TheMaxDownloadSize, Is.EqualTo(1_000), "a fraction is left out");
+
+            Assert.That(station.Node.Log.Recent(50).Select(entry => entry.Message),
+                        Has.Some.Contains($"'{FileTransfers.MaxDownloadSizeKey}' must be a whole number"), "the log does not say why a value was left out");
+
+        }
+
+        #endregion
+
     }
 
 }

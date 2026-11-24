@@ -17,6 +17,8 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using cloud.charging.open.protocols.WWCP.Node;
 using cloud.charging.open.protocols.WWCP.Node.SecureShell;
 
@@ -198,8 +200,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         public String                                                      StagingDirectory   { get; set; }
 
         /// <summary>
-        /// The most a file to download may have; null: as much as the server
-        /// says. FileTransferMaxDownloadSize.
+        /// The most a file to download may have, as the node itself sets it;
+        /// null: as much as the server says. "maxDownloadSize" of the node's
+        /// configuration file goes before it (TheMaxDownloadSize).
         /// </summary>
         public Int64?                                                      MaxDownloadSize    { get; set; }
 
@@ -232,6 +235,47 @@ namespace cloud.charging.open.protocols.OCPP.Node
             this.node              = Node;
             this.StagingDirectory  = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(Node.ConfigFile.Path)) ?? ".", "downloads");
 
+        }
+
+        #endregion
+
+
+        #region TheMaxDownloadSize
+
+        /// <summary>
+        /// The key of the configuration file that sets the most a file to
+        /// download may have, in bytes.
+        /// </summary>
+        public const String MaxDownloadSizeKey = "maxDownloadSize";
+
+        /// <summary>
+        /// The most a file to download may have now: "maxDownloadSize" of the
+        /// node's configuration file, read at every download, so that a change
+        /// counts from the next one on - or else MaxDownloadSize. A value there
+        /// that is not a whole number above zero is left out, and the log says
+        /// so.
+        /// </summary>
+        public Int64? TheMaxDownloadSize
+        {
+            get
+            {
+
+                if (!node.ConfigFile.TryLoadDocument(out var document, out var error))
+                {
+                    node.Log.Warning($"The most a download may have could not be read: {error}", "ocpp", "filetransfer");
+                    return MaxDownloadSize;
+                }
+
+                if (document[MaxDownloadSizeKey] is not JToken value || value.Type == JTokenType.Null)
+                    return MaxDownloadSize;
+
+                if (value.Type == JTokenType.Integer && value.Value<Int64>() is > 0 and var bytes)
+                    return bytes;
+
+                node.Log.Warning($"'{MaxDownloadSizeKey}' must be a whole number of bytes above zero; {MaxDownloadSize?.ToString() ?? "no limit"} holds instead.", "ocpp", "filetransfer");
+                return MaxDownloadSize;
+
+            }
         }
 
         #endregion
@@ -516,6 +560,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 File.Delete(partial);
                 File.Delete(staged);
 
+                // The same limit for every attempt of this download.
+                var maxSize = TheMaxDownloadSize;
+
                 for (var attempt = 0; ; attempt++)
                 {
 
@@ -525,8 +572,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     {
                         // What an attempt before brought is not fetched again.
                         result = WWCPNode.IsHTTPFileTransfer(URL)
-                                     ? await node.DownloadFileOverHTTPAsync(URL, file, Offset: file.Length, MaxSize: MaxDownloadSize, CancellationToken: Mine.Token).ConfigureAwait(false)
-                                     : await node.DownloadFileAsync        (URL, file, Offset: file.Length, MaxSize: MaxDownloadSize, CancellationToken: Mine.Token).ConfigureAwait(false);
+                                     ? await node.DownloadFileOverHTTPAsync(URL, file, Offset: file.Length, MaxSize: maxSize, CancellationToken: Mine.Token).ConfigureAwait(false)
+                                     : await node.DownloadFileAsync        (URL, file, Offset: file.Length, MaxSize: maxSize, CancellationToken: Mine.Token).ConfigureAwait(false);
                     }
 
                     if (result.IsDone)
