@@ -563,18 +563,31 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 // The same limit for every attempt of this download.
                 var maxSize = TheMaxDownloadSize;
 
+                // What the server said the file is, for the next attempt to ask
+                // for the rest of the same file only.
+                String? validator = null;
+
                 for (var attempt = 0; ; attempt++)
                 {
 
                     FileTransferResult result;
 
-                    await using (var file = new FileStream(partial, FileMode.Append, FileAccess.Write, FileShare.None))
+                    // Opened at its end, and not for appending: a download whose
+                    // file changed since the attempt before cuts away what that
+                    // attempt brought.
+                    await using (var file = new FileStream(partial, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
                     {
+
+                        file.Seek(0, SeekOrigin.End);
+
                         // What an attempt before brought is not fetched again.
                         result = WWCPNode.IsHTTPFileTransfer(URL)
-                                     ? await node.DownloadFileOverHTTPAsync(URL, file, Offset: file.Length, MaxSize: maxSize, CancellationToken: Mine.Token).ConfigureAwait(false)
+                                     ? await node.DownloadFileOverHTTPAsync(URL, file, Offset: file.Length, MaxSize: maxSize, Validator: validator, CancellationToken: Mine.Token).ConfigureAwait(false)
                                      : await node.DownloadFileAsync        (URL, file, Offset: file.Length, MaxSize: maxSize, CancellationToken: Mine.Token).ConfigureAwait(false);
+
                     }
+
+                    validator = result.Validator ?? validator;
 
                     if (result.IsDone)
                     {
@@ -585,6 +598,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     if (result.Outcome == FileTransferOutcome.Cancelled)
                         throw new OperationCanceledException();
+
+                    // Another file than the one begun: begun anew.
+                    if (result.Outcome == FileTransferOutcome.Changed)
+                    {
+                        File.Delete(partial);
+                        validator = null;
+                    }
 
                     if (!result.MayBeTriedAgain || attempt >= Retries)
                         break;
