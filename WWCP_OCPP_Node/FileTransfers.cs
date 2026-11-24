@@ -583,7 +583,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         // What an attempt before brought is not fetched again.
                         result = WWCPNode.IsHTTPFileTransfer(URL)
                                      ? await node.DownloadFileOverHTTPAsync(URL, file, Offset: file.Length, MaxSize: maxSize, Validator: validator, CancellationToken: Mine.Token).ConfigureAwait(false)
-                                     : await node.DownloadFileAsync        (URL, file, Offset: file.Length, MaxSize: maxSize, CancellationToken: Mine.Token).ConfigureAwait(false);
+                                     : await node.DownloadFileAsync        (URL, file, Offset: file.Length, MaxSize: maxSize, Validator: validator, CancellationToken: Mine.Token).ConfigureAwait(false);
 
                     }
 
