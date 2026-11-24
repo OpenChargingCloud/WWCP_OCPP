@@ -93,6 +93,21 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             Assert.That(json["direction"]?.Value<String>(), Is.EqualTo("out"));
             Assert.That(json["kind"]?.     Value<String>(), Is.EqualTo("send"));
             Assert.That(json["message"],                   Is.InstanceOf<JArray>());
+            Assert.That(json["encoding"]?. Value<String>(), Is.EqualTo("json"));
+
+        }
+
+        [Test]
+        public void AMessageThatWentAsCBOR_IsJSON_MarkedAsCBOR()
+        {
+
+            var log   = new OCPPMessageLog();
+            var entry = log.Add(OCPPMessageDirection.In, OCPPMessageKind.Request, "2.1", "cs001", "1", "Heartbeat", Call("1", "Heartbeat"), CBOR: true);
+            var json  = entry.ToJSON();
+
+            Assert.That(json["encoding"]?.Value<String>(), Is.EqualTo("cbor"));
+            Assert.That(json["message"],                   Is.InstanceOf<JArray>());
+            Assert.That(json["message"]?[2]?.Value<String>(), Is.EqualTo("Heartbeat"));
 
         }
 

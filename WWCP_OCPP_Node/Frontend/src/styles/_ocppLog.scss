@@ -107,6 +107,29 @@
 
 }
 
+// How it went over the wire: a chip for CBOR, and the same room kept empty for
+// JSON, so that the actions stand in one column whichever it was.
+.ocpp-log .chip.encoding {
+
+    flex:          0 0 auto;
+    min-width:     2.8rem;
+    text-align:    center;
+    font-family:   $font-stack;
+    font-size:     0.7rem;
+    font-weight:   600;
+
+    &.as-json {
+        visibility: hidden;
+    }
+
+    &.as-cbor {
+        color:         #0f766e;
+        border-color:  #99f6e4;
+        background:    #f0fdfa;
+    }
+
+}
+
 // The array laid out, when the line is unfolded. Scrollable rather than
 // wrapped: JSON is read by its shape, and a re-wrapped object has none.
 .ocpp-detail {

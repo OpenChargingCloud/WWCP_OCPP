@@ -91,7 +91,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Logging
     /// <param name="Peer">The node at the other end of the connection, or where it is - null where neither is known.</param>
     /// <param name="MessageId">The identification of the message: a response's is its request's.</param>
     /// <param name="Action">The action - a response's and an error's that of its request, where that was seen.</param>
-    /// <param name="Message">The message as a JSON array.</param>
+    /// <param name="Message">The message as a JSON array - a message that went as CBOR as the JSON it stands for.</param>
+    /// <param name="CBOR">Whether it went over the wire as CBOR rather than as JSON.</param>
     public sealed record OCPPMessageLogEntry(UInt64                Id,
                                              DateTimeOffset        Timestamp,
                                              OCPPMessageDirection  Direction,
@@ -100,7 +101,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Logging
                                              String?               Peer,
                                              String                MessageId,
                                              String?               Action,
-                                             JArray                Message)
+                                             JArray                Message,
+                                             Boolean               CBOR   = false)
     {
 
         #region ToJSON()
@@ -119,7 +121,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Logging
                    new JProperty("peer",         Peer),
                    new JProperty("messageId",    MessageId),
                    new JProperty("action",       Action),
-                   new JProperty("message",      Message)
+                   new JProperty("message",      Message),
+                   new JProperty("encoding",     CBOR ? "cbor" : "json")
                );
 
         #endregion
@@ -312,14 +315,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.Logging
         /// <param name="Peer">The node at the other end, or null.</param>
         /// <param name="MessageId">The identification of the message.</param>
         /// <param name="Action">The action of a request or a SEND; null for an answer.</param>
-        /// <param name="Message">The message as a JSON array.</param>
+        /// <param name="Message">The message as a JSON array - one that went as CBOR as the JSON it stands for.</param>
+        /// <param name="CBOR">Whether it went over the wire as CBOR.</param>
         public OCPPMessageLogEntry Add(OCPPMessageDirection  Direction,
                                        OCPPMessageKind       Kind,
                                        String                OCPPVersion,
                                        String?               Peer,
                                        String                MessageId,
                                        String?               Action,
-                                       JArray                Message)
+                                       JArray                Message,
+                                       Boolean               CBOR   = false)
         {
 
             var key = (OCPPVersion, Peer ?? "", MessageId);
@@ -356,7 +361,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Logging
                             Peer,
                             MessageId,
                             Action,
-                            Message
+                            Message,
+                            CBOR
                         );
 
                 ring[next] = entry;

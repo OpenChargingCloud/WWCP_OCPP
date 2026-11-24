@@ -26,8 +26,10 @@ export interface OCPPMessage {
     messageId:    string;
     /** The action - an answer's that of its request, where this node saw it; null where it did not. */
     action:       string | null;
-    /** The message as it went over the wire: a JSON array. */
+    /** The message as a JSON array: as it went over the wire, or - one that went as CBOR - the JSON it stands for. */
     message:      unknown[];
+    /** How it went over the wire; a node too old to say sent JSON alone. */
+    encoding?:    'json' | 'cbor';
 }
 
 /** A page of OCPP messages, and what the node keeps of them. */

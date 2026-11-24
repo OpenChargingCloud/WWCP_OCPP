@@ -2,7 +2,8 @@
  * The OCPP log: a line says the time, which way the message went, the node at
  * the other end, the action and the array as it went over the wire, and
  * unfolds to the array laid out; an error is marked as one; an answer whose
- * request was not seen says so; and the store takes a message once, however
+ * request was not seen says so; one that went as CBOR is said to be CBOR and
+ * shown as JSON; and the store takes a message once, however
  * often the stream repeats it.
  *
  * Run with `npm test`.
@@ -69,6 +70,20 @@ describe('A line of the OCPP log', () => {
         assert.ok   (line.classList.contains('failed'));
         assert.equal(line.querySelector('.action')?.textContent, '?');
         assert.equal(line.querySelector('.chip.kind')?.textContent, 'ERROR');
+
+    });
+
+    it('says a message that went as CBOR is CBOR, and shows it as JSON', () => {
+
+        const cbor = lineElement(aMessage({ encoding: 'cbor' }), true);
+        const json = lineElement(aMessage({ encoding: 'json' }));
+
+        assert.equal(cbor.querySelector('.chip.encoding.as-cbor')?.textContent, 'CBOR');
+        assert.equal(cbor.querySelector('.json')?.textContent,               compactJSON(aMessage()));
+        assert.ok   (cbor.querySelector('.ocpp-detail')?.textContent?.includes('went as CBOR, shown as JSON'));
+
+        assert.equal(json.querySelector('.chip.encoding.as-cbor'), null);
+        assert.equal(json.querySelector('.chip.encoding.as-json')?.textContent, '');
 
     });
 

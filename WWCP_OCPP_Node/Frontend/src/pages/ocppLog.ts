@@ -41,7 +41,12 @@ function actionOf(Message: OCPPMessage): string {
     return Message.action ?? '?';
 }
 
-/** The array as it went over the wire, on one line. */
+/** Whether a message went over the wire as CBOR - shown, as every message is, as JSON. */
+export function wentAsCBOR(Message: OCPPMessage): boolean {
+    return Message.encoding === 'cbor';
+}
+
+/** The array as it went over the wire - or the JSON a CBOR message stands for -, on one line. */
 export function compactJSON(Message: OCPPMessage): string {
     return JSON.stringify(Message.message);
 }
@@ -85,6 +90,13 @@ export function lineElement(Message: OCPPMessage, Open = false): HTMLElement {
     const kind = element('span', `chip kind ${Message.kind}`, kindNames[Message.kind]);
     kind.title = `OCPP ${Message.ocppVersion}, message ${Message.messageId}`;
 
+    // What went as CBOR is shown as the JSON it stands for, and said to be CBOR:
+    // the bytes on the wire are not what is shown.
+    const encoding = element('span', `chip encoding ${wentAsCBOR(Message) ? 'as-cbor' : 'as-json'}`, wentAsCBOR(Message) ? 'CBOR' : '');
+
+    if (wentAsCBOR(Message))
+        encoding.title = 'Went over the wire as CBOR; shown as the JSON it stands for';
+
     const action = element('span', 'action', actionOf(Message));
 
     if (Message.action === null)
@@ -94,6 +106,7 @@ export function lineElement(Message: OCPPMessage, Open = false): HTMLElement {
                 direction,
                 peer,
                 kind,
+                encoding,
                 action,
                 element('code', 'json', compactJSON(Message)));
 
@@ -116,6 +129,7 @@ function detailElement(Message: OCPPMessage): HTMLElement {
         formatTimestamp(Message.timestamp),
         `OCPP ${Message.ocppVersion}`,
         `message ${Message.messageId}`,
+        wentAsCBOR(Message) ? 'went as CBOR, shown as JSON' : 'went as JSON',
         Message.direction === 'in' ? `from ${Message.peer ?? 'an unknown node'}` : `to ${Message.peer ?? 'an unknown node'}`
     ].join(' · ');
 

@@ -26,6 +26,7 @@ using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.Node.Logging;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -73,6 +74,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// accepted, one it opened or SSH, and they know a message as a
         /// request, an answer or an error - which is what lets an answer be
         /// told by the action of what it answers.
+        ///
+        /// A connection that speaks CBOR is no exception: its CBOR edge turns
+        /// what comes in into the JSON message it stands for before the
+        /// adapter takes it, and what goes out is the JSON message before it
+        /// is turned into CBOR - so every message is written down as JSON, and
+        /// marked as CBOR where its connection speaks it. Not written down is
+        /// CBOR that stands for no OCPP message, which the edge refuses
+        /// before the adapter sees it.
         /// </remarks>
         protected void WatchOCPPMessages()
         {
@@ -109,11 +118,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
             OCPP.IN. OnJSONResponseErrorMessageReceived += (timestamp, sender, connection, message, ct)         => Received(version, connection, OCPPMessageKind.ResponseError, message.RequestId.ToString(), null,           PeerOf(connection, message.NetworkPath.Source), message.ToJSON());
             OCPP.IN. OnJSONSendMessageReceived          += (timestamp, sender, connection, message, ct)         => Received(version, connection, OCPPMessageKind.Send,          message.MessageId.ToString(), message.Action, PeerOf(connection, message.NetworkPath.Source), message.ToJSON());
 
-            OCPP.OUT.OnJSONRequestMessageSent           += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     OCPPMessageKind.Request,       message.RequestId.ToString(), message.Action, PeerOf(connection, message.Destination.Next), message.ToJSON());
-            OCPP.OUT.OnJSONResponseMessageSent          += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     OCPPMessageKind.Response,      message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
-            OCPP.OUT.OnJSONRequestErrorMessageSent      += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     OCPPMessageKind.RequestError,  message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
-            OCPP.OUT.OnJSONResponseErrorMessageSent     += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     OCPPMessageKind.ResponseError, message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
-            OCPP.OUT.OnJSONSendMessageSent              += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     OCPPMessageKind.Send,          message.MessageId.ToString(), message.Action, PeerOf(connection, message.Destination.Next), message.ToJSON());
+            OCPP.OUT.OnJSONRequestMessageSent           += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     connection, OCPPMessageKind.Request,       message.RequestId.ToString(), message.Action, PeerOf(connection, message.Destination.Next), message.ToJSON());
+            OCPP.OUT.OnJSONResponseMessageSent          += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     connection, OCPPMessageKind.Response,      message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
+            OCPP.OUT.OnJSONRequestErrorMessageSent      += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     connection, OCPPMessageKind.RequestError,  message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
+            OCPP.OUT.OnJSONResponseErrorMessageSent     += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     connection, OCPPMessageKind.ResponseError, message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
+            OCPP.OUT.OnJSONSendMessageSent              += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     connection, OCPPMessageKind.Send,          message.MessageId.ToString(), message.Action, PeerOf(connection, message.Destination.Next), message.ToJSON());
 
         }
 
@@ -132,11 +141,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
             OCPP.IN. OnJSONResponseErrorMessageReceived += (timestamp, sender, connection, message, ct)         => Received(version, connection, OCPPMessageKind.ResponseError, message.RequestId.ToString(), null,           PeerOf(connection, message.NetworkPath.Source), message.ToJSON());
             OCPP.IN. OnJSONSendMessageReceived          += (timestamp, sender, connection, message, ct)         => Received(version, connection, OCPPMessageKind.Send,          message.MessageId.ToString(), message.Action, PeerOf(connection, message.NetworkPath.Source), message.ToJSON());
 
-            OCPP.OUT.OnJSONRequestMessageSent           += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     OCPPMessageKind.Request,       message.RequestId.ToString(), message.Action, PeerOf(connection, message.Destination.Next), message.ToJSON());
-            OCPP.OUT.OnJSONResponseMessageSent          += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     OCPPMessageKind.Response,      message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
-            OCPP.OUT.OnJSONRequestErrorMessageSent      += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     OCPPMessageKind.RequestError,  message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
-            OCPP.OUT.OnJSONResponseErrorMessageSent     += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     OCPPMessageKind.ResponseError, message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
-            OCPP.OUT.OnJSONSendMessageSent              += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     OCPPMessageKind.Send,          message.MessageId.ToString(), message.Action, PeerOf(connection, message.Destination.Next), message.ToJSON());
+            OCPP.OUT.OnJSONRequestMessageSent           += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     connection, OCPPMessageKind.Request,       message.RequestId.ToString(), message.Action, PeerOf(connection, message.Destination.Next), message.ToJSON());
+            OCPP.OUT.OnJSONResponseMessageSent          += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     connection, OCPPMessageKind.Response,      message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
+            OCPP.OUT.OnJSONRequestErrorMessageSent      += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     connection, OCPPMessageKind.RequestError,  message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
+            OCPP.OUT.OnJSONResponseErrorMessageSent     += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     connection, OCPPMessageKind.ResponseError, message.RequestId.ToString(), null,           PeerOf(connection, message.Destination.Next), message.ToJSON());
+            OCPP.OUT.OnJSONSendMessageSent              += (timestamp, sender, connection, message, result, ct) => Sent    (version, result,     connection, OCPPMessageKind.Send,          message.MessageId.ToString(), message.Action, PeerOf(connection, message.Destination.Next), message.ToJSON());
 
         }
 
@@ -146,7 +155,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region (private) Received(Version, Connection, Kind, MessageId, Action, Peer, Message)
 
         /// <summary>
-        /// A message that came in: written down as it came.
+        /// A message that came in: written down as it came - one that came as
+        /// CBOR as the JSON the CBOR edge turned it into, and marked so.
         /// </summary>
         private Task Received(String              Version,
                               IMessageConnection? Connection,
@@ -157,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                               JArray              Message)
         {
 
-            OCPPMessages.Add(OCPPMessageDirection.In, Kind, Version, Peer, MessageId, Action, Message);
+            OCPPMessages.Add(OCPPMessageDirection.In, Kind, Version, Peer, MessageId, Action, Message, Connection.SpeaksCBOR());
 
             return Task.CompletedTask;
 
@@ -165,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private) Sent    (Version, Result,     Kind, MessageId, Action, Peer, Message)
+        #region (private) Sent    (Version, Result, Connection, Kind, MessageId, Action, Peer, Message)
 
         /// <summary>
         /// A message that was sent - written down only where it went over the
@@ -174,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         private Task Sent(String              Version,
                           SentMessageResults  Result,
+                          IMessageConnection? Connection,
                           OCPPMessageKind     Kind,
                           String              MessageId,
                           String?             Action,
@@ -182,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         {
 
             if (Result is SentMessageResults.Success or SentMessageResults.Broadcast)
-                OCPPMessages.Add(OCPPMessageDirection.Out, Kind, Version, Peer, MessageId, Action, Message);
+                OCPPMessages.Add(OCPPMessageDirection.Out, Kind, Version, Peer, MessageId, Action, Message, Connection.SpeaksCBOR());
 
             return Task.CompletedTask;
 
