@@ -319,6 +319,92 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #endregion
 
 
+        #region (override) StationsByPeer()
+
+        /// <summary>
+        /// How many of the charging stations this node serves each of its peers
+        /// gets - counted by their logins, those switched off left out, and
+        /// those a back end that connects here signs in with -, or null where
+        /// this node does not forward.
+        /// </summary>
+        /// <remarks>
+        /// A station without a target is counted for every peer that is the back
+        /// end in charge: there is one for each version of OCPP.
+        /// </remarks>
+        public override IReadOnlyDictionary<String, PeerStations>? StationsByPeer()
+        {
+
+            if (!Forwards || WebSocketLogins is not WebSocketLogins logins)
+                return null;
+
+            var peers        = Connections.Peers;
+            var connections  = Connections.Connections.ToDictionary(entry => entry.Id);
+            var states       = ConnectionStates;
+            var backEnds     = connections.Values.Where (entry => entry.Inbound).
+                                              Select(entry => entry.InboundName).
+                                              OfType<String>().
+                                              ToHashSet(StringComparer.Ordinal);
+            var stations     = logins.Logins.Where(login => login.Enabled && !backEnds.Contains(login.Login.ToString())).ToArray();
+            var withoutOne   = stations.Count(login => login.Target is null);
+
+            // Where each target forwards to now: the peer of its first connected endpoint.
+            var nowAt        = new Dictionary<String, String?>();
+            foreach (var target in logins.Targets)
+                nowAt[target.Id] = FirstConnectedOf(target) is ConnectionEntry endpoint
+                                       ? Connections.PeerOf(endpoint.Id)?.Id
+                                       : null;
+
+            var byPeer       = new Dictionary<String, PeerStations>();
+
+            foreach (var peer in peers)
+            {
+
+                var endpoints  = peer.EndpointIds.
+                                     Select(id => connections.TryGetValue(id, out var entry) ? entry : null).
+                                     OfType<ConnectionEntry>().
+                                     ToArray();
+
+                var inCharge   = endpoints.Any(IsPrimary);
+                var connected  = endpoints.Any(endpoint => states.TryGetValue(endpoint.Id, out var state) &&
+                                                           state.Status == ConnectionStatus.Connected);
+
+                var first      = 0;
+                var inReserve  = 0;
+                var now        = inCharge && connected ? withoutOne : 0;
+
+                foreach (var station in stations)
+                {
+
+                    if (station.Target is null ||
+                        logins.GetTarget(station.Target) is not ForwardingTarget target)
+                        continue;
+
+                    var at = target.PeerIds.ToList().IndexOf(peer.Id);
+
+                    if      (at == 0) first++;
+                    else if (at >  0) inReserve++;
+
+                    if (nowAt.TryGetValue(target.Id, out var nowPeer) && nowPeer == peer.Id)
+                        now++;
+
+                }
+
+                byPeer[peer.Id] = new PeerStations(
+                                      First:          first,
+                                      InReserve:      inReserve,
+                                      WithoutTarget:  inCharge ? withoutOne : 0,
+                                      Now:            now
+                                  );
+
+            }
+
+            return byPeer;
+
+        }
+
+        #endregion
+
+
         #region (protected) FirstConnectedOf(Target)
 
         /// <summary>
