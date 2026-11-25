@@ -301,6 +301,20 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         #endregion
 
 
+        #region SessionsOf(BackEnd)
+
+        /// <summary>
+        /// How many charging sessions that have not ended belong to the given back end.
+        /// </summary>
+        public Int32 SessionsOf(String BackEnd)
+        {
+            lock (sync)
+                return sessions.Values.Count(backEnd => backEnd == BackEnd);
+        }
+
+        #endregion
+
+
         #region (static) FileNameOf(BackEnd)
 
         /// <summary>

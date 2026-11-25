@@ -357,6 +357,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                        ? Connections.PeerOf(endpoint.Id)?.Id
                                        : null;
 
+            // Where the connected stations are now, and what is held back for each peer.
+            var atBackEnds   = StationsAtBackEnds();
+            var heldBack     = HeldBack;
+
             var byPeer       = new Dictionary<String, PeerStations>();
 
             foreach (var peer in peers)
@@ -396,7 +400,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                       First:          first,
                                       InReserve:      inReserve,
                                       WithoutTarget:  inCharge ? withoutOne : 0,
-                                      Now:            now
+                                      Now:            now,
+                                      At:             atBackEnds.TryGetValue(peer.Id, out var stationsAt) ? stationsAt : null,
+                                      HeldBack:       heldBack.CountFor(peer.Id),
+                                      HeldBackSince:  heldBack.FirstFor(peer.Id)?.Received,
+                                      Sessions:       heldBack.SessionsOf(peer.Id)
                                   );
 
             }

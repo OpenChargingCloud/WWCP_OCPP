@@ -99,6 +99,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected String? HeldBackDirectory { get; set; }
 
         /// <summary>
+        /// For tests: awaited before what is held back for the given back end is
+        /// sent - to have something happen in between that otherwise happens there
+        /// only by chance: a station sending while its back end is connected again
+        /// and what is held back for it is not on its way yet.
+        /// </summary>
+        public Func<String, Task>? WhenHeldBackIsAboutToBeSent { get; set; }
+
+        /// <summary>
         /// What is held back for the back ends of this node's stations, and which back
         /// end each charging session belongs to.
         /// </summary>
@@ -210,7 +218,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (action == "BootNotification")
                 {
                     upstream.Boot = payload;
-                    upstream.TurnedAway.Clear();
+                    lock (upstream.TurnedAway)
+                        upstream.TurnedAway.Clear();
                 }
 
                 var withoutTarget = station.Target is null;
@@ -389,9 +398,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (!states.TryGetValue(backEnd.Id, out var state) || state.Status != ConnectionStatus.Connected)
                     continue;
 
-                var key = BackEndKeyOf(backEnd);
-
-                if (Upstream.TurnedAway.Contains(key))
+                if (TurnedAway(Upstream, BackEndKeyOf(backEnd)))
                     continue;
 
                 if (!Sync || await Synced(Upstream, backEnd))
@@ -400,6 +407,84 @@ namespace cloud.charging.open.protocols.OCPP.Node
             }
 
             return null;
+
+        }
+
+        #endregion
+
+        #region (private) BackEndNow(Upstream, BackEnds) / TurnedAway(Upstream, BackEnd)
+
+        /// <summary>
+        /// The back end the given station goes to now, as it looks without asking any:
+        /// the first connected one that did not turn it away.
+        /// </summary>
+        private ConnectionEntry? BackEndNow(StationUpstream                 Upstream,
+                                            IReadOnlyList<ConnectionEntry>  BackEnds)
+        {
+
+            var states = ConnectionStates;
+
+            return BackEnds.FirstOrDefault(backEnd => states.TryGetValue(backEnd.Id, out var state) &&
+                                                      state.Status == ConnectionStatus.Connected &&
+                                                      !TurnedAway(Upstream, BackEndKeyOf(backEnd)));
+
+        }
+
+        /// <summary>
+        /// Whether the given back end turned the given station away.
+        /// </summary>
+        private static Boolean TurnedAway(StationUpstream  Upstream,
+                                          String           BackEnd)
+        {
+            lock (Upstream.TurnedAway)
+                return Upstream.TurnedAway.Contains(BackEnd);
+        }
+
+        #endregion
+
+        #region (protected) StationsAtBackEnds()
+
+        /// <summary>
+        /// The charging stations connected to this node that sent something since it
+        /// started, by the back end each goes to now - its name, by the names of the
+        /// stations, in their order.
+        /// </summary>
+        protected IReadOnlyDictionary<String, IReadOnlyList<String>> StationsAtBackEnds()
+        {
+
+            var byBackEnd = new Dictionary<String, List<String>>(StringComparer.Ordinal);
+
+            if (!Forwards || WebSocketLogins is null || Connections is null)
+                return new Dictionary<String, IReadOnlyList<String>>();
+
+            foreach (var upstream in upstreams.Values)
+            {
+
+                if (!IsConnectedHere(upstream) ||
+                    User_Id.TryParse(upstream.Station.ToString()) is not User_Id login ||
+                    !WebSocketLogins.TryGet(login, out var station) ||
+                    !station.Enabled)
+                {
+                    continue;
+                }
+
+                if (BackEndNow(upstream, BackEndsOf(station, upstream.Version)) is ConnectionEntry backEnd)
+                {
+
+                    var key = BackEndKeyOf(backEnd);
+
+                    if (!byBackEnd.TryGetValue(key, out var stations))
+                        byBackEnd[key] = stations = [];
+
+                    stations.Add(upstream.Station.ToString());
+
+                }
+
+            }
+
+            return byBackEnd.ToDictionary(entry => entry.Key,
+                                          entry => (IReadOnlyList<String>) [.. entry.Value.Order(StringComparer.Ordinal)],
+                                          StringComparer.Ordinal);
 
         }
 
@@ -435,7 +520,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     if (answer?["status"]?.Value<String>() is not String status || status == "Rejected" || answer is null)
                     {
-                        Upstream.TurnedAway.Add(key);
+                        lock (Upstream.TurnedAway) Upstream.TurnedAway.Add(key);
                         Log.Warning($"'{key}' turned the charging station '{Upstream.Station}' away ({(answer is null ? "an error" : answer["status"])}): it goes to the next of its back ends.",
                                     "ocpp", "station", "forwarding");
                         return false;
@@ -576,6 +661,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         private async Task SendWhatIsHeldBack(String BackEnd)
         {
+
+            if (WhenHeldBackIsAboutToBeSent is Func<String, Task> aboutToBeSent)
+                await aboutToBeSent(BackEnd);
 
             if (!sending.TryAdd(BackEnd, 0))
                 return;
