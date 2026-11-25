@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.WWCP.Node.KeyPins;
 using cloud.charging.open.protocols.WWCP.Node.Connections;
 
@@ -219,13 +220,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected void AttachForwardingGate(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode Node)
         {
 
+            StartWatchingUpstreams();
+
             // The gates first, and what passes them where its target says: one
             // filter, as the forwarding takes the first filter's decision.
-            Node.OCPP.FORWARD.OnAnyJSONRequestFilter       += (timestamp, sender, connection, request, cancellationToken) =>
-                Task.FromResult(AsRequestDecision21(Decided(Node, OCPPVersion.OCPP2_1, connection, request.Action, request.Destination, request.NetworkPath, IsAMessage: false)));
+            Node.OCPP.FORWARD.OnAnyJSONRequestFilter       += async (timestamp, sender, connection, request, cancellationToken) =>
+                AsRequestDecision21(await DecidedUp(Node, OCPPVersion.OCPP2_1, connection, request));
 
             Node.OCPP.FORWARD.OnAnyBinaryRequestFilter     += (timestamp, sender, connection, request, cancellationToken) =>
-                Task.FromResult(AsRequestDecision21(Decided(Node, OCPPVersion.OCPP2_1, connection, request.Action, request.Destination, request.NetworkPath, IsAMessage: false)));
+                Task.FromResult(AsRequestDecision21(AsUp(Decided(Node, OCPPVersion.OCPP2_1, connection, request.Action, request.Destination, request.NetworkPath, IsAMessage: false))));
 
             Node.OCPP.FORWARD.OnAnyJSONSendMessageFilter   += (timestamp, sender, connection, message, cancellationToken) =>
                 Task.FromResult(AsMessageDecision21(Decided(Node, OCPPVersion.OCPP2_1, connection, message.Action, message.Destination, message.NetworkPath, IsAMessage: true)));
@@ -244,11 +247,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected void AttachForwardingGate(OCPPv1_6.NetworkingNode.AOCPPNetworkingNode Node)
         {
 
-            Node.OCPP.FORWARD.OnAnyJSONRequestFilter       += (timestamp, sender, connection, request, cancellationToken) =>
-                Task.FromResult(AsRequestDecision16(Decided(Node, OCPPVersion.OCPP1_6, connection, request.Action, request.Destination, request.NetworkPath, IsAMessage: false)));
+            StartWatchingUpstreams();
+
+            Node.OCPP.FORWARD.OnAnyJSONRequestFilter       += async (timestamp, sender, connection, request, cancellationToken) =>
+                AsRequestDecision16(await DecidedUp(Node, OCPPVersion.OCPP1_6, connection, request));
 
             Node.OCPP.FORWARD.OnAnyBinaryRequestFilter     += (timestamp, sender, connection, request, cancellationToken) =>
-                Task.FromResult(AsRequestDecision16(Decided(Node, OCPPVersion.OCPP1_6, connection, request.Action, request.Destination, request.NetworkPath, IsAMessage: false)));
+                Task.FromResult(AsRequestDecision16(AsUp(Decided(Node, OCPPVersion.OCPP1_6, connection, request.Action, request.Destination, request.NetworkPath, IsAMessage: false))));
 
             Node.OCPP.FORWARD.OnAnyJSONSendMessageFilter   += (timestamp, sender, connection, message, cancellationToken) =>
                 Task.FromResult(AsMessageDecision16(Decided(Node, OCPPVersion.OCPP1_6, connection, message.Action, message.Destination, message.NetworkPath, IsAMessage: true)));
@@ -341,21 +346,66 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         }
 
-        private static OCPPv2_1.NetworkingNode.RequestForwardingDecision AsRequestDecision21((ForwardingDecisions Result, String? Why, SourceRouting? To) Decision)
+        /// <summary>
+        /// What happens to a JSON request: as to any, unless it is one a charging
+        /// station sends up to its back end in charge, which goes where its back ends
+        /// coming and going say - see OCPPServingNode.Failover.cs.
+        /// </summary>
+        private async Task<UpDecision> DecidedUp(AWWCPNetworkingNode      Node,
+                                                 OCPPVersion              Version,
+                                                 IMessageConnection       Connection,
+                                                 OCPP_JSONRequestMessage  Request)
+        {
+
+            if (WhyNotForward(Node, Connection, Request.Action, Request.Destination, Request.NetworkPath) is { } refusal)
+                return AsUp((refusal.Forged ? ForwardingDecisions.DROP : ForwardingDecisions.REJECT, refusal.Why, null));
+
+            if (Forwards                                                                                       &&
+                Connection.Role == ConnectionRole.Server && !IsInbound(Connection)                             &&
+                (Request.Destination.Next == NetworkingNode_Id.CSMS ||
+                 Request.Destination.Next == NetworkingNode_Id.CentralSystem)                                  &&
+                await UpstreamDecision(Version, Request.NetworkPath.Source, Request) is UpstreamResult up)
+            {
+                return new (up.Result, up.Why, up.To, up.Answered, up.OnAnswer);
+            }
+
+            return AsUp(Decided(Node, Version, Connection, Request.Action, Request.Destination, Request.NetworkPath, IsAMessage: false));
+
+        }
+
+        /// <summary>
+        /// What happens to a request: forwarded - to a destination of its own -, answered
+        /// here, refused, dropped, or left to what comes next; and who is told its answer.
+        /// </summary>
+        private sealed record UpDecision(ForwardingDecisions     Result,
+                                         String?                 Why,
+                                         SourceRouting?          To,
+                                         JObject?                Answer,
+                                         Func<JObject?, Task>?   OnAnswer);
+
+        private static UpDecision AsUp((ForwardingDecisions Result, String? Why, SourceRouting? To) Decision)
+
+            => new (Decision.Result, Decision.Why, Decision.To, null, null);
+
+        private static OCPPv2_1.NetworkingNode.RequestForwardingDecision AsRequestDecision21(UpDecision Decision)
 
             => Decision.Result == ForwardingDecisions.REJECT
-                   ? new (Decision.Result, RejectMessage:  Decision.Why)
-                   : new (Decision.Result, NewDestination: Decision.To, LogMessage: Decision.Why);
+                   ? Decision.Answer is JObject answer
+                         ? new (Decision.Result, answer)
+                         : new (Decision.Result, RejectMessage:  Decision.Why)
+                   : new (Decision.Result, NewDestination: Decision.To, LogMessage: Decision.Why) { OnAnswer = Decision.OnAnswer };
 
         private static OCPPv2_1.NetworkingNode.MessageForwardingDecision AsMessageDecision21((ForwardingDecisions Result, String? Why, SourceRouting? To) Decision)
 
             => new (Decision.Result, NewDestination: Decision.To, LogMessage: Decision.Why);
 
-        private static OCPPv1_6.NetworkingNode.RequestForwardingDecision AsRequestDecision16((ForwardingDecisions Result, String? Why, SourceRouting? To) Decision)
+        private static OCPPv1_6.NetworkingNode.RequestForwardingDecision AsRequestDecision16(UpDecision Decision)
 
             => Decision.Result == ForwardingDecisions.REJECT
-                   ? new (Decision.Result, RejectMessage:  Decision.Why)
-                   : new (Decision.Result, NewDestination: Decision.To, LogMessage: Decision.Why);
+                   ? Decision.Answer is JObject answer
+                         ? new (Decision.Result, answer)
+                         : new (Decision.Result, RejectMessage:  Decision.Why)
+                   : new (Decision.Result, NewDestination: Decision.To, LogMessage: Decision.Why) { OnAnswer = Decision.OnAnswer };
 
         private static OCPPv1_6.NetworkingNode.MessageForwardingDecision AsMessageDecision16((ForwardingDecisions Result, String? Why, SourceRouting? To) Decision)
 

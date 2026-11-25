@@ -17,6 +17,8 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -49,6 +51,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public NetworkingNode_Id  SourceNodeId      { get; } = SourceNodeId;
         public DateTimeOffset     Timeout           { get; } = Timeout;
         public IMessageConnection? CameOver         { get; } = CameOver;
+
+        /// <summary>
+        /// Told of the answer when it comes, before it goes on: its payload, or null
+        /// for a request error.
+        /// </summary>
+        public Func<JObject?, Task>? OnAnswer       { get; init; }
+
+        /// <summary>
+        /// Whether the answer is this node's own and goes on to nobody: the answer to
+        /// a request it sent on behalf of another (see SendOnBehalfOf).
+        /// </summary>
+        public Boolean            KeepAnswer        { get; init; }
 
 
     }

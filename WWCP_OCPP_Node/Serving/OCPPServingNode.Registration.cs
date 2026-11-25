@@ -543,6 +543,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected internal override void ConnectionIsUp(ConnectionEntry Connection)
         {
 
+            // Where it is a back end of stations: they may be at it again, and what
+            // is held back for it may go - see OCPPServingNode.Failover.cs.
+            if (Connection.Use == ConnectionUse.OCPP)
+                _ = ReevaluateUpstreams();
+
             if (!RegistersWithABackEnd || Connection.Use != ConnectionUse.OCPP)
                 return;
 

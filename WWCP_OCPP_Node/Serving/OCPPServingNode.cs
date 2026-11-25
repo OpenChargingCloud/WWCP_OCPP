@@ -332,6 +332,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 // the station server that reads them has.
                 await Stop();
 
+                // Nothing is told a back end in a station's name any more.
+                if (upstreamTimer is not null)
+                    await upstreamTimer.DisposeAsync();
+
             }
             finally
             {

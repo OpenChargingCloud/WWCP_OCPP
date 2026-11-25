@@ -573,17 +573,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             // Left to what comes next and nothing came - no processor of its own, or one
-
-
             // that left it as well -: the default decision. It used to stay NEXT, which none
-
-
             // of the branches below takes, and the request went nowhere without a word.
-
-
             if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
-
-
                 forwardingDecision = new RequestForwardingDecision(DefaultForwardingDecision);
 
 
@@ -624,7 +616,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 forwardingDecision.RequestContext,
                                                 newJSONRequestMessage.NetworkPath.Source,
                                                 newJSONRequestMessage.RequestTimeout,
-                                                WebSocketConnection
+                                                WebSocketConnection,
+                                                forwardingDecision.OnAnswer
                                             )
                                         );
 
@@ -809,6 +802,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (responseInfo.Timeout >= Now)
                     {
 
+                    if (await AnsweredHere(responseInfo, JSONResponseMessage.Payload))
+                        return;
+
                         // Before it goes: whoever asked may answer at once that it
                         // cannot read it.
                         RememberForwardedResponse(
@@ -879,6 +875,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 // identification it asked with - as an answer is.
                 if (responseInfo.Timeout >= Now)
                 {
+
+                    if (await AnsweredHere(responseInfo, null))
+                        return;
 
                     await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
                               JSONRequestErrorMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
@@ -1069,17 +1068,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             // Left to what comes next and nothing came - no processor of its own, or one
-
-
             // that left it as well -: the default decision. It used to stay NEXT, which none
-
-
             // of the branches below takes, and the message went nowhere without a word.
-
-
             if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
-
-
                 forwardingDecision = new MessageForwardingDecision(DefaultForwardingDecision);
 
 
@@ -1298,17 +1289,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             // Left to what comes next and nothing came - no processor of its own, or one
-
-
             // that left it as well -: the default decision. It used to stay NEXT, which none
-
-
             // of the branches below takes, and the request went nowhere without a word.
-
-
             if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
-
-
                 forwardingDecision = new RequestForwardingDecision(DefaultForwardingDecision);
 
 
@@ -1699,17 +1682,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
             // Left to what comes next and nothing came - no processor of its own, or one
-
-
             // that left it as well -: the default decision. It used to stay NEXT, which none
-
-
             // of the branches below takes, and the message went nowhere without a word.
-
-
             if (forwardingDecision is null || forwardingDecision.Result == ForwardingDecisions.NEXT)
-
-
                 forwardingDecision = new MessageForwardingDecision(DefaultForwardingDecision);
 
 
@@ -1840,11 +1815,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="SourceNodeId">The networking node that sent the request.</param>
         /// <param name="Timeout">When an answer is no longer waited for.</param>
         /// <param name="CameOver">The connection the request came over, which its answer goes back over.</param>
-        private Request_Id ForwardUnderAnIdOfItsOwn(Request_Id          RequestId,
-                                                    JSONLDContext?      RequestContext,
-                                                    NetworkingNode_Id   SourceNodeId,
-                                                    DateTimeOffset      Timeout,
-                                                    IMessageConnection  CameOver)
+        /// <param name="OnAnswer">Told of the answer when it comes, before it goes back.</param>
+        private Request_Id ForwardUnderAnIdOfItsOwn(Request_Id              RequestId,
+                                                    JSONLDContext?          RequestContext,
+                                                    NetworkingNode_Id       SourceNodeId,
+                                                    DateTimeOffset          Timeout,
+                                                    IMessageConnection      CameOver,
+                                                    Func<JObject?, Task>?   OnAnswer   = null)
         {
 
             var responseInfo = new ResponseInfo(
@@ -1853,7 +1830,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    SourceNodeId,
                                    Timeout,
                                    CameOver
-                               );
+                               ) {
+                                   OnAnswer = OnAnswer
+                               };
 
             while (true)
             {
@@ -1878,6 +1857,102 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 return responseInfo.SourceNodeId;
 
             return null;
+
+        }
+
+        #endregion
+
+        #region (private) AnsweredHere(ResponseInfo, Answer)
+
+        /// <summary>
+        /// Tells whoever waits for the answer to a request this node sent on of it,
+        /// and whether the answer stays here: true for one it sent on behalf of another.
+        /// </summary>
+        /// <param name="ResponseInfo">What this node remembered of the request.</param>
+        /// <param name="Answer">The payload of the answer, or null for a request error.</param>
+        private async Task<Boolean> AnsweredHere(ResponseInfo  ResponseInfo,
+                                                 JObject?      Answer)
+        {
+
+            if (ResponseInfo.OnAnswer is not null)
+            {
+                try
+                {
+                    await ResponseInfo.OnAnswer(Answer);
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(nameof(AnsweredHere), e);
+                }
+            }
+
+            return ResponseInfo.KeepAnswer;
+
+        }
+
+        #endregion
+
+        #region SendOnBehalfOf(Request, Timeout)
+
+        /// <summary>
+        /// Sends the given request on behalf of the networking node its network path
+        /// starts at, as if it were forwarded, and keeps its answer: what a node that
+        /// passes on what its charging stations send tells a back end of a station in
+        /// the station's name - its BootNotification to a back end it never booted at,
+        /// what it held back while no back end was there.
+        /// </summary>
+        /// <param name="Request">The request: its destination, its network path, its action and payload.</param>
+        /// <param name="Timeout">How long its answer is waited for.</param>
+        /// <returns>
+        /// Whether it was answered - false where it could not be sent or no answer came
+        /// in time -, and the payload of the answer, null for a request error.
+        /// </returns>
+        public async Task<(Boolean Answered, JObject? Answer)> SendOnBehalfOf(OCPP_JSONRequestMessage  Request,
+                                                                              TimeSpan                 Timeout)
+        {
+
+            var answer       = new TaskCompletionSource<JObject?>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            var responseInfo = new ResponseInfo(
+                                   Request.RequestId,
+                                   JSONLDContext.Parse("willnothappen!"),
+                                   Request.NetworkPath.Source,
+                                   Now + Timeout
+                               ) {
+                                   OnAnswer    = payload => { answer.TrySetResult(payload); return Task.CompletedTask; },
+                                   KeepAnswer  = true
+                               };
+
+            Request_Id requestId;
+
+            while (!expectedResponses.TryAdd(requestId = Request_Id.NewRandom(), responseInfo)) { }
+
+            try
+            {
+
+                var sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequest(
+                                                  Request.ChangeRequestId(requestId)
+                                              );
+
+                if (sentMessageResult.Result != WWCP.WebSockets.SentMessageResults.Success)
+                    return (false, null);
+
+                using var timeout = new CancellationTokenSource(Timeout);
+
+                try
+                {
+                    return (true, await answer.Task.WaitAsync(timeout.Token));
+                }
+                catch (OperationCanceledException)
+                {
+                    return (false, null);
+                }
+
+            }
+            finally
+            {
+                expectedResponses.TryRemove(requestId, out _);
+            }
 
         }
 

@@ -135,6 +135,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public Action<SentMessageResult>?  SentMessageLogger         { get; set; }
 
+        /// <summary>
+        /// Told of the answer to the forwarded request when it comes, before it goes
+        /// back to whoever asked: its payload, or null for a request error.
+        /// </summary>
+        public Func<JObject?, Task>?       OnAnswer                  { get; set; }
+
         #endregion
 
         #region Constructor(s)
