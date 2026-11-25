@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             }
 
             Node.Log.Notice($"NameServerRootCertificate '{entry.Label}' ({entry.Id}) installed{(CertificateGroup is not null ? $" in group {CertificateGroup}" : "")} " +
-                            $"by {ChangeOrigin.OCPP(Sender ?? "CSMS")}: for {CertificateUsages.Describe(entry.Usages)}.",
+                            $"by {ChangeOrigin.OCPP(Sender ?? "CSMS")}: {CertificateUsages.Describe(entry.Usages)}.",
                             "dns", "certificates", "security");
 
             return Task.FromResult(CertificateAnswer.Accepted);

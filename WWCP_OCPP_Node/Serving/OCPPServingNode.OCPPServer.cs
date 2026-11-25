@@ -864,9 +864,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return;
 
             var settings   = ocppServerSettings;
-            var wantsTLS   = (settings.ClientAuthentication ?? WebSocketServerConfiguration.DefaultClientAuthentication).Any(authentication => authentication.IsOverTLS());
+            var wantsTLS   = WantsTLS(settings);
 
-            #region Encrypted or not, decided here and for good
+            #region Encrypted or not, decided here - until a change of the ways in opens the port anew
 
             ocppServerTLS = wantsTLS && OCPPServerHasCertificate;
 
@@ -1040,6 +1040,49 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // A back end whose one-time password is bound to its TLS session
             // signs in over HTTP/3 only: what is said of its connection follows.
             FollowInboundConnections();
+
+        }
+
+        /// <summary>
+        /// Whether the settings ask for TLS: a way in over TLS among those
+        /// allowed - security profile 2 or 3.
+        /// </summary>
+        private static Boolean WantsTLS(WebSocketServerConfiguration Settings)
+
+            => (Settings.ClientAuthentication ?? WebSocketServerConfiguration.DefaultClientAuthentication).Any(authentication => authentication.IsOverTLS());
+
+        /// <summary>
+        /// Whether the running station port is encrypted otherwise than the
+        /// settings now ask: TLS allowed where there was none, with a server
+        /// certificate to present, or only security profile 1 left where the
+        /// port speaks TLS.
+        /// </summary>
+        /// <remarks>
+        /// Whether the port speaks TLS is decided when it is opened. A port left
+        /// as it was after such a change takes no charging station at all: it
+        /// reads a TLS handshake as HTTP, or waits for one from a station that
+        /// dials ws://.
+        /// </remarks>
+        private Boolean EncryptsOtherwiseThan(WebSocketServerConfiguration Settings)
+
+            => ocppServerStarted &&
+               ocppServerTLS != (WantsTLS(Settings) && OCPPServerHasCertificate);
+
+        /// <summary>
+        /// Close the station port and open it again, encrypted or not as the
+        /// settings now say. Whoever was connected connects again.
+        /// </summary>
+        private async Task OpenTheStationPortAnew()
+        {
+
+            var encrypted = !ocppServerTLS;
+
+            Log.Notice($"The charging station port is opened anew, {(encrypted ? "encrypted" : "unencrypted")}, as the ways in now ask: " +
+                       $"the stations connected connect again, over {(encrypted ? "wss" : "ws")}://.",
+                       "ocpp", "station", "config");
+
+            await StopOCPPServer(). ConfigureAwait(false);
+            await StartOCPPServer().ConfigureAwait(false);
 
         }
 
@@ -1853,8 +1896,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region (private) TakeEffectAfter(Answered, SwitchedOnOrOff, SSHOnOrOff, HTTP3OnOrOff)
 
         /// <summary>
-        /// Switch the server, OCPP-over-SSH and HTTP/3 on or off as the settings
-        /// say by then, once the given task is done: what a change that came
+        /// Switch the server, OCPP-over-SSH and HTTP/3 on or off, and open the
+        /// port anew where its encryption changed, as the settings say by
+        /// then, once the given task is done: what a change that came
         /// over a connection of this server waits for, so that its answer is
         /// out before the connection may go.
         /// </summary>
@@ -1895,6 +1939,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                             await StopOCPPServer(). ConfigureAwait(false);
 
                     }
+
+                    // Opened anew, it serves OCPP-over-SSH and HTTP/3 as the
+                    // settings say as well.
+                    else if (EncryptsOtherwiseThan(settings))
+                        await OpenTheStationPortAnew().ConfigureAwait(false);
 
                     else if (SSHOnOrOff && ocppServerStarted)
                     {
@@ -2015,7 +2064,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     return false;
                 }
 
-                var before = ocppServerSettings;
+                var before    = ocppServerSettings;
+                var reopened  = false;
 
                 ocppServerSettings = before.Merge(update).Effective();
 
@@ -2028,7 +2078,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     var sshOnOrOff       = before.SSH?.Enabled != ocppServerSettings.SSH?.Enabled;
                     var http3OnOrOff     = before.TakesHTTP3   != ocppServerSettings.TakesHTTP3;
 
-                    if (switchedOnOrOff || sshOnOrOff || http3OnOrOff)
+                    if (switchedOnOrOff || sshOnOrOff || http3OnOrOff || EncryptsOtherwiseThan(ocppServerSettings))
                         _ = TakeEffectAfter(TakesEffectAfter, switchedOnOrOff, sshOnOrOff, http3OnOrOff);
 
                 }
@@ -2049,6 +2099,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 }
 
+                // A way in over TLS allowed where the port was unencrypted, or
+                // only security profile 1 left where it spoke TLS: the port is
+                // opened anew, and with it OCPP-over-SSH and HTTP/3 as they
+                // are now.
+                else if (EncryptsOtherwiseThan(ocppServerSettings))
+                {
+                    OpenTheStationPortAnew().GetAwaiter().GetResult();
+                    reopened = true;
+                }
+
                 // OCPP-over-SSH on and off while the station server runs: the
                 // subsystem comes and goes, and its sessions end with it.
                 else if (ocppServerStarted &&
@@ -2066,6 +2126,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 // HTTP/3 on and off while the station server runs: the UDP
                 // port opens and closes, and what is on it goes with it.
                 if (TakesEffectAfter is null &&
+                    !reopened                &&
                     ocppServerStarted        &&
                     before.Enabled    == ocppServerSettings.Enabled &&
                     before.TakesHTTP3 != ocppServerSettings.TakesHTTP3)

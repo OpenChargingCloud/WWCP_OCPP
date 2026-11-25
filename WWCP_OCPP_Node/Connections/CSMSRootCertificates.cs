@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             }
 
             Node.Log.Notice($"{CertificateType} '{entry.Label}' ({entry.Id}) installed{(CertificateGroup is not null ? $" in group {CertificateGroup}" : "")} " +
-                            $"by {ChangeOrigin.OCPP(Sender ?? "CSMS")}: for {CertificateUsages.Describe(entry.Usages)}. " +
+                            $"by {ChangeOrigin.OCPP(Sender ?? "CSMS")}: {CertificateUsages.Describe(entry.Usages)}. " +
                              "It vouches for the server of a wss:// connection from the next handshake on.",
                             "ocpp", "certificates", "security");
 

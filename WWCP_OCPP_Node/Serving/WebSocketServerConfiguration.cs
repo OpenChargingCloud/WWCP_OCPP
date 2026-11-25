@@ -582,7 +582,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
             // A client is asked for a certificate on every connection whether
             // or not one is a way in, and what is done with the one it sends -
             // or does not send - is decided per connection. So narrowing or
-            // widening the ways is in effect as soon as it is saved.
+            // widening the ways is in effect as soon as it is saved. Where the
+            // ways ask for TLS on a port that has none, or for none on one
+            // that speaks it, the serving node opens the port anew.
 
             if (Update.SSH is not null)
                 fields.AddRange((SSH ?? new WebSocketServerSSH()).NeedsARestartFor(Update.SSH));
