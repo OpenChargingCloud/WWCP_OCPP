@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                    Ssh:                       Login,
                                    SshConnection:             SshConnection,
                                    Subprotocols:              SubProtocolsOf(Connection),
-                                   DNSClient:                 WWCPNode.DNSClient,
+                                   DNSClient:                 WWCPNode.NameResolver,
                                    PingEvery:                 WWCPNode.SshPingEvery,
                                    CancellationToken:         CancellationToken
                                );
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                    TOTPConfig:                  TOTP,
                    TOTPLogin:                   TOTPLogin,
                    WebSocketOver:               Connection.HTTPVersion,
-                   DNSClient:                   WWCPNode.DNSClient,
+                   DNSClient:                   WWCPNode.NameResolver,
                    CancellationToken:           CancellationToken
                );
 
