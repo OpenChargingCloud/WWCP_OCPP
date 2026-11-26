@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
         {
 
             if (server is not null)
-                await server.ShutdownAsync();
+                await server.DisposeAsync();
 
             if (node is not null)
                 await node.DisposeAsync();
