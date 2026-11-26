@@ -96,7 +96,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("MaxServers",        dns    => MaxServersIn(dns).ToString(CultureInfo.InvariantCulture)),
             ("UDPPayloadSize",    dns    => IntegerOf  (Child(dns["fixed"],    "udpPayloadSize"))),
             ("ClientSubnet",      dns    => TextOf     (Child(dns["fixed"],    "clientSubnet"))),
-            ("EncryptedOnly",     dns    => BooleanOf  (Child(dns["settings"], "encryptedOnly")))
+            ("EncryptedOnly",     dns    => BooleanOf  (Child(dns["settings"], "encryptedOnly"))),
+            ("MulticastEnabled",           dns => BooleanOf(Child(dns["multicast"], "enabled"))),
+            ("MulticastInterfaces",        dns => TextsOf  (Child(dns["multicast"], "interfaces"))),
+            ("MulticastIPv4",              dns => BooleanOf(Child(dns["multicast"], "ipv4"))),
+            ("MulticastIPv6",              dns => BooleanOf(Child(dns["multicast"], "ipv6"))),
+            ("MulticastResponderEnabled",  dns => BooleanOf(Child(Child(dns["multicast"], "responder"), "enabled"))),
+            ("MulticastHostName",          dns => TextOf   (Child(Child(dns["multicast"], "responder"), "hostName")))
         ];
 
         private static readonly (String Name, Func<JObject, String> Value)[] serverVariables = [

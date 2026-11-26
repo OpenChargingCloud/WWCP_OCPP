@@ -981,6 +981,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (settings.SSH?.Enabled == true)
                 ServeOCPPOverSSH();
 
+            // Announced by DNS-SD where the node answers for its name by
+            // Multicast DNS (mDNS-Concept.md, B.6 and Q8).
+            AnnounceTheStationPort(settings);
+
             ServeTheBackEndsThatConnect();
 
             #region What is about to run out, now and every day after this
@@ -1099,6 +1103,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             certificateCheckTimer?.Dispose();
             certificateCheckTimer = null;
+
+            WithdrawService(StationPortServiceType, StationPortInstance);
 
             StopServingOCPPOverSSH("the station server stopped");
 
@@ -1255,6 +1261,40 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// Said out loud where it cannot work: OCPP-over-SSH switched on with
         /// the node's SSH server off is a door painted on a wall.
         /// </remarks>
+        /// <summary>
+        /// The DNS-SD service type of the station port: OCPP over a WebSocket
+        /// (mDNS-Concept.md, Q8), "tls=1" in its TXT strings where it is wss://.
+        /// </summary>
+        public const String StationPortServiceType         = "_ocpp._tcp";
+
+        /// <summary>
+        /// The DNS-SD service type of OCPP-over-SSH (mDNS-Concept.md, Q8).
+        /// </summary>
+        public const String StationPortOverSSHServiceType  = "_ocpp-ssh._tcp";
+
+        /// <summary>
+        /// The name this node's station port is announced under: its id, made
+        /// one DNS label.
+        /// </summary>
+        public String StationPortInstance
+            => InstanceLabel(Node21.Id.ToString());
+
+        /// <summary>
+        /// Announce the station port by DNS-SD: its port, whether it is wss://,
+        /// the path a station connects to, the subprotocols, and this node's id.
+        /// Published while the node answers for its name by Multicast DNS.
+        /// </summary>
+        private void AnnounceTheStationPort(WebSocketServerConfiguration Settings)
+
+            => AnnounceService(new MulticastDNSService(
+                                   StationPortServiceType,
+                                   StationPortInstance,
+                                   Settings.TCPPort ?? WebSocketServerConfiguration.DefaultTCPPort,
+                                   [ $"tls={(ocppServerTLS ? 1 : 0)}",
+                                      "path=/",
+                                     $"subprotocols={String.Join(",", Settings.Subprotocols ?? WebSocketServerConfiguration.DefaultSubprotocols)}",
+                                     $"id={Node21.Id}" ]));
+
         private void ServeOCPPOverSSH()
         {
 
@@ -1280,6 +1320,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // The back ends that connect over SSH, where the station server runs
             // already - otherwise when it starts.
             ServeTheBackEndsThatConnectOverSSH();
+
+            if (SSHPort is IPPort announcedSSHPort)
+                AnnounceService(new MulticastDNSService(StationPortOverSSHServiceType,
+                                                        StationPortInstance,
+                                                        announcedSSHPort,
+                                                        [ $"id={Node21.Id}", $"subsystem={OCPPSshServer.OCPPSubsystem}" ]));
 
             var stations = WebSocketLogins.Logins.Count(login => login.Enabled && login.HasSSHKey);
             var withTotp = WebSocketLogins.Logins.Count(login => login.Enabled && login.HasTOTP);
@@ -1313,6 +1359,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return;
 
             ocppOverSSHServed = false;
+
+            WithdrawService(StationPortOverSSHServiceType, StationPortInstance);
 
             StopServingInboundOverSSH(OCPPVersion.OCPP2_1, Why);
             StopServingInboundOverSSH(OCPPVersion.OCPP1_6, Why);

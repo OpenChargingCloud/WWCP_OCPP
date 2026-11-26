@@ -113,7 +113,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("dns.rootCAs",           "RootCAs",           true,   ""),
             ("dns.sshUserNames",      "SSHUserName",       true,   ""),
             ("dns.sshConnection",     "SSHConnection",     true,   "Dedicated"),
-            ("dns.sshHostKeyFingerprints", "SSHHostKeyFingerprint", true, "")
+            ("dns.sshHostKeyFingerprints", "SSHHostKeyFingerprint", true, ""),
+            ("dns.multicast.enabled",      "MulticastEnabled",           false,  ""),
+            ("dns.multicast.interfaces",   "MulticastInterfaces",        false,  ""),
+            ("dns.multicast.ipv4",         "MulticastIPv4",              false,  ""),
+            ("dns.multicast.ipv6",         "MulticastIPv6",              false,  ""),
+            ("dns.multicast.responder",    "MulticastResponderEnabled",  false,  ""),
+            ("dns.multicast.hostName",     "MulticastHostName",          false,  "")
         ];
 
         /// <summary>

@@ -521,6 +521,50 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region MulticastDNSIsSetAsTheFileWouldSayIt()
+
+        /// <summary>
+        /// The variables of Multicast DNS (mDNS-Concept.md, B.7): read as the
+        /// node has them - off by default -, and set into "multicast" of the
+        /// "dns" section and its "responder", into effect at once; a host name
+        /// that is no DNS label Rejected, and nothing of it taken.
+        /// </summary>
+        [Test]
+        public async Task MulticastDNSIsSetAsTheFileWouldSayIt()
+        {
+
+            var before  = model.ClientValue("MulticastEnabled");
+
+            var set     = await Set(null, (null, "MulticastEnabled",           "true"),
+                                          (null, "MulticastInterfaces",        "eth0, wlan0"),
+                                          (null, "MulticastIPv6",              "false"),
+                                          (null, "MulticastResponderEnabled",  "true"),
+                                          (null, "MulticastHostName",          "cs7"));
+
+            var saved   = OnDisk()["dns"]?["multicast"];
+
+            var wrong   = await Set(null, (null, "MulticastHostName", "cs_7"));
+
+            Assert.Multiple(() => {
+                Assert.That(before,                                                     Is.EqualTo("false"), "Multicast DNS is not off by default.");
+                Assert.That(set.Select(result => result.AttributeStatus),               Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(station!.Node.MulticastDNSEnabled,                          Is.True);
+                Assert.That(station .Node.MulticastDNSInterfaces,                       Is.EqualTo(new[] { "eth0", "wlan0" }));
+                Assert.That(station .Node.MulticastDNSIPv6,                             Is.False);
+                Assert.That(station .Node.MulticastDNSResponderEnabled,                 Is.True);
+                Assert.That(station .Node.MulticastDNSHostName,                         Is.EqualTo("cs7"));
+                Assert.That(model.ClientValue("MulticastInterfaces"),                   Is.EqualTo("eth0,wlan0"));
+                Assert.That(model.ClientValue("MulticastHostName"),                     Is.EqualTo("cs7"));
+                Assert.That(saved?["interfaces"]?.ToObject<String[]>(),                 Is.EqualTo(new[] { "eth0", "wlan0" }));
+                Assert.That(saved?["responder"]?["hostName"]?.Value<String>(),          Is.EqualTo("cs7"));
+                Assert.That(wrong.Single().AttributeStatus,                             Is.EqualTo(OCPP21.SetVariableStatus.Rejected));
+                Assert.That(station .Node.MulticastDNSHostName,                         Is.EqualTo("cs7"), "A host name refused was taken.");
+            });
+
+        }
+
+        #endregion
+
         #region ANewServerInClearTextIsRefusedForWhatItIsWhileTheCSMSIsConnectedByName()
 
         /// <summary>

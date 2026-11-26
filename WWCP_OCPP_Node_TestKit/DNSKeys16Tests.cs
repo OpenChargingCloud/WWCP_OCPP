@@ -210,6 +210,36 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region MulticastDNSIsChangedAsOCPP21ChangesIt()
+
+        /// <summary>
+        /// "dns.multicast.*" are changed as the variables of Multicast DNS of
+        /// DNSClientController (mDNS-Concept.md, B.7).
+        /// </summary>
+        [Test]
+        public async Task MulticastDNSIsChangedAsOCPP21ChangesIt()
+        {
+
+            var off        = Value("dns.multicast.enabled");
+            var on         = await Change("dns.multicast.enabled",     "true");
+            var named      = await Change("dns.multicast.interfaces",  "eth0");
+            var answering  = await Change("dns.multicast.responder",   "true");
+            var host       = await Change("dns.multicast.hostName",    "cs8");
+
+            Assert.Multiple(() => {
+                Assert.That(off,                                          Is.EqualTo("false"));
+                Assert.That(new[] { on, named, answering, host },         Is.All.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(Value("dns.multicast.enabled"),               Is.EqualTo("true"));
+                Assert.That(Value("dns.multicast.interfaces"),            Is.EqualTo("eth0"));
+                Assert.That(Value("dns.multicast.hostName"),              Is.EqualTo("cs8"));
+                Assert.That(station!.Node.MulticastDNSResponderEnabled,   Is.True);
+                Assert.That(OnDisk()?["multicast"]?["responder"]?["hostName"]?.Value<String>(), Is.EqualTo("cs8"));
+            });
+
+        }
+
+        #endregion
+
         #region AListIsReadAsThePaperReadsIt()
 
         /// <summary>

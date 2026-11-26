@@ -197,8 +197,22 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private const String ClientUnit = "client";
 
         private static readonly String[] writableClientVariables = [
-            "Enabled", "QueryTimeout", "MaxRetries", "RecursionDesired", "UseCache", "DNSSECOK", "FollowCNAMEs", "MaxCNAMEFollows", "EncryptedOnly", "ServerSource", "Servers"
+            "Enabled", "QueryTimeout", "MaxRetries", "RecursionDesired", "UseCache", "DNSSECOK", "FollowCNAMEs", "MaxCNAMEFollows", "EncryptedOnly", "ServerSource", "Servers",
+            "MulticastEnabled", "MulticastInterfaces", "MulticastIPv4", "MulticastIPv6", "MulticastResponderEnabled", "MulticastHostName"
         ];
+
+        /// <summary>
+        /// Where the variables of Multicast DNS are written: under "multicast"
+        /// of the "dns" section, or under its "responder" (mDNS-Concept.md, B.7).
+        /// </summary>
+        private static readonly Dictionary<String, (Boolean Responder, String Key)> multicastKeys = new (StringComparer.OrdinalIgnoreCase) {
+            ["MulticastEnabled"]           = (false, "enabled"),
+            ["MulticastInterfaces"]        = (false, "interfaces"),
+            ["MulticastIPv4"]              = (false, "ipv4"),
+            ["MulticastIPv6"]              = (false, "ipv6"),
+            ["MulticastResponderEnabled"]  = (true,  "enabled"),
+            ["MulticastHostName"]          = (true,  "hostName")
+        };
 
         private static readonly String[] writableServerVariables = [
             "Address", "Port", "Transport", "QueryTimeout", "CertificatePins", "RootPins", "OnPinMismatch", "TrustOnFirstUse", "RootCAs",
@@ -580,8 +594,32 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (item.Server is not String id)
                 {
 
+                    // Multicast DNS: an object of its own in the section.
+                    if (multicastKeys.TryGetValue(item.Name, out var multicast))
+                    {
+
+                        if (section["multicast"] is not JObject multicastObject)
+                            section["multicast"] = multicastObject = new JObject();
+
+                        var at = multicastObject;
+
+                        if (multicast.Responder)
+                        {
+                            if (multicastObject["responder"] is not JObject responder)
+                                multicastObject["responder"] = responder = new JObject();
+                            at = responder;
+                        }
+
+                        at[multicast.Key] = multicast.Key switch {
+                                                "interfaces"  => new JArray(ListOf(item.Value)),
+                                                "hostName"    => new JValue(item.Value.Trim()),
+                                                _             => new JValue(String.Equals(item.Value, "true", StringComparison.OrdinalIgnoreCase))
+                                            };
+
+                    }
+
                     // Said with the list of servers - see below and above.
-                    if (!item.Is("ServerSource") && !item.Is("Servers"))
+                    else if (!item.Is("ServerSource") && !item.Is("Servers"))
                         section[clientKeys[item.Name]] = ClientJSON(item.Name, item.Value);
 
                     continue;

@@ -61,7 +61,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("UDPPayloadSize",   DataTypes.Integer,     "The EDNS(0) UDP payload size this charging station announces."),
             new ("ClientSubnet",     DataTypes.String,      "The EDNS Client Subnet sent with queries (RFC 7871), or empty for none."),
             new ("EncryptedOnly",    DataTypes.Boolean,     "Whether only the name servers reached over TLS or HTTPS are asked: one over an unencrypted transport is not asked, and none can be added.",                     Writable: true),
-            new ("ServerSource",     DataTypes.OptionList,  "System: the name servers of the operating system or the network. Manual: those of DNSServerController.", ValuesList: [ "System", "Manual" ], Writable: true)
+            new ("ServerSource",     DataTypes.OptionList,  "System: the name servers of the operating system or the network. Manual: those of DNSServerController.", ValuesList: [ "System", "Manual" ], Writable: true),
+
+            // Multicast DNS (mDNS-Concept.md, B.7), beyond the paper: names
+            // under ".local" and the charging station's own name there.
+            new ("MulticastEnabled",           DataTypes.Boolean,  "Whether names under .local are asked for by Multicast DNS (RFC 6762). Off unless switched on.",                                Writable: true),
+            new ("MulticastInterfaces",        DataTypes.String,   "The network interfaces Multicast DNS uses, by name, comma separated; empty for every interface that is up and can multicast.", MaxItems: 32, Writable: true, MayBeEmpty: true),
+            new ("MulticastIPv4",              DataTypes.Boolean,  "Whether Multicast DNS uses the IPv4 group 224.0.0.251.",                                                                        Writable: true),
+            new ("MulticastIPv6",              DataTypes.Boolean,  "Whether Multicast DNS uses the IPv6 group ff02::fb.",                                                                           Writable: true),
+            new ("MulticastResponderEnabled",  DataTypes.Boolean,  "Whether the charging station answers for its own name, MulticastHostName.local.",                                             Writable: true),
+            new ("MulticastHostName",          DataTypes.String,   "The name the charging station answers for, without .local: one DNS label.",                         MaxLimit: 63,     Writable: true)
 
         ];
 
