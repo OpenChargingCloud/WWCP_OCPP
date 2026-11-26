@@ -34,11 +34,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 {
 
     /// <summary>
-    /// What stationKeys and stationPins are before any kind of node registers
-    /// them: commands for a node that serves charging stations and for no
-    /// other, never found by their type - so that the kind that registers them
-    /// by hand has each of them once, and Styx does not refuse both as a
-    /// command found twice.
+    /// What stationKeys, stationPins and serverKeys are before any kind of
+    /// node registers them: commands for a node that serves charging
+    /// stations and for no other, never found by their type - so that the
+    /// kind that registers them by hand has each of them once, and Styx does
+    /// not refuse both as a command found twice.
     /// </summary>
     /// <remarks>
     /// What they answer is tested where a node that serves charging stations
@@ -114,6 +114,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 Assert.That(() => new StationPinsCommand(cli, "stations"),
                             Throws.ArgumentException.With.Message.StartsWith($"The {node!.Kind.Name} of this command line serves no charging stations."));
 
+                Assert.That(() => new ServerKeysCommand(cli),
+                            Throws.ArgumentException.With.Message.StartsWith($"The {node!.Kind.Name} of this command line serves no charging stations."));
+
             });
 
         }
@@ -137,8 +140,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             Assert.Multiple(() => {
                 Assert.That(cli.Commands.OfType<StationKeysCommand>(), Is.Empty);
                 Assert.That(cli.Commands.OfType<StationPinsCommand>(), Is.Empty);
+                Assert.That(cli.Commands.OfType<ServerKeysCommand>(),  Is.Empty);
                 Assert.That(StationKeysCommand.CommandName,            Is.EqualTo("stationKeys"));
                 Assert.That(StationPinsCommand.CommandName,            Is.EqualTo("stationPins"));
+                Assert.That(ServerKeysCommand.CommandName,             Is.EqualTo("serverKeys"));
             });
 
         }
