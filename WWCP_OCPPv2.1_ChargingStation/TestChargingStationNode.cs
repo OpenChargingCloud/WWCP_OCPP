@@ -507,11 +507,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetInstalledCertificateIds request for certificate types: {request.CertificateTypes.Select(certificateType => certificateType).AggregateWith(", ")}!");
 
-                // Of every type where none is named, each with its own type and
-                // named by the hashes OCPP names a certificate by.
+                // Of every type of its own where none is named - the OCPP 1.6
+                // name of a type is no type of OCPP 2.x -, each with its own type,
+                // named by the hashes OCPP names a certificate by, and with what
+                // it is for here as the "context" of its customData.
                 var certificateHashDataChain = CertificateSources.Installed(request.CertificateTypes.Select(certificateType => certificateType.ToString())).
                                                                   Select   (installed => {
-                                                                                var hashes = CertificateHashes.Of(installed.Certificate);
+                                                                                var hashes   = CertificateHashes.Of(installed.Certificate);
+                                                                                var context  = CertificateSources.ContextOf(installed.CertificateType, installed.Certificate);
                                                                                 return new CertificateHashDataChain(
                                                                                            new CertificateHashData(
                                                                                                HashAlgorithm:         HashAlgorithm.Parse(hashes.HashAlgorithm),
@@ -520,7 +523,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                                                SerialNumber:          hashes.SerialNumber,
                                                                                                CustomData:            null
                                                                                            ),
-                                                                                           GetCertificateIdUse.Parse(installed.CertificateType)
+                                                                                           GetCertificateIdUse.Parse(installed.CertificateType),
+                                                                                           CustomData: context is null
+                                                                                                           ? null
+                                                                                                           : new CustomData(Vendor_Id.GraphDefined,
+                                                                                                                            new JObject(new JProperty("context", context)))
                                                                                        );
                                                                             }).
                                                                   ToArray();

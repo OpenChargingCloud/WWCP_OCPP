@@ -243,6 +243,33 @@ namespace cloud.charging.open.protocols.OCPP
         IEnumerable<String> CertificateTypes { get; }
 
         /// <summary>
+        /// The type the given one is only another name of - the OCPP 2.x name
+        /// of an OCPP 1.6 one, "CSMSRootCertificate" of
+        /// "CentralSystemRootCertificate" -, or null where it is a type of its
+        /// own.
+        /// </summary>
+        /// <remarks>
+        /// A GetInstalledCertificateIds that names no type lists the type of
+        /// its own alone: the other name is no type of OCPP 2.x, and the same
+        /// root under both names would be listed twice. Asked for by its name,
+        /// it is listed as ever.
+        /// </remarks>
+        /// <param name="CertificateType">The type, by its OCPP name.</param>
+        String? SameAs(String CertificateType)
+            => null;
+
+        /// <summary>
+        /// What the given certificate of the given type is for at this station,
+        /// in a sentence - sent along with it in GetInstalledCertificateIds, as
+        /// the "context" of its customData - or null where nothing is said.
+        /// </summary>
+        /// <param name="CertificateType">The type, by its OCPP name.</param>
+        /// <param name="Certificate">One of the certificates Installed lists for it.</param>
+        String? ContextOf(String            CertificateType,
+                          X509Certificate2  Certificate)
+            => null;
+
+        /// <summary>
         /// Install the given certificate as one of the given type, in the given
         /// group of that type where one is given. The same certificate in the
         /// same type and group again is no error, and changes nothing.

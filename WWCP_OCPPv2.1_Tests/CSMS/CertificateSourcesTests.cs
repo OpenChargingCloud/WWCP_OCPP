@@ -90,6 +90,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
+        #region (class) AnAliasingSource
+
+        /// <summary>
+        /// A source of a type known by two names, as the CSMS's roots are -
+        /// CSMSRootCertificate, and CentralSystemRootCertificate in OCPP 1.6 -
+        /// which says of each root what it is for.
+        /// </summary>
+        private sealed class AnAliasingSource : ICertificateSource
+        {
+
+            public const String  Own    = "CSMSRootCertificate";
+            public const String  Alias  = "CentralSystemRootCertificate";
+
+            public List<X509Certificate2> Kept { get; } = [];
+
+            public IEnumerable<String> CertificateTypes
+                => [ Own, Alias ];
+
+            public String? SameAs(String CertificateType)
+                => CertificateType == Alias ? Own : null;
+
+            public String? ContextOf(String CertificateType, X509Certificate2 Certificate)
+                => $"A root for the back ends, {Certificate.GetNameInfo(X509NameType.SimpleName, false)}; as {CertificateType}.";
+
+            public Task<CertificateAnswer> InstallAsync(String CertificateType, String? CertificateGroup, X509Certificate2 Certificate, String? Sender, CancellationToken CancellationToken = default)
+            {
+                Kept.Add(Certificate);
+                return Task.FromResult(CertificateAnswer.Accepted);
+            }
+
+            public IEnumerable<X509Certificate2> Installed(String CertificateType)
+                => Kept;
+
+            public Task<CertificateAnswer?> CheckDeletionAsync(CertificateHashes Hashes, CancellationToken CancellationToken = default)
+                => Task.FromResult<CertificateAnswer?>(null);
+
+            public Task<CertificateAnswer> DeleteAsync(CertificateHashes Hashes, String? Sender, CancellationToken CancellationToken = default)
+                => Task.FromResult(CertificateAnswer.Accepted);
+
+        }
+
+        #endregion
+
         #region (helpers) Root(Subject, Serial) / Install(...) / Installed(...) / Delete(...)
 
         /// <summary>
@@ -298,6 +341,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                             Is.EqualTo(CertificateHashes.Of(legal).SerialNumber));
                 Assert.That(chargingStation1.CertificateSources.Default.Installed("V2GRootCertificate").Single().Thumbprint,
                             Is.EqualTo(v2g.Thumbprint));
+            });
+
+        }
+
+        #endregion
+
+        #region ATypeKnownByTwoNamesIsListedOnceWithItsContext_Test()
+
+        /// <summary>
+        /// A request naming no type lists a type known by two names under the
+        /// name of its own alone - the OCPP 1.6 name is no type of OCPP 2.x,
+        /// and the same root would be listed twice -, and under the other name
+        /// where that is asked for; each with what it is for, as the "context"
+        /// of its customData. A certificate whose source says nothing has no
+        /// customData.
+        /// </summary>
+        [Test]
+        public async Task ATypeKnownByTwoNamesIsListedOnceWithItsContext_Test()
+        {
+
+            var source = new AnAliasingSource();
+
+            chargingStation1!.CertificateSources.Add(source);
+
+            using var csms  = Root("CSMS Root");
+            using var v2g   = Root("V2G Root");
+
+            await Install(InstallCertificateUse.CSMSRootCertificate, csms);
+            await Install(InstallCertificateUse.V2GRootCertificate,  v2g);
+
+            var all     = await Installed();
+            var by1_6   = await Installed(GetCertificateIdUse.Parse(AnAliasingSource.Alias));
+
+            var root    = all.CertificateHashDataChain.Single(chain => chain.CertificateType.ToString() == AnAliasingSource.Own);
+            var other   = all.CertificateHashDataChain.Single(chain => chain.CertificateType == GetCertificateIdUse.V2GRootCertificate);
+
+            Assert.Multiple(() => {
+
+                Assert.That(all.CertificateHashDataChain.Select(chain => chain.CertificateType.ToString()).Order(),
+                            Is.EqualTo(new[] { AnAliasingSource.Own, "V2GRootCertificate" }),
+                            "the OCPP 1.6 name is not listed where no type is named");
+
+                Assert.That(root.CustomData?["vendorId"]?.ToString(),  Is.EqualTo("GraphDefined"));
+                Assert.That(root.CustomData?["context"]?.ToString(),   Is.EqualTo($"A root for the back ends, CSMS Root; as {AnAliasingSource.Own}."));
+                Assert.That(other.CustomData,                          Is.Null, "the default source says nothing of what a root is for");
+
+                Assert.That(by1_6.CertificateHashDataChain.Select(chain => chain.CertificateType.ToString()),
+                            Is.EqualTo(new[] { AnAliasingSource.Alias }),
+                            "asked for by its OCPP 1.6 name, it is listed by that name");
+                Assert.That(by1_6.CertificateHashDataChain.Single().CustomData?["context"]?.ToString(),
+                            Is.EqualTo($"A root for the back ends, CSMS Root; as {AnAliasingSource.Alias}."));
+
             });
 
         }

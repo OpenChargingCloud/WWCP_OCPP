@@ -165,6 +165,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region Installed(CertificateType)
 
         /// <inheritdoc/>
+        public String? ContextOf(String            CertificateType,
+                                 X509Certificate2  Certificate)
+
+            => RootContext.Of("A root for the name servers this station asks over TLS",
+                              Named(CertificateHashes.Of(Certificate)),
+                              markPrefix);
+
+        /// <inheritdoc/>
         public IEnumerable<X509Certificate2> Installed(String CertificateType)
         {
 

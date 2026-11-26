@@ -113,13 +113,37 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// Every type a source keeps, and every type the default source holds a
         /// certificate of: what a GetInstalledCertificateIds that names no type
-        /// lists.
+        /// lists - but not a type that is only another name of one listed, as
+        /// the OCPP 1.6 name of the CSMS's roots is.
         /// </summary>
         public IEnumerable<String> CertificateTypes
 
-            => sources.SelectMany(source => source.CertificateTypes).
-                       Concat(Default.CertificateTypes).
+            => sources.SelectMany(source => source.CertificateTypes.Where(type => source.SameAs(type) is null)).
+                       Concat(Default.CertificateTypes.Where(type => Default.SameAs(type) is null)).
                        Distinct(StringComparer.OrdinalIgnoreCase);
+
+        #endregion
+
+        #region ContextOf(CertificateType, Certificate)
+
+        /// <summary>
+        /// What the given certificate of the given type is for at this station,
+        /// as the source of the type says it, or null.
+        /// </summary>
+        /// <param name="CertificateType">The type, by its OCPP name.</param>
+        /// <param name="Certificate">One of the certificates listed for it.</param>
+        public String? ContextOf(String            CertificateType,
+                                 X509Certificate2  Certificate)
+        {
+            try
+            {
+                return For(CertificateType).ContextOf(CertificateType, Certificate);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         #endregion
 
@@ -165,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         /// <summary>
         /// The certificates installed of the given types, each with its type - of
-        /// every type where none is given.
+        /// every type of its own where none is given: see CertificateTypes.
         /// </summary>
         public IReadOnlyList<(String CertificateType, X509Certificate2 Certificate)> Installed(IEnumerable<String> CertificateTypes)
         {

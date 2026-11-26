@@ -170,6 +170,36 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region EachRootListedSaysWhatItIsFor()
+
+        /// <summary>
+        /// Each root listed says what it is for, the context GetInstalledCertificateIds
+        /// sends along with it: a root for the name servers in its group, and
+        /// one never told what it is for, which vouches for every service - why
+        /// the same root is listed under more than one type.
+        /// </summary>
+        [Test]
+        public void EachRootListedSaysWhatItIsFor()
+        {
+
+            using var everyUse = Root("Every Use CA");
+
+            Import(root,     [ "dns", "dnsca-resolvers" ]);
+            Import(everyUse, null);
+
+            var sources = station!.OCPPv2_1Node.CertificateSources;
+
+            Assert.Multiple(() => {
+                Assert.That(sources.ContextOf(NameServer, root),
+                            Is.EqualTo("A root for the name servers this station asks over TLS; of the group 'resolvers'."));
+                Assert.That(sources.ContextOf(NameServer, everyUse),
+                            Is.EqualTo("A root for the name servers this station asks over TLS; never told what it is for, it vouches for the servers of every service."));
+            });
+
+        }
+
+        #endregion
+
         #region ARootIsDeletedForTheNameServersAndStaysForAnotherService()
 
         /// <summary>

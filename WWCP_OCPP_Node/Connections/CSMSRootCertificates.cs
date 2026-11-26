@@ -162,6 +162,24 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         #region Installed(CertificateType)
 
         /// <inheritdoc/>
+        public String? SameAs(String CertificateType)
+
+            => String.Equals(CertificateType, CertificateType1_6, StringComparison.OrdinalIgnoreCase)
+                   ? CSMSRootCertificates.CertificateType
+                   : null;
+
+        /// <inheritdoc/>
+        public String? ContextOf(String            CertificateType,
+                                 X509Certificate2  Certificate)
+
+            => RootContext.Of("A root for the servers of the back ends this station connects to over wss://",
+                              Named(CertificateHashes.Of(Certificate)),
+                              markPrefix,
+                              String.Equals(CertificateType, CertificateType1_6, StringComparison.OrdinalIgnoreCase)
+                                  ? $"OCPP 2.x: {CSMSRootCertificates.CertificateType}"
+                                  : $"OCPP 1.6: {CertificateType1_6}");
+
+        /// <inheritdoc/>
         public IEnumerable<X509Certificate2> Installed(String CertificateType)
         {
 
