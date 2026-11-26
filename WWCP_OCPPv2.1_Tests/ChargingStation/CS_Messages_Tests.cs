@@ -3257,7 +3257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     Assert.That(ntsKEServerInfo.URLs.      Any(),                                   Is.True);
                     Assert.That(ntsKEServerInfo.URLs.First().ToString(),                            Is.EqualTo($"udp://localhost:{testCSMS1.NTSServer?.UDPPort}"));
                     Assert.That(ntsKEServerInfo.PublicKeys.Any(),                                   Is.True);
-                    Assert.That(ntsKEServerInfo.AEADAlgorithm.HasValue,                             Is.False);
+                    Assert.That(ntsKEServerInfo.AEADAlgorithm,                                      Is.EqualTo(org.GraphDefined.Vanaheimr.Norn.NTS.AEADAlgorithms.AES_SIV_CMAC_256));
                     Assert.That(ntsKEServerInfo.Warnings.  Any(),                                   Is.False);
                     Assert.That(ntsKEServerInfo.Errors.    Any(),                                   Is.False);
 
