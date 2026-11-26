@@ -89,6 +89,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             RegisterOCPPServerRoutes();
             RegisterCommissioningRoutes();
             RegisterOCPPMessageRoutes();
+            RegisterDeviceModelRoutes();
 
         }
 
