@@ -517,7 +517,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                 Assert.That(store.TryAddConnection(I18NString.Create("Nonsense"), URL.Parse(AnSshURL), "CSMS", true, null, null, out _, out var nonsense,
                                                    SshTrust: new SshTrustSettings("Always", null, null)),
                             Is.False);
-                Assert.That(nonsense, Does.Contain("'None' or 'HostKey'"));
+                Assert.That(nonsense, Does.Contain("'None', 'HostKey' or 'Ask'"));
 
                 Assert.That(store.TryAddConnection(I18NString.Create("Short"), URL.Parse(AnSshURL), "CSMS", true, null, null, out _, out var tooShort,
                                                    SshTrust: new SshTrustSettings("HostKey", null, 0)),

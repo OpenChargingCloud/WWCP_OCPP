@@ -95,6 +95,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
             this.ConnectingNode             = Node;
             this.ConnectionsResource  = ConnectionsResource;
 
+            // The command line of the node asks for the same right.
+            Node.ConnectionsResource  = ConnectionsResource;
+
             RegisterConnectionRoutes(ConnectionsResource);
 
         }
